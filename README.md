@@ -1,6 +1,6 @@
 # Amazon Connect Salesforce SCV Campground
 
-This repository is a collection of code snippets for working with different parts of Amazon Connect with Salesforce Service Cloud Voice (SCV>. The snippets are organized by language. There's an additional collection of projects that come with associated CloudFormation templates and Contact Flows in the `projects/` directory.
+This repository is a collection of code snippets for working with different parts of Amazon Connect with Salesforce Service Cloud Voice (SCV). The snippets are organized by language. There's an additional collection of projects that come with associated CloudFormation templates and Contact Flows in the `projects/` directory.
 
 We currently have snippets in:
 
