@@ -22,38 +22,35 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
   * Access and manage your data (api)
   * Access your basic information (id, profile, email, address, phone)
 8.	Select the checkbox for Require Secret for Web Server Flow
-9.	The API (Enable OAuth Settings) section should now look like this
-10.	Select Save at the bottom of the screen.
-11.	Select Continue on the New Connected App page
-12.	You should now be at the new app’s page
-13.	**Copy the value for Consumer Key to your notepad**
-14.	Select Click to reveal next to Consumer Secret and **copy the value for Consumer Secret to your notepad**
-15.	At the top of the detail page, select Manage
-16.	On the Connected App Detail page, select the Edit Policies button
-17.	Set Permitted Users to Admin approved users are pre-authorized and choose OK on the pop-up dialog
-18.	Set IP Relaxation to Relax IP restrictions
-19.	The OAuth Policies section should now look like the following
-20.	Select Save
+9.	Select Save at the bottom of the screen.
+10.	Select Continue on the New Connected App page
+11.	You should now be at the new app’s page
+12.	**Copy the value for Consumer Key to your notepad**
+13.	Select Click to reveal next to Consumer Secret and **copy the value for Consumer Secret to your notepad**
+14.	At the top of the detail page, select Manage
+15.	On the Connected App Detail page, select the Edit Policies button
+16.	Set Permitted Users to Admin approved users are pre-authorized and choose OK on the pop-up dialog
+17.	Set IP Relaxation to Relax IP restrictions
+18.	Select Save
 
-## Create a new API user
+## Create a new Profile and API user
 1.	Log in into your Salesforce org and go to Setup 
 2.	In the Quick Find field, type `profiles`, then select Profiles from the results 
 3.	Select New Profile
 4.	Enter `AWS_Utility` as the Profile Name
 5.	From the Existing Profile dropdown, select System Administrator
-  * NOTE:  You're advised to use a full Salesforce License for the user to be able to set the below permissions and have full access to avoid any other errors.
 6.	Select Save to create the new profile
-7.	Once the new profile page opens, select the Edit button 
-8.	Scroll down to the Administrative Permissions section
-9.	If the Lightning Experience User checkbox is selected, clear it
-10.	Scroll down to the Password Policies section at the bottom of the page
-11.	Set User password expire in to Never expires 
+7.	Once the new profile saves, select it from the Profiles list
+8.	In the System section, select System Permissions
+9.	Select Edit
+10.	Scroll down to Lightning Experience User and clear the checkbox, if selected
+11.	Scroll down and select Password Never Expires 
   * NOTE: Failure to this may lead to production outages.
 12.	Select Save
 13.	In the Quick Find field, type connect, then select Manage Connected Apps from the results 
-14.	Select the app you have created earlier, Amazon Connect Integration 
+14.	Select the app you have created earlier, AWS_Utility 
 15.	In the profiles section, select Manage Profiles
-16.	Select the new `AWS_Utility` profile that you just created
+16.	Select the new AWS_Utility profile that you just created
 17.	Select Save at the bottom of the page
 18.	In the Quick Find field, type `users` then select Users from the results 
 19.	Select New User
@@ -72,6 +69,7 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 27.	Select Change Password. The API user will log into the Salesforce Classic view
 28.	Access the API user’s personal settings by selecting the username in the top right corner, then choose My Settings 
 29.	In the Quick Find field, type `security` then select Reset My Security Token from the results
+  - NOTE: if you do not see Reset My Security Token, you can get there by goint to the following URL: `https://[SalesforceDomainHere]/_ui/system/security/ResetApiTokenEdit?retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DPersonalInfo&setupid=ResetApiToken`
 30.	Select Reset Security Token. Your security token will be emailed to you
 31.	**Copy the security token from the email to your notepad**
 
@@ -89,7 +87,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 9.	Select Next
 10.	In the Stack Name field, enter SCVSSM
 11.	Enter the parameters as follows (most from your notepad):
-  a.	AWSRegion: Select the region that you have deployed to
+  a.	AWSRegion: Select the region that you have deployed Amazon Connect in
   b.	ConnectInstanceName: Your connect instance name
   c.	SFAccessToken: The user access token
   d.	SFConsumerKey: The consumer key from your connected app
@@ -97,7 +95,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
   f.	SFPassword: Your voicemail user’s password
   g.	SFUsername: Your voicemail username
 12.	Select Next
-13.	IT IS FINE to see a warning on the next page, Configure stack options
+13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select Next
 15.	Scroll to the bottom and select Create Stack
 16.	After a minute or two, the stack should complete.
