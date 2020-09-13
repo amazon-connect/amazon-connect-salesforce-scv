@@ -1,4 +1,4 @@
-# Salesforce Secrets
+# Salesforce Access Secrets
 Establishes a Connected App, User, and other resources in Salesforce and saves the access and login credentials to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials as needed. These credentials are then used for the projects in this repository where authentication with Salesforce is required.
 
 # Setup
