@@ -18,7 +18,7 @@ The repository is divided into three core sections:
 
 | Name | Description | Links |
 | ---- | ----------- | ----- |
-| SCV-CrossAccountSMS | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. | [CloudFormation](projects/SCV-CrossAccountSMS) |
+| SCV-CrossAccountSMS | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. | [Project](projects/SCV-CrossAccountSMS) |
 
 ## Use Case Examples
 | Name | Description | Links |
