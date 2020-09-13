@@ -1,0 +1,57 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Configures an AWS Secrets Manager store for your Salesforce access credentials
+Parameters: 
+    AWSRegion: 
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice. 
+    ConnectInstanceName: 
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    SFAccessToken:
+        Type: String
+        Default: REPLACEME
+        Description: The Access Token for the user you created
+    SFConsumerKey: 
+        Type: String
+        Default: REPLACEME
+        Description: The consumer key for your connected app
+    SFConsumerSecret: 
+        Type: String
+        Default: REPLACEME
+        Description: the consumer secret for your connected app
+    SFUsername: 
+        Type: String
+        Default: REPLACEME
+        Description: The username for the user that you created
+    SFPassword: 
+        Type: String
+        Default: REPLACEME
+        Description: The password for the user
+Resources:
+    scvvmxsecrets:
+        Type: 'AWS::SecretsManager::Secret'
+        Properties:
+          Name: 
+            !Join
+                - ''
+                - - 'scv_secrets_' 
+                  - !Ref ConnectInstanceName
+          Description: Required credentials to access Salesforce
+          SecretString: !Sub
+            - '{"AccessToken":"${AT}","ConsumerKey":"${CK}","ConsumerSecret":"${CS}","Username":"${UN}","Password":"${PW}"}'
+            - AT: !Ref SFAccessToken
+              CK: !Ref SFConsumerKey
+              CS: !Ref SFConsumerSecret
+              UN: !Ref SFUsername
+              PW: !Ref SFPassword
