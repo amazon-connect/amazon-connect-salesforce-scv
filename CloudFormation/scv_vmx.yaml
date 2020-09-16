@@ -1,0 +1,354 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the Voicemail Express for Salesforce and Service Cloud Voice solution. In order to deploy this solution, you need to have an Amazon Connect instance deployed and configured for both CTR streaming via Kinesis Data Streams and Live Media Streaming via Kinesis Video. Additionally, your Salesforce org either needs to have Service Cloud Voice enabled or you need to have completed the CTI Adapter for Amazon Connect Configuration. Please complete these before deploying this template.
+Parameters: 
+    AWSRegion: 
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region. 
+    ConnectInstanceName: 
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    ConnectCTRStreamARN:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the ARN for the Kinesis Data Stream that receives your contact trace records.
+    RecordingsExpireInDays: 
+        Type: String
+        Default: 7
+        Description: Number of days recordings are kept before deleted. Max is 7.
+    AWSSalesforceCommonPythonLayer: 
+        Type: String
+        Default: REPLACEME
+        Description: ARN for the AWS-Salesforce Common Python Layer.
+    AWSSalesforceCommonNodeLayer: 
+        Type: String
+        Default: REPLACEME
+        Description: ARN for the AWS-Salesforce Common Node Layer.
+    sfSecrets: 
+        Type: String
+        Default: REPLACEME
+        Description: ARN for your Salesforce credentials in AWS Secrets Manager.
+    sfHost: 
+        Type: String
+        Default: REPLACEME
+        Description: The full https url to your salesforce org.
+    sfDeploymentType: 
+        Type: String
+        Default: SCV
+        AllowedValues:
+          - CTI
+          - SCV
+        Description: Is this a CTI Adapter configuration or Service Cloud Voice?
+    sfVersion: 
+        Type: String
+        Default: v49.0
+        Description: The API version of your Salesforce org.
+    sfProduction:
+        Type: String
+        Default: true
+        AllowedValues:
+          - true
+          - false
+    sfVoicemailField:
+        Type: String
+        Default: vm_link__c
+        Description: Custom case field created in Salesforce to store the voicemail link.
+    sfVoicemailPhoneField:
+        Type: String
+        Default: vm_phone__c
+        Description: Custom phone field created in Salesforce to store the callback phone number.
+Resources:
+    scvvmxs3recordingsbucket:
+        Type: AWS::S3::Bucket
+        DeletionPolicy: Retain
+        Properties:
+          BucketName:
+              !Join
+                - ''
+                - - 'scv-vmx-recordings-' 
+                  - !Ref ConnectInstanceName
+          LifecycleConfiguration:
+            Rules:
+             - ExpirationInDays: !Ref RecordingsExpireInDays
+               Id: BucketRetention
+               Status: Enabled
+    scvvmxs3transcriptsbucket:
+        Type: AWS::S3::Bucket
+        DeletionPolicy: Retain
+        Properties:
+          BucketName:
+              !Join
+                - ''
+                - - 'scv-vmx-transcripts-' 
+                  - !Ref ConnectInstanceName
+          LifecycleConfiguration:
+            Rules:
+             - ExpirationInDays: !Ref RecordingsExpireInDays
+               Id: BucketRetention
+               Status: Enabled
+    scvvmxs3policy:
+        Type: AWS::IAM::ManagedPolicy
+        DependsOn:
+            - scvvmxs3recordingsbucket
+            - scvvmxs3transcriptsbucket
+        Properties:
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:GetObject'
+                  - 's3:GetBucketTagging'
+                  - 's3:GetObjectVersionTagging'
+                  - 's3:GetObjectTagging'
+                  - 's3:ListBucket'
+                  - 's3:PutBucketTagging'
+                  - 's3:PutObjectTagging'
+                  - 's3:PutObjectVersionTagging'
+                  - 's3:PutObject'
+                  - 's3:DeleteObject'
+                Resource: 
+                  - !GetAtt scvvmxs3recordingsbucket.Arn
+                  - !GetAtt scvvmxs3transcriptsbucket.Arn
+                  - 'arn:aws:s3:::*/*'
+          ManagedPolicyName: scv_vmx_s3_policy
+    scvvmxcorerole:
+        Type: 'AWS::IAM::Role'
+        DependsOn:
+            - scvvmxs3policy
+        Properties:
+          RoleName: scv_vmx_core_role
+          Description: IAM Role that provides the core access required for the voicemail solution
+          AssumeRolePolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                  - lambda.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          ManagedPolicyArns: 
+            - arn:aws:iam::aws:policy/AmazonKinesisReadOnlyAccess
+            - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+            - arn:aws:iam::aws:policy/AmazonKinesisVideoStreamsReadOnlyAccess
+            - !Ref scvvmxs3policy
+    scvvmxuser:
+        Type: AWS::IAM::User
+        DependsOn:
+            - scvvmxcorerole
+            - scvvmxs3policy
+        Properties:
+          UserName: scv_vmx_user
+          ManagedPolicyArns:
+            - !Ref scvvmxs3policy
+            - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    scvvmxuserkey:
+        Type: AWS::IAM::AccessKey
+        Properties: 
+          Status: Active
+          UserName: !Ref scvvmxuser
+    scvvmxsecrets:
+        Type: 'AWS::SecretsManager::Secret'
+        DependsOn:
+            - scvvmxcorerole
+            - scvvmxuserkey
+        Properties:
+          Name: 
+            !Join
+                - ''
+                - - 'scv_vmx_access_secrets_' 
+                  - !Ref ConnectInstanceName
+          Description: Required credentials for the Voicemail Express for Service Cloud Voice setup
+          SecretString: !Sub
+            - '{"scv_vmx_iam_key_id":"${KeyID}","scv_vmx_iam_key_secret":"${KeySecret}"}'
+            - KeyID: !Ref scvvmxuserkey
+              KeySecret: !GetAtt scvvmxuserkey.SecretAccessKey
+    scvvmxpresigner:
+        Type: AWS::Lambda::Function
+        DependsOn:
+            - scvvmxsecrets
+            - scvvmxcorerole
+        Properties: 
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - 'scv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: scv_vmx/scv_vmx_presigner.py.zip
+          Description: Generates the presigned URL that allows access to the voicemail recording in S3
+          Environment: 
+            Variables:
+              aws_region:
+                Ref: AWSRegion
+              s3_obj_lifecycle:
+                Ref: RecordingsExpireInDays
+              secrets_key_id:
+                Ref: scvvmxsecrets
+          FunctionName: 
+            !Join
+                - ''
+                - - 'scv_vmx_presigner_' 
+                  - !Ref ConnectInstanceName
+          Handler: scv_vmx_presigner.lambda_handler
+          Role: !GetAtt scvvmxcorerole.Arn
+          Runtime: python3.8
+          Timeout: 30
+    scvvmxkvstos3:
+        Type: AWS::Lambda::Function
+        DependsOn:
+            - scvvmxcorerole
+            - scvvmxs3recordingsbucket
+        Properties: 
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - 'scv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: scv_vmx/scv_vmx_kvs_to_s3.js.zip
+          Description: Extracts the voicemail from the KVS stream and writes it to S3 with tag data
+          Environment: 
+            Variables:
+              aws_region:
+                Ref: AWSRegion
+              s3_recordings_bucket:
+                Ref: scvvmxs3recordingsbucket
+          FunctionName: 
+            !Join
+                - ''
+                - - 'scv_vmx_kvs_to_s3_' 
+                  - !Ref ConnectInstanceName
+          Handler: scv_vmx_kvs_to_s3.handler
+          Role: !GetAtt scvvmxcorerole.Arn
+          Layers: [!Ref AWSSalesforceCommonNodeLayer]
+          Runtime: nodejs12.x
+          Timeout: 900
+    scvvmxtranscriber:
+        Type: AWS::Lambda::Function
+        DependsOn:
+            - scvvmxcorerole
+            - scvvmxs3recordingsbucket
+            - scvvmxs3transcriptsbucket
+        Properties: 
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - 'scv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: scv_vmx/scv_vmx_transcriber.py.zip
+          Description: Transcribes the voicemail to text and stores the transcription in S3
+          Environment: 
+            Variables:
+              aws_region:
+                Ref: AWSRegion
+              s3_transcripts_bucket:
+                Ref: scvvmxs3transcriptsbucket
+          FunctionName: 
+            !Join
+                - ''
+                - - 'scv_vmx_transcriber_' 
+                  - !Ref ConnectInstanceName
+          Handler: scv_vmx_transcriber.lambda_handler
+          Role: !GetAtt scvvmxcorerole.Arn
+          Runtime: python3.8
+          Timeout: 900
+    scvvmxpackager:
+        Type: AWS::Lambda::Function
+        DependsOn:
+            - scvvmxcorerole
+            - scvvmxs3recordingsbucket
+            - scvvmxpresigner
+        Properties: 
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - 'scv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: scv_vmx/scv_vmx_packager.py.zip
+          Description: Packages the voicemail and creates a case in Salesforce.
+          Environment: 
+            Variables:
+              s3_recordings_bucket:
+                Ref: scvvmxs3recordingsbucket
+              s3_transcripts_bucket:
+                Ref: scvvmxs3transcriptsbucket
+              SF_CREDENTIALS_SECRETS_MANAGER_ARN:
+                Ref: sfSecrets
+              SF_HOST:
+                Ref: sfHost
+              SF_PRODUCTION:
+                Ref: sfProduction
+              SF_VERSION:
+                Ref: sfVersion
+              presigner_function_arn:
+                Ref: scvvmxpresigner
+              sf_deployment_type:
+                Ref: sfDeploymentType
+              sf_case_vm_field:
+                Ref: sfVoicemailField
+              sf_case_vm_phone_field:
+                Ref: sfVoicemailPhoneField
+          FunctionName: 
+            !Join
+                - ''
+                - - 'scv_vmx_packager_' 
+                  - !Ref ConnectInstanceName
+          Handler: scv_vmx_packager.lambda_handler
+          Role: !GetAtt scvvmxcorerole.Arn
+          Layers: [!Ref AWSSalesforceCommonPythonLayer]
+          Runtime: python3.8
+          Timeout: 900
+    scvvmxcorepolicy:
+        Type: AWS::IAM::Policy
+        DependsOn:
+            - scvvmxcorerole
+            - scvvmxpresigner
+            - scvvmxsecrets
+        Properties:
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'lambda:InvokeFunction'
+                Resource:
+                  - !GetAtt scvvmxpresigner.Arn
+              - Effect: Allow
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                  - 'secretsmanager:DescribeSecret'
+                  - 'secretsmanager:ListSecretVersionIds'
+                Resource:
+                  - !Ref scvvmxsecrets
+                  - !Ref sfSecrets
+              - Effect: Allow
+                Action:
+                  - 'transcribe:StartTranscriptionJob'
+                  - 'connect:DescribeUser'
+                  - 'connect:UpdateContactAttributes'
+                Resource: 
+                  - '*'
+          PolicyName: scv_vmx_core_policy
+          Roles:
+            - !Ref scvvmxcorerole
+Outputs:
+    VMXRecordingsBucket:
+        Description: Set a new event on this bucket to fire the transcriber function
+        Value: !Ref scvvmxs3recordingsbucket
+    VMXTranscriptsBucket:
+        Description: Set a new event on this bucket to fire the packager function
+        Value: !Ref scvvmxs3transcriptsbucket
