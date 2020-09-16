@@ -13,8 +13,8 @@ Before deploying the Voicemail Express solutions, you will need to complete a fe
 4.	Find and select Case
 5.	Choose Fields & Relationships
 6.	Select New
-7.	Choose Text Area (Rich)
-8.	Set a value for field label, such as Voicemail Link
+7.	Choose Text Area (Rich), then select Next
+8.	Set a value for field label, such as `Voicemail Link`
 9.	Set the length to 4,000
 10.	Set # Visible Lines to 10
 11.	Select Next
@@ -29,8 +29,8 @@ Before deploying the Voicemail Express solutions, you will need to complete a fe
 4.	Find and select Case
 5.	Choose Fields & Relationships
 6.	Select New
-7.	Choose Phone
-8.	Set a value for field label, such as Callback Phone
+7.	Choose Phone, and select Next
+8.	Set a value for field label, such as `Callback Phone`
 9.	Select Next
 10.	On the Step 3 page, select Next
 11.	On the step 4 page, select Save
