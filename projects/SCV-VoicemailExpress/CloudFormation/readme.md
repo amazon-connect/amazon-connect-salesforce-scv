@@ -1,4 +1,4 @@
-* AWS CloudFormation Template
+# AWS CloudFormation Template
 The **scv_vmx.yaml** cloudformation template deploys the following reosurces:
 - IAM User
 - IAM Access key
