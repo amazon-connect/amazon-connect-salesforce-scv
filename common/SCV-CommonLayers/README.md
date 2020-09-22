@@ -11,7 +11,7 @@ SCV Common layers for AWS Lambda provides dependency modules used by the solutio
 - Amazon Web Services account
 
 ## Deployment Steps
-1. Right-click/control-click to download the [CloudFormation template](scv_common_layers.yaml).
+1. Right-click/control-click to download the [CloudFormation template](../../../../raw/master/common/amazon-connect-salesforce-scv/scv_common_layers.yaml).
 2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 3.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the [CloudFormation Console](https://console.aws.amazon.com/cloudformation/home)
