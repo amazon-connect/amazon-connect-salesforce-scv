@@ -1,6 +1,6 @@
 # SCV Common Layers
 
-SCV Common layers for AWS Lambda provides dependency modules used by the solutions included in this repository. It is a likely prerequisite for any of the projects the incorporate AWS Lambda functions. For new implementations, there is an AWS CloudFOrmation template that completes the initial deployment for you. Once deployed, you can update your layers using the Easy Upgrade process below. 
+SCV Common layers for AWS Lambda provides dependency modules used by the solutions included in this repository. It is a likely prerequisite for any of the projects the incorporate AWS Lambda functions. For new implementations, there is an AWS CloudFormation template that completes the initial deployment for you. Once deployed, you can update your layers using the Easy Upgrade process below. 
 
 ## Project Components
 - CloudFormation template that builds:
@@ -18,7 +18,7 @@ SCV Common layers for AWS Lambda provides dependency modules used by the solutio
 
 ## Easy Upgrade process
 If you have previously deployed the cloudformation templates and have the layers in place, it is easier to just download the updated layer and add it as a new version. To do this, follow the steps below.
-1. Download the layer that you want to update from the [Layers](layers/) directory (do not unzip the file)
+1. Download the layer that you want to update from the [Layers](Layers/) directory (do not unzip the file)
 2. Login the the [AWS Console](https://console.aws.amazon.com/console/home)
 3. Open the AWS [Lambda Console](https://console.aws.amazon.com/lambda/home)
 4. In the left navigation menu, under **Additional Resources**, select **Layers**
@@ -28,3 +28,7 @@ If you have previously deployed the cloudformation templates and have the layers
 8. Select the **Compatible runtimes**. For Node.js, select version 12.x and any newer versions. For Python, select version 3.8 and any newer versions.
 9. Choose **Create**
 10. Update your functions to use the new layer as appropriate
+
+## Layer Last Updated
+Node.js: 2020-08-31
+Python: 2020-09-22
