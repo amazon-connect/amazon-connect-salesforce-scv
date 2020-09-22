@@ -44,5 +44,5 @@ If you have previously deployed the cloudformation templates and have the layers
 10. Update your functions to use the new layer as appropriate
 
 ## Layer Last Updated
-Node.js: 2020-08-31
-Python: 2020-09-22
+- Node.js: 2020-08-31
+- Python: 2020-09-22
