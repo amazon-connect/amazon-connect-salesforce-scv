@@ -27,7 +27,6 @@ jobs:
         uses: aws-actions/aws-codebuild-run-build@v1.0.3
         with: 
           project-name: ${{ secrets.AWS_CODEBUILD_PROJECT_NAME }}
-          buildspec-override: buildspec.yaml
           env-vars-for-codebuild: requester, event-name
         env:
           requester: ${{ github.actor }}
