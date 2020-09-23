@@ -47,7 +47,7 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 11.	Scroll down and select Password Never Expires 
   * NOTE: Failure to this may lead to production outages.
 12.	Select Save
-13.	In the Quick Find field, type connect, then select Manage Connected Apps from the results 
+13.	In the Quick Find field, type `connect`, then select Manage Connected Apps from the results 
 14.	Select the app you have created earlier, AWS_Utility 
 15.	In the profiles section, select Manage Profiles
 16.	Select the new AWS_Utility profile that you just created
