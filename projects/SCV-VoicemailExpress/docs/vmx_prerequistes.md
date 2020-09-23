@@ -1,6 +1,6 @@
 # Voicemail Express Prerequisites
 Before deploying the Voicemail Express solutions, you will need to complete a few prerequsites. These will lay the foundation and prepare both environments for the voicemail solution. These **must be completed** prior to the deployment of Voicemail Express.
-- Complete the [Salesforce Access Secrets](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/SCV-SalesforceAccessSecrets) setup
+- Complete the [Salesforce Access Secrets](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceAccessSecrets) setup
 - Complete the [SCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/SCV-CommonLayers) Setup
 - Complete the steps below to configure new fields for the Voicemail transcript and callback number in Salesforce.
 

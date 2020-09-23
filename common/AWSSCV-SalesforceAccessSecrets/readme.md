@@ -1,5 +1,5 @@
 # Salesforce Access Secrets
-Establishes a Connected App, User, and other resources in Salesforce and saves the access and login credentials to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials as needed. These credentials are then used for the projects in this repository where authentication with Salesforce is required.
+Establishes a Connected App, User, and other resources in Salesforce and saves the access and login credentials to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials as needed. These credentials are then used for the projects in this repository where authentication with Salesforce is required. Also creates an IAM Policy and Role common to the deployents from this repository.
 
 # Setup
 Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is reccomended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out.
@@ -76,7 +76,7 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 ## Store Salesforce Credentials in AWS Secrets Manager
 To ensure that your Salesforce credentials are secure, the Lambdas require that the credentials are stored in AWS Secrets Manager. AWS Secrets Manager is a highly secure service that helps you store and retrieve secrets.
 
-1.	Right-click/control-click to download the [CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/common/SCV-SalesforceAccessSecrets/CloudFormation/scv-ssm.yaml).
+1.	Right-click/control-click to download the [CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/common/AWSSCV-SalesforceAccessSecrets/CloudFormation/awsscv-ssm.yaml).
 2. In a new browser tab, login to the AWS console
 3.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the CloudFormation console
