@@ -1,6 +1,6 @@
 
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Configures an AWS Secrets Manager store for your Salesforce access credentials
+Description: Configures an AWS Secrets Manager store for your Salesforce access credentials. Also creates the common role and secrets access policy.
 Parameters: 
     AWSRegion: 
         Type: String
@@ -39,7 +39,7 @@ Parameters:
         Default: REPLACEME
         Description: The password for the user
 Resources:
-    scvvmxsecrets:
+    scvcommonsecrets:
         Type: 'AWS::SecretsManager::Secret'
         Properties:
           Name: 
@@ -55,3 +55,28 @@ Resources:
               CS: !Ref SFConsumerSecret
               UN: !Ref SFUsername
               PW: !Ref SFPassword
+    scvcommonrole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          RoleName: scv_common_role
+          Description: IAM Role that provides the core access required for the AWS-created Service Cloud Voice projects
+          AssumeRolePolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                  - lambda.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+              - Effect: Allow
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                  - 'secretsmanager:DescribeSecret'
+                  - 'secretsmanager:ListSecretVersionIds'
+                Resource:
+                  - !Ref scvcommonsecrets
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/AmazonKinesisReadOnlyAccess
+            - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+            - arn:aws:iam::aws:policy/AmazonKinesisVideoStreamsReadOnlyAccess
