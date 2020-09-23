@@ -20,13 +20,13 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: test
-          aws-secret-access-key: test
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
       - name: Run CodeBuild
         uses: aws-actions/aws-codebuild-run-build@v1.0.3
         with: 
-          project-name: test
+          project-name: ${{ AWS_CODEBUILD_PROJECT_NAME }}
           buildspec-override: buildspec.yaml
           env-vars-for-codebuild: requester, event-name
         env:
