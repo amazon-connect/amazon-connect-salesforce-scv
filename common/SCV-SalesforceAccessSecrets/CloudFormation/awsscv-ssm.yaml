@@ -1,8 +1,8 @@
 
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Configures an AWS Secrets Manager store for your Salesforce access credentials. Also creates the common role and secrets access policy.
-Parameters: 
-    AWSRegion: 
+Parameters:
+    AWSRegion:
         Type: String
         Default: us-east-1
         AllowedValues:
@@ -13,8 +13,8 @@ Parameters:
           - ap-northeast-1
           - eu-central-1
           - eu-west-2
-        Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice. 
-    ConnectInstanceName: 
+        Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice.
+    ConnectInstanceName:
         Type: String
         Default: REPLACEME
         Description: Provide the instance name for Amazon Connect.
@@ -23,21 +23,21 @@ Parameters:
         Default: REPLACEME
         Description: The Access Token for the user you created
         NoEcho: true
-    SFConsumerKey: 
+    SFConsumerKey:
         Type: String
         Default: REPLACEME
         Description: The consumer key for your connected app
         NoEcho: true
-    SFConsumerSecret: 
+    SFConsumerSecret:
         Type: String
         Default: REPLACEME
         Description: the consumer secret for your connected app
         NoEcho: true
-    SFUsername: 
+    SFUsername:
         Type: String
         Default: REPLACEME
         Description: The username for the user that you created
-    SFPassword: 
+    SFPassword:
         Type: String
         Default: REPLACEME
         Description: The password for the user
@@ -46,7 +46,7 @@ Resources:
     awsscvcommonsecrets:
         Type: AWS::SecretsManager::Secret
         Properties:
-          Name: 
+          Name:
             !Join
                 - ''
                 - - 'awsscv_secrets_'
