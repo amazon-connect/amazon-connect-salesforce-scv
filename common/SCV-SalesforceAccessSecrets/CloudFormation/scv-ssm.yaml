@@ -22,14 +22,17 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: The Access Token for the user you created
+        NoEcho: true
     SFConsumerKey: 
         Type: String
         Default: REPLACEME
         Description: The consumer key for your connected app
+        NoEcho: true
     SFConsumerSecret: 
         Type: String
         Default: REPLACEME
         Description: the consumer secret for your connected app
+        NoEcho: true
     SFUsername: 
         Type: String
         Default: REPLACEME
@@ -38,14 +41,15 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: The password for the user
+        NoEcho: true
 Resources:
-    scvcommonsecrets:
-        Type: 'AWS::SecretsManager::Secret'
+    awsscvcommonsecrets:
+        Type: AWS::SecretsManager::Secret
         Properties:
           Name: 
             !Join
                 - ''
-                - - 'scv_secrets_' 
+                - - 'awsscv_secrets_'
                   - !Ref ConnectInstanceName
           Description: Required credentials to access Salesforce
           SecretString: !Sub
@@ -55,11 +59,30 @@ Resources:
               CS: !Ref SFConsumerSecret
               UN: !Ref SFUsername
               PW: !Ref SFPassword
-    scvcommonrole:
-        Type: 'AWS::IAM::Role'
+    awsscvcommonsecretspolicy:
+        Type: AWS::IAM::ManagedPolicy
+        DependsOn:
+            - awsscvcommonsecrets
         Properties:
-          RoleName: scv_common_role
-          Description: IAM Role that provides the core access required for the AWS-created Service Cloud Voice projects
+          Description: Provides access to the Salesforce secrets
+          ManagedPolicyName: awsscv_common_secrets_policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                  - 'secretsmanager:DescribeSecret'
+                  - 'secretsmanager:ListSecretVersionIds'
+                Resource:
+                  - !Ref awsscvcommonsecrets
+    awsscvcommonrole:
+        Type: AWS::IAM::Role
+        DependsOn:
+            - awsscvcommonsecretspolicy
+        Properties:
+          RoleName: awsscv_common_role
+          Description: Provides foundational access to Kinesis, KVS, CloudWatch Logs, and the Salesforce secrets
           AssumeRolePolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -68,15 +91,9 @@ Resources:
                   Service:
                   - lambda.amazonaws.com
                 Action:
-                  - 'sts:AssumeRole'
-              - Effect: Allow
-                Action:
-                  - 'secretsmanager:GetSecretValue'
-                  - 'secretsmanager:DescribeSecret'
-                  - 'secretsmanager:ListSecretVersionIds'
-                Resource:
-                  - !Ref scvcommonsecrets
+                  - sts:AssumeRole
           ManagedPolicyArns:
             - arn:aws:iam::aws:policy/AmazonKinesisReadOnlyAccess
             - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
             - arn:aws:iam::aws:policy/AmazonKinesisVideoStreamsReadOnlyAccess
+            - !Ref awsscvcommonsecretspolicy
