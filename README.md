@@ -29,5 +29,3 @@ The repository is divided into three core sections:
 ## Contributions
 
 Make sure the `.gitignore` per language is applied.
-Make sure your snippet has no external dependencies.
-Make sure your snippet is self contained.
