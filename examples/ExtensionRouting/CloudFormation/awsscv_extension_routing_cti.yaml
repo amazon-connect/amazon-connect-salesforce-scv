@@ -110,7 +110,7 @@ Resources:
                        response.update({'fail_message':'Id key not passed'})
 
                    return response
-          Description: Processes Salesforce REST API responce to get agent id
+          Description: Processes Salesforce response to get agent id
           Environment:
             Variables:
               sf_org_id:
@@ -118,7 +118,7 @@ Resources:
           FunctionName:
             !Join
                 - ''
-                - - 'awsscv_extension_routing_processor_'
+                - - 'awsscv_extension_routing_processor_cti_'
                   - !Ref ConnectInstanceName
           Handler: index.lambda_handler
           Role: !Ref AWSSCVCommonRole
@@ -209,7 +209,7 @@ Resources:
           FunctionName:
             !Join
                 - ''
-                - - 'awsscv_extension_routing_query_'
+                - - 'awsscv_extension_routing_query_cti_'
                   - !Ref ConnectInstanceName
           Handler: index.lambda_handler
           Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
