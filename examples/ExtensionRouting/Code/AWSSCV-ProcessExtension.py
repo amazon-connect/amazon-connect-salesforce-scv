@@ -19,6 +19,8 @@ import json
 import os
 
 def lambda_handler(event, context):
+    ########## START Standard AWSSCV function setup ##########
+
     # Uncomment the following line for debugging
     # print(event)
 
@@ -31,6 +33,8 @@ def lambda_handler(event, context):
     if 'source' in event:
         response.update({'statusCode': 200,'response' : 'warm', 'event' : 'EventBridge ping'})
         return response
+
+    ########## END Standard AWSSCV function setup ##########
 
     # Extract the Org ID from environment variables
     try:
