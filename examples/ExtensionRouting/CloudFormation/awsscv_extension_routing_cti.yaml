@@ -69,7 +69,7 @@ Resources:
                 - ''
                 - - 'awsscv_extension_routing_processor_cti_'
                   - !Ref ConnectInstanceName
-          Handler: index.lambda_handler
+          Handler: AWSSCV-ProcessExtension.lambda_handler
           Role: !Ref AWSSCVCommonRole
           Runtime: python3.7
           Timeout: 8
@@ -99,7 +99,7 @@ Resources:
                 - ''
                 - - 'awsscv_extension_routing_query_cti_'
                   - !Ref ConnectInstanceName
-          Handler: index.lambda_handler
+          Handler: AWSSCV-SFQuery.lambda_handler
           Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
           Role: !Ref AWSSCVCommonRole
           Runtime: python3.8
