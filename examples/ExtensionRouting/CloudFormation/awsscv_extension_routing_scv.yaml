@@ -96,7 +96,7 @@ Resources:
           FunctionName:
             !Join
                 - ''
-                - - 'awsscv_extension_routing_processor_'
+                - - 'awsscv_extension_routing_processor_scv_'
                   - !Ref ConnectInstanceName
           Handler: index.lambda_handler
           Role: !Ref SalesforceRestApiFunctionRole
