@@ -13,6 +13,6 @@ Voicemails in this solution are configured for a lifecycle of up to 7 days. Afte
 
 To deploy Voicemail express, you will need to complete the following:
 1. Complete the [Salesforce Access Secrets](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceAccessSecrets) setup
-2. Complete the [SCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/SCV-CommonLayers) Setup
+2. Complete the [AWSSCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-CommonLayers) Setup
 3. Complete the [Voicemail Express Prerequisites](docs/vmx_prerequistes.md)
 4. Complete the [Voicemail Express Installation](docs/vmx_installation_instructions.md)

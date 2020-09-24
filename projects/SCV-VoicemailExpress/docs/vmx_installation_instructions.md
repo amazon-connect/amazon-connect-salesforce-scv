@@ -7,8 +7,8 @@ In order to deploy this template, you must first complete the [installation prer
 
 ## Gather Required Information
 The Voicemail Express solutions Uses AWS CloudFormation to deploy most of the solution. In order to launch the template, you will need the following information:
-- ARN for the SCV Common Layers - Node layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
-- ARN for the SCV Common Layers - Python layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
+- ARN for the AWSSCV Common Layers - Node layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
+- ARN for the AWSSCV Common Layers - Python layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
 - ARN for the Amazon Kiesis data stream used for streaming your CTRs from the [Amazon Kinesis Data streams console](https://console.aws.amazon.com/kinesis/home)
 - ARN for the Salesforce Access Secrets from the [AWS Secrets Manager console](https://console.aws.amazon.com/secretsmanager/home)
 - Amazon Connect Instance Alias from the [Amazon Connect console](https://console.aws.amazon.com/connect/home)

@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Establishes supporting layers for Service Cloud Voice add-ons from AWS.
-Parameters: 
-  AWSRegion: 
+Parameters:
+  AWSRegion:
     Type: String
     Default: us-east-1
     AllowedValues:
@@ -12,14 +12,14 @@ Parameters:
       - ap-northeast-1
       - eu-central-1
       - eu-west-2
-    Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice. 
+    Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice.
 Resources:
     SCVCommonPythonLayer:
         Type: AWS::Lambda::LayerVersion
-        Properties: 
-          CompatibleRuntimes: 
+        Properties:
+          CompatibleRuntimes:
             - python3.8
-          Content: 
+          Content:
             S3Bucket:
               !Join
                 - ''
@@ -31,10 +31,10 @@ Resources:
           LicenseInfo: https://opensource.org/licenses/MIT
     SCVCommonNodeLayer:
         Type: AWS::Lambda::LayerVersion
-        Properties: 
-          CompatibleRuntimes: 
+        Properties:
+          CompatibleRuntimes:
             - nodejs12.x
-          Content: 
+          Content:
             S3Bucket:
               !Join
                 - ''
@@ -50,4 +50,4 @@ Outputs:
     Value: !Ref SCVCommonPythonLayer
   SCVCommonNodeLayerARN:
     Description: ARN for the node.js common layer
-    Value: !Ref SCVCommonNodeLayer  
+    Value: !Ref SCVCommonNodeLayer
