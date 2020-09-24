@@ -7,8 +7,8 @@ In order to deploy this template, you must first complete the [installation prer
 
 ## Gather Required Information
 The Voicemail Express solutions Uses AWS CloudFormation to deploy most of the solution. In order to launch the template, you will need the following information:
-- ARN for the SCV Common Layers - Node layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
-- ARN for the SCV Common Layers - Python layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
+- ARN for the AWSSCV Common Layers - Node layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
+- ARN for the AWSSCV Common Layers - Python layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
 - ARN for the Amazon Kiesis data stream used for streaming your CTRs from the [Amazon Kinesis Data streams console](https://console.aws.amazon.com/kinesis/home)
 - ARN for the Salesforce Access Secrets from the [AWS Secrets Manager console](https://console.aws.amazon.com/secretsmanager/home)
 - Amazon Connect Instance Alias from the [Amazon Connect console](https://console.aws.amazon.com/connect/home)
@@ -20,7 +20,7 @@ Once you have the required information, you are ready to continue with installat
 
 ## Delploy the Cloudformation Template
 The next step is to deploy the CloudFormation template. This template builds all of the AWS resources required to make Voicemail Express work. 
-1. Right-click/control-click to download the [Voicemail Express CloudFormation template](../../../../../raw/master/projects/SCV-VoicemailExpress/CloudFormation/scv_vmx.yaml) and save it to your computer
+1. Right-click/control-click to download the [Voicemail Express CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/projects/SCV-VoicemailExpress/CloudFormation/scv_vmx.yaml) and save it to your computer
 2. Log into the [AWS console](https://console.aws.amazon.com/console/home)
 3. Navigate to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home)
 4. Choose **Create stack**
@@ -86,8 +86,8 @@ Now that the resources are deployed, we need to configure some triggers. These t
 
 ## Install the baseline Contact Flows
 In order to test Voicemail Express, you will need to import two contact flows into your Amazon Connect instance. The first flow provides an example of how the voicemail system functions and ccan be triggered from any normal inbound contact flow. The second flow is the test contact flow. This allows you to test the voicemail system without going through normal call processing in your main flows. 
-1. Right-click/control-click to download [001-VMX-Sample VM-SCV contact flow](../../../../../raw/master/projects/SCV-VoicemailExpress/ContactFlows/001-VMX-SampleVM-SCV) and save it to your computer
-2. Right-click/control-click to download [001-VMX-Test Function-SCV contact flow](../../../../../raw/master/projects/SCV-VoicemailExpress/ContactFlows/001-VMX-TestFunction-SCV) and save it to your computer
+1. Right-click/control-click to download [001-VMX-Sample VM-SCV contact flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/projects/SCV-VoicemailExpress/ContactFlows/001-VMX-SampleVM-SCV) and save it to your computer
+2. Right-click/control-click to download [001-VMX-Test Function-SCV contact flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/projects/SCV-VoicemailExpress/ContactFlows/001-VMX-TestFunction-SCV) and save it to your computer
 3. Login to your Amazon Connect Administrative UI
 4. Navigate to **Routing**, and select **Contact flows**
 5. Select **Create contact flow**
