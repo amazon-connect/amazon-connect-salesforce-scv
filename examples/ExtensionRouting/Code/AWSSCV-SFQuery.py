@@ -21,8 +21,6 @@ import json
 from salesforce import Salesforce
 
 def lambda_handler(event, context):
-    ########## START Standard AWSSCV function setup ##########
-
     # Uncomment the following line for debugging
     # print(event)
 
@@ -36,11 +34,11 @@ def lambda_handler(event, context):
         response.update({'statusCode': 200,'response' : 'warm', 'event' : 'EventBridge ping'})
         return response
 
-    ########## END Standard AWSSCV function setup ##########
-
-    # Extract pushed parameters from the contact flow
+    # Extract passed params and build query
     try:
-        sf_query = event['Details']['Parameters']['sf_query']
+        sf_sso_object = event['Details']['Parameters']['sf_sso_object']
+        sf_extension = event['Details']['Parameters']['sf_extension']
+        sf_query = "SELECT " + sf_sso_object + " FROM User WHERE Extension ='" + sf_extension + "'"
 
         # Login to Salesforce
         try:
@@ -61,6 +59,6 @@ def lambda_handler(event, context):
             response.update({'result':'fail', 'code' : 'SF Login Fail'})
 
     except:
-        response.update({'result':'fail', 'code' : 'Parameters missing'})
+        response.update({'result':'fail', 'code' : 'Query failed to build'})
 
     return response
