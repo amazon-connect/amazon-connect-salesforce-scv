@@ -1,3 +1,0 @@
-requests
-pyjwt[crypto]
-phonenumbers
