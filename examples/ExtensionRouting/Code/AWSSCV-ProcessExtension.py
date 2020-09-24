@@ -27,6 +27,11 @@ def lambda_handler(event, context):
     # Set the default result to success
     response.update({'result':'success'})
 
+    # Handle EventBridge pings that keep the function warm
+    if 'source' in event:
+        response.update({'statusCode': 200,'response' : 'warm', 'event' : 'EventBridge ping'})
+        return response
+
     # Extract the Org ID from environment variables
     try:
         org_id = os.environ['sf_org_id']
