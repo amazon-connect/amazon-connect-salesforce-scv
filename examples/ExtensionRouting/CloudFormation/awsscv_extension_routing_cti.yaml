@@ -1,0 +1,218 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda function required to process the Salesforce response for Extension Routing.
+Parameters:
+    AWSRegion:
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    SalesforceOrgId:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the ID for your Salesforce Org
+    ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    AWSSCVCommonRole:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the awsscv_common_role role
+    AWSSCVCommonLambdaPythonLayer:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the common python layer
+    sfSecrets:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for your Salesforce credentials in AWS Secrets Manager.
+    sfHost:
+        Type: String
+        Default: REPLACEME
+        Description: The full https url to your salesforce org.
+    sfVersion:
+        Type: String
+        Default: v49.0
+        Description: The API version of your Salesforce org.
+    sfProduction:
+        Type: String
+        Default: true
+        AllowedValues:
+          - true
+          - false
+Resources:
+    awsscvextensionroutingprocessor:
+        Type: AWS::Lambda::Function
+        Properties:
+          Code:
+            ZipFile: |
+              """
+              **********************************************************************************************************************
+              *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
+              *                                                                                                                    *
+              *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated      *
+              *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation   *
+              *  the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and  *
+              *  to permit persons to whom the Software is furnished to do so.                                                     *
+              *                                                                                                                    *
+              *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO  *
+              *  THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    *
+              *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF         *
+              *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS *
+              *  IN THE SOFTWARE.                                                                                                  *
+              **********************************************************************************************************************
+              """
+              import json
+              import os
+
+              def lambda_handler(event, context):
+                   # Uncomment the following line for debugging
+                   # print(event)
+
+                   # Establsih an empty response
+                   response = {}
+                   # Set the default result to success
+                   response.update({'result':'success'})
+
+                   # Extract the Org ID from environment variables
+                   try:
+                       org_id = os.environ['sf_org_id']
+
+                   except:
+                       response.update({'result':'fail'})
+                       response.update({'fail_message':'Invalid Lambda config - missing Salesforce org ID'})
+                       return response
+
+                   # Extract the passed Id attribute, if present
+                   try:
+                       Id = event['Details']['Parameters']['Id']
+
+                       # If the key exists, extract the value and build the agent id
+                       if Id != '':
+                          clean_id = Id[:- 3]
+                          agent_id = clean_id + '@' + org_id
+                          response.update({'agent_id':agent_id})
+
+                       else:
+                          response.update({'result':'fail'})
+                          response.update({'fail_message':'Id value empty'})
+
+                   except:
+                       response.update({'result':'fail'})
+                       response.update({'fail_message':'Id key not passed'})
+
+                   return response
+          Description: Processes Salesforce REST API responce to get agent id
+          Environment:
+            Variables:
+              sf_org_id:
+                Ref: SalesforceOrgId
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_extension_routing_processor_'
+                  - !Ref ConnectInstanceName
+          Handler: index.lambda_handler
+          Role: !Ref AWSSCVCommonRole
+          Runtime: python3.7
+          Timeout: 8
+    awsscvextensionroutingquery:
+        Type: AWS::Lambda::Function
+        Properties:
+          Code:
+            ZipFile: |
+              """
+              **********************************************************************************************************************
+              *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
+              *                                                                                                                    *
+              *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated      *
+              *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation   *
+              *  the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and  *
+              *  to permit persons to whom the Software is furnished to do so.                                                     *
+              *                                                                                                                    *
+              *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO  *
+              *  THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    *
+              *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF         *
+              *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS *
+              *  IN THE SOFTWARE.                                                                                                  *
+              **********************************************************************************************************************
+              """
+
+              import logging
+              import os
+              import json
+              from salesforce import Salesforce
+
+              def lambda_handler(event, context):
+                  ########## START Standard AWSSCV function setup ##########
+
+                  # Uncomment the following line for debugging
+                  # print(event)
+
+                  # Establsih an empty response
+                  response = {}
+                  # Set the default result to success
+                  response.update({'result':'success'})
+
+                  # Handle EventBridge pings that keep the function warm
+                  if 'source' in event:
+                      response.update({'statusCode': 200,'response' : 'warm', 'event' : 'EventBridge ping'})
+                      return response
+
+                  ########## END Standard AWSSCV function setup ##########
+
+                  # Extract pushed parameters from the contact flow
+                  try:
+                      sf_query = event['Details']['Parameters']['sf_query']
+
+                      # Login to Salesforce
+                      try:
+                          sf = Salesforce()
+                          sf.sign_in()
+
+                          # Do the Query
+                          try:
+                              query_result = sf.query(query=sf_query)
+
+                              # Prep the response
+                              response.update({'Id' : query_result[0]['Id']})
+
+                          except:
+                              response.update({'result':'fail', 'code' : 'SF Query Fail'})
+
+                      except:
+                          response.update({'result':'fail', 'code' : 'SF Login Fail'})
+
+                  except:
+                      response.update({'result':'fail', 'code' : 'Parameters missing'})
+
+                  return response
+          Description: Uses Salesforce REST API to query for agent id
+          Environment:
+            Variables:
+              SF_CREDENTIALS_SECRETS_MANAGER_ARN:
+                Ref: sfSecrets
+              SF_HOST:
+                Ref: sfHost
+              SF_PRODUCTION:
+                Ref: sfProduction
+              SF_VERSION:
+                Ref: sfVersion
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_extension_routing_query_'
+                  - !Ref ConnectInstanceName
+          Handler: index.lambda_handler
+          Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
+          Role: !Ref AWSSCVCommonRole
+          Runtime: python3.7
+          Timeout: 8
