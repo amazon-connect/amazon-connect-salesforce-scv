@@ -136,7 +136,6 @@ Example contact flows have been provided to show you how to use the Extension Ro
 15. In the imported flow, find the Invoke AWS Lambda function block 
 16. Change that block to use the **awsscv_extension_routing_query_cti** function configured for your instance.
 17. In the same block, modify the sf_sso_object parameter value to match the Salesforce field that contains your Amazon Connect user name. The mos common configurations are:
-  - Id
   - Username
   - FederationIdentifier
   - Email
