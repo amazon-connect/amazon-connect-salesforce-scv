@@ -24,7 +24,7 @@ The repository is divided into three core sections:
 ## Use Case Examples
 | Name | Description | Links |
 | ---- | ----------- | ----- |
-
+| AWSSCV-ExtensionRouter | Configures a Dial-by-extension option for Amazon Connect. | [Example](examples/ExtensionRouting) |
 
 ## Contributions
 
