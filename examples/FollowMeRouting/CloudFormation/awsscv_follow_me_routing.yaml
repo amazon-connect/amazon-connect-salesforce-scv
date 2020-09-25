@@ -1,0 +1,114 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda function required to enable Follow-Me routing.
+Parameters:
+    AWSRegion:
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    AWSSCVCommonRole:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the awsscv_common_role role
+    AWSSCVCommonLambdaPythonLayer:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the common python layer
+    sfSecrets:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for your Salesforce credentials in AWS Secrets Manager.
+    sfHost:
+        Type: String
+        Default: REPLACEME
+        Description: The full https url to your salesforce org.
+    sfVersion:
+        Type: String
+        Default: v49.0
+        Description: The API version of your Salesforce org.
+    sfProduction:
+        Type: String
+        Default: true
+        AllowedValues:
+          - true
+          - false
+    sfDeploymentMode:
+        Type: String
+        Default: scv
+        AllowedValues:
+          - cti
+          - scv
+        Description: Is this for a CTI-Based install (cti) or a Service Cloud Voice (scv) deployment?
+    sfFollowField:
+        Type: String
+        Default: Enable_Follow_Me__c
+        Description: The name of the checknox field that you created in Salesforce to enable the Follow-Me function.
+    sfPhoneField:
+        Type: String
+        Default: Phone
+        AllowedValues:
+          - Phone
+          - MobilePhone
+        Description: Which phone field will you be using? Phone or MobilePhone?
+    sfUserField:
+        Type: String
+        Default: Id
+        AllowedValues:
+          - CommunityNickname
+          - Email
+          - FederationIdentifier
+          - Id
+          - Username
+        Description: Field is used as your Connect Username? For Service Cloud Voice, select Id. For CTI, choose the appropriate option.
+Resources:
+    awsscvfollowmeroutingquery:
+        Type: AWS::Lambda::Function
+        Properties:
+          Code:
+           S3Bucket:
+              !Join
+                - ''
+                - - 'scv-supporting-code-'
+                  - !Ref AWSRegion
+           S3Key: awsscv_followme_routing/AWSSCV-FollowMe.py.zip
+          Description: Uses Salesforce REST API to query for agent configuration for Follow-Me routing
+          Environment:
+            Variables:
+              SF_CREDENTIALS_SECRETS_MANAGER_ARN:
+                Ref: sfSecrets
+              SF_HOST:
+                Ref: sfHost
+              SF_PRODUCTION:
+                Ref: sfProduction
+              SF_VERSION:
+                Ref: sfVersion
+              sf_deployment_mode:
+                Ref: sfDeploymentMode
+              sf_follow_field:
+                Ref: sfFollowField
+              sf_phone_field:
+                Ref: sfPhoneField
+              sf_user_field:
+                Ref: sfUserField
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_follow_me_'
+                  - !Ref ConnectInstanceName
+          Handler: AWSSCV-FollowMe.lambda_handler
+          Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
+          Role: !Ref AWSSCVCommonRole
+          Runtime: python3.8
+          Timeout: 8
