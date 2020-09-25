@@ -4,3 +4,4 @@ This section contains small, simple examples to address basic configuration ques
 | Name | Description | Links |
 | ---- | ----------- | ----- |
 | AWSSCV-ExtensionRouter | Configures a Dial-by-extension option for Amazon Connect. | [Example](ExtensionRouting) |
+| AWSSCV-FollowMeRouting | Configures an option to route calls to an agent's mobile when they are not logged in, if configured. | [Example](FollowMeRouting) |
