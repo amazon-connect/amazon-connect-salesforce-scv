@@ -1,0 +1,53 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda function required to process the Salesforce response for Extension Routing.
+Parameters:
+    AWSRegion:
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    SalesforceOrgId:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the ID for your Salesforce Org
+    ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    SalesforceRestApiFunctionRole:
+        Type: String
+        Default: InvokeSalesforceRestApiFunctionRole ARN
+        Description: ARN of the InvokeSalesforceRestApiFunctionRole
+Resources:
+    awsscvextensionroutingprocessor:
+        Type: AWS::Lambda::Function
+        Properties:
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - 'scv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: awsscv_extension_routing/AWSSCV-ProcessExtension.py.zip
+          Description: Processes Salesforce REST API responce to get agent id
+          Environment:
+            Variables:
+              sf_org_id:
+                Ref: SalesforceOrgId
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_extension_routing_processor_scv_'
+                  - !Ref ConnectInstanceName
+          Handler: AWSSCV-ProcessExtension.lambda_handler
+          Role: !Ref SalesforceRestApiFunctionRole
+          Runtime: python3.8
+          Timeout: 8

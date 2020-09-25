@@ -1,0 +1,78 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda function required to process the Salesforce response for Extension Routing.
+Parameters:
+    AWSRegion:
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    AWSSCVCommonRole:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the awsscv_common_role role
+    AWSSCVCommonLambdaPythonLayer:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the common python layer
+    sfSecrets:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for your Salesforce credentials in AWS Secrets Manager.
+    sfHost:
+        Type: String
+        Default: REPLACEME
+        Description: The full https url to your salesforce org.
+    sfVersion:
+        Type: String
+        Default: v49.0
+        Description: The API version of your Salesforce org.
+    sfProduction:
+        Type: String
+        Default: true
+        AllowedValues:
+          - true
+          - false
+Resources:
+    awsscvextensionroutingquery:
+        Type: AWS::Lambda::Function
+        Properties:
+          Code:
+           S3Bucket:
+              !Join
+                - ''
+                - - 'scv-supporting-code-'
+                  - !Ref AWSRegion
+           S3Key: awsscv_extension_routing/AWSSCV-SFQuery.py.zip
+          Description: Uses Salesforce REST API to query for agent id
+          Environment:
+            Variables:
+              SF_CREDENTIALS_SECRETS_MANAGER_ARN:
+                Ref: sfSecrets
+              SF_HOST:
+                Ref: sfHost
+              SF_PRODUCTION:
+                Ref: sfProduction
+              SF_VERSION:
+                Ref: sfVersion
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_extension_routing_query_cti_'
+                  - !Ref ConnectInstanceName
+          Handler: AWSSCV-SFQuery.lambda_handler
+          Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
+          Role: !Ref AWSSCVCommonRole
+          Runtime: python3.8
+          Timeout: 8
