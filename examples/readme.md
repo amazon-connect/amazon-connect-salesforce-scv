@@ -3,3 +3,4 @@ This section contains small, simple examples to address basic configuration ques
 
 | Name | Description | Links |
 | ---- | ----------- | ----- |
+| AWSSCV-ExtensionRouter | Configures a Dial-by-extension option for Amazon Connect. | [Example](ExtensionRouting) |
