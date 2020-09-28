@@ -25,6 +25,7 @@ The repository is divided into three core sections:
 | Name | Description | Links |
 | ---- | ----------- | ----- |
 | AWSSCV-ExtensionRouter | Configures a Dial-by-extension option for Amazon Connect. | [Example](examples/ExtensionRouting) |
+| AWSSCV-FollowMeRouting | Configures an option to route calls to an agent's mobile when they are not logged in, if configured. | [Example](examples/FollowMeRouting) |
 
 ## Contributions
 
