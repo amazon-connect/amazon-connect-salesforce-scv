@@ -29,4 +29,4 @@ The repository is divided into three core sections:
 
 ## Contributions
 
-Make sure the `.gitignore` per language is applied.
+Make sure the `.gitignore` per language is applied. 
