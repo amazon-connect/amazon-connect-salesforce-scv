@@ -1,6 +1,6 @@
 
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Configures an AWS Secrets Manager store for your Salesforce access credentials. Also creates the common role and secrets access policy.
+Description: Configures an AWS Secrets Manager store for your Salesforce org information and access credentials. Also creates the common role and secrets access policy.
 Parameters:
     AWSRegion:
         Type: String
@@ -18,30 +18,23 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: Provide the instance name for Amazon Connect.
-    SFAccessToken:
-        Type: String
-        Default: REPLACEME
-        Description: The Access Token for the user you created
-        NoEcho: true
     SFConsumerKey:
         Type: String
         Default: REPLACEME
         Description: The consumer key for your connected app
         NoEcho: true
-    SFConsumerSecret:
-        Type: String
-        Default: REPLACEME
-        Description: the consumer secret for your connected app
-        NoEcho: true
     SFUsername:
         Type: String
         Default: REPLACEME
         Description: The username for the user that you created
-    SFPassword:
+    SalesforceOrgId:
         Type: String
         Default: REPLACEME
-        Description: The password for the user
-        NoEcho: true
+        Description: Provide the ID for your Salesforce Org
+    sfHost:
+        Type: String
+        Default: REPLACEME
+        Description: The full https url to your salesforce org.
 Resources:
     awsscvcommonsecrets:
         Type: AWS::SecretsManager::Secret
@@ -53,12 +46,12 @@ Resources:
                   - !Ref ConnectInstanceName
           Description: Required credentials to access Salesforce
           SecretString: !Sub
-            - '{"AccessToken":"${AT}","ConsumerKey":"${CK}","ConsumerSecret":"${CS}","Username":"${UN}","Password":"${PW}"}'
-            - AT: !Ref SFAccessToken
+            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}"}'
+            - OT: PLACEHOLDER
               CK: !Ref SFConsumerKey
-              CS: !Ref SFConsumerSecret
               UN: !Ref SFUsername
-              PW: !Ref SFPassword
+              OI: !Ref SalesforceOrgId
+              SH: !Ref sfHost
     awsscvcommonsecretspolicy:
         Type: AWS::IAM::ManagedPolicy
         DependsOn:
