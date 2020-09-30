@@ -12,7 +12,7 @@ The repository is divided into three core sections:
 | Name | Description | Links |
 | ---- | ----------- | ----- |
 | AWSSCV-CommonLayers | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce | [Resource](common/AWSSCV-CommonLayers) |
-| AWSSCV-SalesforceAccessSecrets | Directions and utilities to help create a connected app and login credentials that will be used my multiple solutions in this repository. | [Resource](common/AWSSCV-SalesforceAccessSecrets) |
+| AWSSCV-SalesforceConfig | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository. | [Resource](common/AWSSCV-SalesforceConfig) |
 
 ## Projects
 
