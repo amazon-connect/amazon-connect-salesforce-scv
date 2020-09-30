@@ -10,7 +10,7 @@ The Voicemail Express solutions Uses AWS CloudFormation to deploy most of the so
 - ARN for the AWSSCV Common Layers - Node layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
 - ARN for the AWSSCV Common Layers - Python layer from the [Lambda console](https://console.aws.amazon.com/lambda/home)
 - ARN for the Amazon Kiesis data stream used for streaming your CTRs from the [Amazon Kinesis Data streams console](https://console.aws.amazon.com/kinesis/home)
-- ARN for the Salesforce Access Secrets from the [AWS Secrets Manager console](https://console.aws.amazon.com/secretsmanager/home)
+- ARN for the Salesforce Config Secrets from the [AWS Secrets Manager console](https://console.aws.amazon.com/secretsmanager/home)
 - Amazon Connect Instance Alias from the [Amazon Connect console](https://console.aws.amazon.com/connect/home)
 - The full domain for your Salesforce org, including the https://
 - Your current Salesforce API version
@@ -28,7 +28,7 @@ The next step is to deploy the CloudFormation template. This template builds all
 6. Select **Choose file**
 7. Navigate to the **scv_vmx.yaml** file that you downloaded previously and choose **Open**
 8. Wait a moment for the S3 URL to update, then select **Next**
-9. Provide a name for the stack, such as `VoicemailExpresssSCV`
+9. Provide a name for the stack, such as `AWSSCV-VoicemailExpresss`
 10. Complete the parameters using the information that you have gathered. 
   - AWSRegion: select the region that you deployed your Amazon Connect instance to
   - AWSSalesforceCommonNodeLayer: The full ARN for your SCV Common Node layer

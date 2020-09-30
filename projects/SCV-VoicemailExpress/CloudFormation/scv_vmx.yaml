@@ -65,7 +65,7 @@ Resources:
           BucketName:
               !Join
                 - ''
-                - - 'AWSSCV-vmx-recordings-'
+                - - 'awsscv-vmx-recordings-'
                   - !Ref ConnectInstanceName
           LifecycleConfiguration:
             Rules:
@@ -79,7 +79,7 @@ Resources:
           BucketName:
               !Join
                 - ''
-                - - 'AWSSCV-vmx-transcripts-'
+                - - 'awsscv-vmx-transcripts-'
                   - !Ref ConnectInstanceName
           LifecycleConfiguration:
             Rules:
@@ -275,7 +275,6 @@ Resources:
     scvvmxcorepolicy:
         Type: AWS::IAM::Policy
         DependsOn:
-            - scvvmxcorerole
             - scvvmxpresigner
             - scvvmxsecrets
         Properties:
@@ -287,14 +286,6 @@ Resources:
                   - 'lambda:InvokeFunction'
                 Resource:
                   - !GetAtt scvvmxpresigner.Arn
-              - Effect: Allow
-                Action:
-                  - 'secretsmanager:GetSecretValue'
-                  - 'secretsmanager:DescribeSecret'
-                  - 'secretsmanager:ListSecretVersionIds'
-                Resource:
-                  - !Ref scvvmxsecrets
-                  - !Ref sfSecrets
               - Effect: Allow
                 Action:
                   - 'transcribe:StartTranscriptionJob'
