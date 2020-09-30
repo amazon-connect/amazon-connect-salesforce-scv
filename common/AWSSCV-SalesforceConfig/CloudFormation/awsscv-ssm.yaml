@@ -35,10 +35,14 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: The full https url to your salesforce org.
+    sfVersion:
+        Type: String
+        Default: v49.0
+        Description: The current API version number, for example v49.0
     sfPrivateKey:
         Type: String
         Default: REPLACEME
-        Description: The contents of the server.key file that you generated as a part of the setup process.
+        Description: The entire contents of the encoded_key.txt file that you generated as a part of the setup process
         NoEcho: true
 Resources:
     awsscvcommonsecrets:

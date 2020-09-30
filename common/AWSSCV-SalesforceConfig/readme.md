@@ -17,17 +17,23 @@ You will need OpenSSL to generate certificates. An easy way to checlk if you alr
 5. Delete the server.pass.key file by entering `rm server.pass.key`
 6. Next, you will request the certificate. Once you enter the following command, you will be asked to provide additional information. Please keep track of what you have provided. To request the certificate, enter `openssl req -new -key server.key -out server.csr`
 7. Now, you need to generate the SSL certificate. Enter `openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt`
-8. Your folder should now have three files: 
+8. Fianlly, you need to encode the private key for storage by entering `base64 server.key > encoded_key.txt`
+8. Your folder should now have four files: 
  - server.crt <- This is your certificate
  - server.csr <- This is the certificate request
  - server.key <- This is the private key
+ - encoded_key.txt <- This is the base64 encoded private key
 
-## Check your Salesforce API Version
+## Collect additional Salesforce Org details
 1. Log in into your Salesforce org and go to Setup 
-2.	In the Quick Find field, type `apex`, then select Apex Classes from the results 
+2.	In the Quick Find field, type `apex`, then select **Apex Classes** from the results 
 3.	Select New
 4.	Select the Version Settings tab
 5.	**Note the Salesforce.com API version in your notepad**
+6. In the Quick Find field, enter `My Domain`, then select **My Domain** from the results
+7. In the My Domain Step 4 box, note the domain name. Add it to your notes, prefixing it with **https://**, for example:
+ - https://example.my.salesforce.com
+8. 
 
 ## Create a New Connected App
 1.	Log in into your Salesforce org and go to Setup 
@@ -79,7 +85,7 @@ You will need OpenSSL to generate certificates. An easy way to checlk if you alr
 12. In the Permission Sets section, select **Manage Permission Sets**
 13. Select the checkbox next to **AWS_Utility**, then choose **Save**
 
-## Store Salesforce Credentials in AWS Secrets Manager
+## Store Salesforce Settings in AWS Secrets Manager
 To ensure that your Salesforce credentials are secure, the Lambdas require that the credentials are stored in AWS Secrets Manager. AWS Secrets Manager is a highly secure service that helps you store and retrieve secrets.
 
 1.	Right-click/control-click to download the [CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/common/AWSSCV-SalesforceAccessSecrets/CloudFormation/awsscv-ssm.yaml).
@@ -97,7 +103,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
   b. ConnectInstanceName: Your connect instance name
   c. sfConsumerKey: The consumer key from your connected app
   d. sfHost: The full https url to your salesforce org
-  e. sfOrgId: Provide your Salesforce.com Organization ID. This can be found in Salesforce Setup > Company Settings > Company Information
+  e. sfOrgId: Provide your Salesforce.com Organization ID
   f. sfPrivateKey: The content of the server.key private key that you generated as a part of the setup process. You should only copy the content between the **BEGIN** and **END** lines
   g. sfUsername: Your awsutil username
 12.	Select Next
