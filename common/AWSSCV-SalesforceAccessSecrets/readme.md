@@ -1,8 +1,26 @@
 # Salesforce Access Secrets
-Establishes a Connected App, User, and other resources in Salesforce and saves the access and login credentials to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials as needed. These credentials are then used for the projects in this repository where authentication with Salesforce is required. Also creates an IAM Policy and Role common to the deployents from this repository.
+Establishes a Self-Signed SSL Certificate, Salesforce Connected App, and Salesforce User and saves the access acredentials to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials as needed. These credentials are then used for the projects in this repository where authentication with Salesforce is required. Also creates an IAM Policy and Role common to the deployents from this repository.
 
 # Setup
-Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is reccomended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out.
+Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is reccomended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out. Much of this process is based on the [Create Your Connected App](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_travis_ci/sfdx_travis_ci_connected_app) Trailhead.
+
+## Prerequisite
+You will need OpenSSL to generate certificates. An easy way to checlk if you already have OpenSSL is to open a command line/terminal window and type `which ssl`. You should see a response similar to `/usr/bin/openssl`. If you do not, you will need to install OpenSSL before continuing.
+
+## Create a self-signed SSL certificate and private key
+1. Create a certificates folder on your computer to store the files that will be created.
+2. Open a command line/terminal window and navigate to your newly created folder
+3. Generate an RSA private key by entering `openssl genrsa -des3 -passout pass:SomePassword -out server.pass.key 2048`
+ - NOTE: Make sure to replace **SomePassword** with a password of your choosing
+4. Now use the private key to generate a key file by entering `openssl rsa -passin pass:SomePassword -in server.pass.key -out server.key`
+ - NOTE: Make sure to replace **SomePassword** with the password that you provided above
+5. Delete the server.pass.key file by entering `rm server.pass.key`
+6. Next, you will request the certificate. Once you enter the following command, you will be asked to provide additional information. Please keep track of what you have provided. To request the certificate, enter `openssl req -new -key server.key -out server.csr`
+7. Now, you need to generate the SSL certificate. Enter `openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt`
+8. Your folder should now have three files: 
+ - server.crt <- This is your certificate
+ - server.csr <- This is the certificate request
+ - server.key <- This is the private key
 
 ## Check your Salesforce API Version
 1. Log in into your Salesforce org and go to Setup 
@@ -17,61 +35,49 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 3.	In the upper right corner, select New Connected App
 4.	On the New Connected App form, enter `AWS_Utility` as the name for the Connected App. This will populate the API Name automatically. Then provide a contact email address
 5.	Select the checkbox to Enable OAuth Settings 
-6.	Set the Callback URL to `https://www.salesforce.com`
-7.	In the Selected OAuth Scopes section, select the following and add them to the Selected OAuth Scopes:
+6.	Set the Callback URL to `http://localhost:1717/OauthRedirect`
+7.  Select **Use digital signatures**
+8.  elect Choose File, and upload the server.crt file you created earlier
+9.	In the Selected OAuth Scopes section, select the following and add them to the Selected OAuth Scopes:
   * Access and manage your data (api)
-  * Access your basic information (id, profile, email, address, phone)
-8.	Select the checkbox for Require Secret for Web Server Flow
-9.	Select Save at the bottom of the screen.
-10.	Select Continue on the New Connected App page
-11.	You should now be at the new app’s page
-12.	**Copy the value for Consumer Key to your notepad**
-13.	Select Click to reveal next to Consumer Secret and **copy the value for Consumer Secret to your notepad**
+  * Perform requests on your behalf at any time (refresh_token, offline_access)
+  * Provide access to your data via the Web (web)
+10.	Select Save at the bottom of the screen.
+11.	Select Continue on the New Connected App page
+12.	You should now be at the new app’s page
+13.	**Copy the value for Consumer Key to your notepad**
 14.	At the top of the detail page, select Manage
 15.	On the Connected App Detail page, select the Edit Policies button
 16.	Set Permitted Users to Admin approved users are pre-authorized and choose OK on the pop-up dialog
-17.	Set IP Relaxation to Relax IP restrictions
-18.	Select Save
+17.	Select Save
 
-## Create a new Profile and API user
-1.	Log in into your Salesforce org and go to Setup 
-2.	In the Quick Find field, type `profiles`, then select Profiles from the results 
-3.	Select New Profile
-4.	Enter `AWS_Utility` as the Profile Name
-5.	From the Existing Profile dropdown, select System Administrator
-6.	Select Save to create the new profile
-7.	Once the new profile saves, select it from the Profiles list
-8.	In the System section, select System Permissions
-9.	Select Edit
-10.	Scroll down to Lightning Experience User and clear the checkbox, if selected
-11.	Scroll down and select Password Never Expires 
-  * NOTE: Failure to this may lead to production outages.
-12.	Select Save
-13.	In the Quick Find field, type `connect`, then select Manage Connected Apps from the results 
-14.	Select the app you have created earlier, AWS_Utility 
-15.	In the profiles section, select Manage Profiles
-16.	Select the new AWS_Utility profile that you just created
-17.	Select Save at the bottom of the page
-18.	In the Quick Find field, type `users` then select Users from the results 
-19.	Select New User
-20.	Set the required fields as:
-  a.	Last Name: awsutil
-  b.	Alias: awsutil
-  c.	Email: provide a valid email address
-  d.	Username: awsutil@<yoursalesforcedomain>.com
-  e.	Nickname: awsutil
-21.	On the right-hand side, set User License to Salesforce
-22.	Set Profile to AWS_Utility
-23.	Choose Save
-24.	**Copy the username to your notepad**
-25.	A confirmation email with an activation link will be sent to the email address provided. Choose the link to activate your user and set their password
-26.	Fill out the form to set a password for the API user. **Copy the new password to your notepad**
-27.	Select Change Password. The API user will log into the Salesforce Classic view
-28.	Access the API user’s personal settings by selecting the username in the top right corner, then choose My Settings 
-29.	In the Quick Find field, type `security` then select Reset My Security Token from the results
-  - NOTE: if you do not see Reset My Security Token, you can get there by goint to the following URL: `https://[SalesforceDomainHere]/_ui/system/security/ResetApiTokenEdit?retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DPersonalInfo&setupid=ResetApiToken`
-30.	Select Reset Security Token. Your security token will be emailed to you
-31.	**Copy the security token from the email to your notepad**
+## Create a new user
+1. In the Quick Find field, type `users` then select Users from the results 
+2. Select New User
+3. Set the required fields as:
+ a. Last Name: awsutil
+ b. Alias: awsutil
+ c. Email: provide a valid email address
+ d. Username: awsutil@<yoursalesforcedomain>.com
+ e. Nickname: awsutil
+4. On the right-hand side, set User License to Salesforce
+5. Choose Save
+6. **Copy the username to your notepad**
+
+## Create a new Permission Set
+1. From Setup, enter Permission in the Quick Find box, then select Permission Sets
+2. Select New
+3. For the Label, enter: `AWS_Utility`, then press tab
+4. Select Save
+5. From the **Permission Sets** list, select **AWS_Utility**
+6. Select **Manage Assignments**
+7. Select **Add Assignments**
+8. Select the checkbox next to the **awsutil** user
+9. Select **Assign**, then select **Done**
+10. Enter `App Manager` in the Quick Find box, then select App Manager
+11. To the right of **AWS_Utility**, select the list item drop-down arrow and choose **Manage**
+12. In the Permission Sets section, select **Manage Permission Sets**
+13. Select the checkbox next to **AWS_Utility**, then choose **Save**
 
 ## Store Salesforce Credentials in AWS Secrets Manager
 To ensure that your Salesforce credentials are secure, the Lambdas require that the credentials are stored in AWS Secrets Manager. AWS Secrets Manager is a highly secure service that helps you store and retrieve secrets.
@@ -85,15 +91,15 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 7.	Select Choose file
 8.	Navigate to the folder where you saved scv_ssm.yaml
 9.	Select Next
-10.	In the Stack Name field, enter SCVSSM
+10.	In the Stack Name field, enter `AWSSCV-SalesforceConfig`
 11.	Enter the parameters as follows (most from your notepad):
-  a.	AWSRegion: Select the region that you have deployed Amazon Connect in
-  b.	ConnectInstanceName: Your connect instance name
-  c.	SFAccessToken: The user access token
-  d.	SFConsumerKey: The consumer key from your connected app
-  e.	SFConsumerSecret: The consumer secret from your connected app
-  f.	SFPassword: Your voicemail user’s password
-  g.	SFUsername: Your voicemail username
+  a. AWSRegion: Select the region that you have deployed Amazon Connect in
+  b. ConnectInstanceName: Your connect instance name
+  c. sfConsumerKey: The consumer key from your connected app
+  d. sfHost: The full https url to your salesforce org
+  e. sfOrgId: Provide your Salesforce.com Organization ID. This can be found in Salesforce Setup > Company Settings > Company Information
+  f. sfPrivateKey: The content of the server.key private key that you generated as a part of the setup process. You should only copy the content between the **BEGIN** and **END** lines
+  g. sfUsername: Your awsutil username
 12.	Select Next
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select Next

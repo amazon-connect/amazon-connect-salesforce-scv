@@ -38,7 +38,8 @@ Parameters:
     sfPrivateKey:
         Type: String
         Default: REPLACEME
-        Description: The content of the server.key private key that you generated as a part of the setup process.
+        Description: The contents of the server.key file that you generated as a part of the setup process.
+        NoEcho: true
 Resources:
     awsscvcommonsecrets:
         Type: AWS::SecretsManager::Secret
