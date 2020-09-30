@@ -55,13 +55,14 @@ Resources:
                   - !Ref ConnectInstanceName
           Description: Required credentials to access Salesforce
           SecretString: !Sub
-            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}","PrivateKey":"${PK}"}'
+            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}","PrivateKey":"${PK}","Version":"${VR}"}'
             - OT: PLACEHOLDER
               CK: !Ref sfConsumerKey
               UN: !Ref sfUsername
               OI: !Ref sfOrgId
               SH: !Ref sfHost
               PK: !Ref sfPrivateKey
+              VR: !Ref sfVersion
     awsscvcommonsecretspolicy:
         Type: AWS::IAM::ManagedPolicy
         DependsOn:

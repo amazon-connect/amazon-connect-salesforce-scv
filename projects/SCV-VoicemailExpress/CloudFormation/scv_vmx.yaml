@@ -29,19 +29,19 @@ Parameters:
     AWSSalesforceCommonPythonLayer: 
         Type: String
         Default: REPLACEME
-        Description: ARN for the AWS-Salesforce Common Python Layer.
-    AWSSalesforceCommonNodeLayer: 
+        Description: ARN for the AWSSCV Common Python Layer.
+    AWSSCVCommonRole:
         Type: String
         Default: REPLACEME
-        Description: ARN for the AWS-Salesforce Common Node Layer.
-    sfSecrets: 
+        Description: ARN of the awsscv_common_role role
+    AWSSalesforceCommonNodeLayer:
         Type: String
         Default: REPLACEME
-        Description: ARN for your Salesforce credentials in AWS Secrets Manager.
-    sfHost: 
+        Description: ARN for the AWSSCV Common Node Layer.
+    sfConfig:
         Type: String
         Default: REPLACEME
-        Description: The full https url to your salesforce org.
+        Description: ARN for your Salesforce config in AWS Secrets Manager.
     sfDeploymentType: 
         Type: String
         Default: SCV
@@ -49,16 +49,6 @@ Parameters:
           - CTI
           - SCV
         Description: Is this a CTI Adapter configuration or Service Cloud Voice?
-    sfVersion: 
-        Type: String
-        Default: v49.0
-        Description: The API version of your Salesforce org.
-    sfProduction:
-        Type: String
-        Default: true
-        AllowedValues:
-          - true
-          - false
     sfVoicemailField:
         Type: String
         Default: vm_link__c
@@ -75,7 +65,7 @@ Resources:
           BucketName:
               !Join
                 - ''
-                - - 'scv-vmx-recordings-' 
+                - - 'AWSSCV-vmx-recordings-'
                   - !Ref ConnectInstanceName
           LifecycleConfiguration:
             Rules:
@@ -89,7 +79,7 @@ Resources:
           BucketName:
               !Join
                 - ''
-                - - 'scv-vmx-transcripts-' 
+                - - 'AWSSCV-vmx-transcripts-'
                   - !Ref ConnectInstanceName
           LifecycleConfiguration:
             Rules:
@@ -121,35 +111,15 @@ Resources:
                   - !GetAtt scvvmxs3recordingsbucket.Arn
                   - !GetAtt scvvmxs3transcriptsbucket.Arn
                   - 'arn:aws:s3:::*/*'
-          ManagedPolicyName: scv_vmx_s3_policy
-    scvvmxcorerole:
-        Type: 'AWS::IAM::Role'
-        DependsOn:
-            - scvvmxs3policy
-        Properties:
-          RoleName: scv_vmx_core_role
-          Description: IAM Role that provides the core access required for the voicemail solution
-          AssumeRolePolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Principal:
-                  Service:
-                  - lambda.amazonaws.com
-                Action:
-                  - 'sts:AssumeRole'
-          ManagedPolicyArns: 
-            - arn:aws:iam::aws:policy/AmazonKinesisReadOnlyAccess
-            - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-            - arn:aws:iam::aws:policy/AmazonKinesisVideoStreamsReadOnlyAccess
-            - !Ref scvvmxs3policy
+          ManagedPolicyName: AWSSCV_vmx_s3_access
+          Roles:
+            - awsscv_common_role
     scvvmxuser:
         Type: AWS::IAM::User
         DependsOn:
-            - scvvmxcorerole
             - scvvmxs3policy
         Properties:
-          UserName: scv_vmx_user
+          UserName: AWSSCV_vmx_presigner_user
           ManagedPolicyArns:
             - !Ref scvvmxs3policy
             - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
@@ -161,24 +131,23 @@ Resources:
     scvvmxsecrets:
         Type: 'AWS::SecretsManager::Secret'
         DependsOn:
-            - scvvmxcorerole
+            - scvvmxuser
             - scvvmxuserkey
         Properties:
           Name: 
             !Join
                 - ''
-                - - 'scv_vmx_access_secrets_' 
+                - - 'AWSSCV_vmx_access_secrets_'
                   - !Ref ConnectInstanceName
-          Description: Required credentials for the Voicemail Express for Service Cloud Voice setup
+          Description: Stores user credentials for the presigner function
           SecretString: !Sub
-            - '{"scv_vmx_iam_key_id":"${KeyID}","scv_vmx_iam_key_secret":"${KeySecret}"}'
+            - '{"AWSSCV_vmx_iam_key_id":"${KeyID}","AWSSCV_vmx_iam_key_secret":"${KeySecret}"}'
             - KeyID: !Ref scvvmxuserkey
               KeySecret: !GetAtt scvvmxuserkey.SecretAccessKey
     scvvmxpresigner:
         Type: AWS::Lambda::Function
         DependsOn:
             - scvvmxsecrets
-            - scvvmxcorerole
         Properties: 
           Code:
             S3Bucket:
@@ -199,16 +168,15 @@ Resources:
           FunctionName: 
             !Join
                 - ''
-                - - 'scv_vmx_presigner_' 
+                - - 'AWSSCV_vmx_presigner_'
                   - !Ref ConnectInstanceName
           Handler: scv_vmx_presigner.lambda_handler
-          Role: !GetAtt scvvmxcorerole.Arn
+          Role: !Ref AWSSCVCommonRole
           Runtime: python3.8
           Timeout: 30
     scvvmxkvstos3:
         Type: AWS::Lambda::Function
         DependsOn:
-            - scvvmxcorerole
             - scvvmxs3recordingsbucket
         Properties: 
           Code:
@@ -228,17 +196,16 @@ Resources:
           FunctionName: 
             !Join
                 - ''
-                - - 'scv_vmx_kvs_to_s3_' 
+                - - 'AWSSCV_vmx_kvs_to_s3_'
                   - !Ref ConnectInstanceName
           Handler: scv_vmx_kvs_to_s3.handler
-          Role: !GetAtt scvvmxcorerole.Arn
+          Role: !Ref AWSSCVCommonRole
           Layers: [!Ref AWSSalesforceCommonNodeLayer]
           Runtime: nodejs12.x
           Timeout: 900
     scvvmxtranscriber:
         Type: AWS::Lambda::Function
         DependsOn:
-            - scvvmxcorerole
             - scvvmxs3recordingsbucket
             - scvvmxs3transcriptsbucket
         Properties: 
@@ -259,16 +226,15 @@ Resources:
           FunctionName: 
             !Join
                 - ''
-                - - 'scv_vmx_transcriber_' 
+                - - 'AWSSCV_vmx_transcriber_'
                   - !Ref ConnectInstanceName
           Handler: scv_vmx_transcriber.lambda_handler
-          Role: !GetAtt scvvmxcorerole.Arn
+          Role: !Ref AWSSCVCommonRole
           Runtime: python3.8
           Timeout: 900
     scvvmxpackager:
         Type: AWS::Lambda::Function
         DependsOn:
-            - scvvmxcorerole
             - scvvmxs3recordingsbucket
             - scvvmxpresigner
         Properties: 
@@ -286,14 +252,8 @@ Resources:
                 Ref: scvvmxs3recordingsbucket
               s3_transcripts_bucket:
                 Ref: scvvmxs3transcriptsbucket
-              SF_CREDENTIALS_SECRETS_MANAGER_ARN:
-                Ref: sfSecrets
-              SF_HOST:
-                Ref: sfHost
-              SF_PRODUCTION:
-                Ref: sfProduction
-              SF_VERSION:
-                Ref: sfVersion
+              sf_config_sm_arn:
+                Ref: sfConfig
               presigner_function_arn:
                 Ref: scvvmxpresigner
               sf_deployment_type:
@@ -305,10 +265,10 @@ Resources:
           FunctionName: 
             !Join
                 - ''
-                - - 'scv_vmx_packager_' 
+                - - 'AWSSCV_vmx_packager_'
                   - !Ref ConnectInstanceName
           Handler: scv_vmx_packager.lambda_handler
-          Role: !GetAtt scvvmxcorerole.Arn
+          Role: !Ref AWSSCVCommonRole
           Layers: [!Ref AWSSalesforceCommonPythonLayer]
           Runtime: python3.8
           Timeout: 900
@@ -342,9 +302,9 @@ Resources:
                   - 'connect:UpdateContactAttributes'
                 Resource: 
                   - '*'
-          PolicyName: scv_vmx_core_policy
+          PolicyName: AWSSCV_vmx_core_policy
           Roles:
-            - !Ref scvvmxcorerole
+            - awsscv_common_role
 Outputs:
     VMXRecordingsBucket:
         Description: Set a new event on this bucket to fire the transcriber function
