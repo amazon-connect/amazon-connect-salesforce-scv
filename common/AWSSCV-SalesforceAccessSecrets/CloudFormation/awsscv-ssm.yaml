@@ -18,16 +18,16 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: Provide the instance name for Amazon Connect.
-    SFConsumerKey:
+    sfConsumerKey:
         Type: String
         Default: REPLACEME
         Description: The consumer key for your connected app
         NoEcho: true
-    SFUsername:
+    sfUsername:
         Type: String
         Default: REPLACEME
         Description: The username for the user that you created
-    SalesforceOrgId:
+    sfOrgId:
         Type: String
         Default: REPLACEME
         Description: Provide the ID for your Salesforce Org
@@ -35,6 +35,10 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: The full https url to your salesforce org.
+    sfPrivateKey:
+        Type: String
+        Default: REPLACEME
+        Description: The content of the server.key private key that you generated as a part of the setup process.
 Resources:
     awsscvcommonsecrets:
         Type: AWS::SecretsManager::Secret
@@ -46,12 +50,13 @@ Resources:
                   - !Ref ConnectInstanceName
           Description: Required credentials to access Salesforce
           SecretString: !Sub
-            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}"}'
+            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}","PrivateKey":"${PK}"}'
             - OT: PLACEHOLDER
-              CK: !Ref SFConsumerKey
-              UN: !Ref SFUsername
-              OI: !Ref SalesforceOrgId
+              CK: !Ref sfConsumerKey
+              UN: !Ref sfUsername
+              OI: !Ref sfOrgId
               SH: !Ref sfHost
+              PK: !Ref sfPrivateKey
     awsscvcommonsecretspolicy:
         Type: AWS::IAM::ManagedPolicy
         DependsOn:
