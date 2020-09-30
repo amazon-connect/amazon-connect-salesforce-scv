@@ -14,10 +14,6 @@ Parameters:
           - eu-central-1
           - eu-west-2
         Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
-    SalesforceOrgId:
-        Type: String
-        Default: REPLACEME
-        Description: Provide the ID for your Salesforce Org
     ConnectInstanceName:
         Type: String
         Default: REPLACEME
@@ -38,10 +34,6 @@ Resources:
                   - !Ref AWSRegion
             S3Key: awsscv_extension_routing/AWSSCV-ProcessExtension.py.zip
           Description: Processes Salesforce REST API responce to get agent id
-          Environment:
-            Variables:
-              sf_org_id:
-                Ref: SalesforceOrgId
           FunctionName:
             !Join
                 - ''
