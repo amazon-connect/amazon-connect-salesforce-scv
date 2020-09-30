@@ -20,7 +20,7 @@ AWSSCV Common layers for AWS Lambda provides dependency modules used by the solu
 7.	Select Choose file
 8.	Navigate to the folder where you saved awsscv_common_layers.yaml
 9.	Select Next
-10.	In the Stack Name field, enter AWSSCVCommonLayers
+10.	In the Stack Name field, enter `AWSSCV-CommonLambdaLayers`
 11.	The template will ask for one parameter:
    - AWSRegion - This is the region code for the region to which you are deploying.
 12.	Select Next
@@ -44,5 +44,5 @@ If you have previously deployed the cloudformation templates and have the layers
 10. Update your functions to use the new layer as appropriate
 
 ## Layer Last Updated
-- Node.js: 2020-08-31
-- Python: 2020-09-22
+- Node.js: 2020-09-30
+- Python: 2020-09-30
