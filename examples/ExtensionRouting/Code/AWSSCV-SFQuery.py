@@ -18,7 +18,7 @@
 import logging
 import os
 import json
-from salesforce import Salesforce
+from awsscv.sf import Salesforce
 
 def lambda_handler(event, context):
     # Uncomment the following line for debugging
@@ -43,7 +43,6 @@ def lambda_handler(event, context):
         # Login to Salesforce
         try:
             sf = Salesforce()
-            sf.sign_in()
 
             # Do the Query
             try:

@@ -19,7 +19,7 @@
 import json
 import os
 import boto3
-from salesforce import Salesforce
+from awsscv.sf import Salesforce
 import phonenumbers
 
 def lambda_handler(event, context):
@@ -138,7 +138,6 @@ def lambda_handler(event, context):
         # Perform the salesforce login
         try:
             sf = Salesforce()
-            sf.sign_in()
         
         except:
             print('Record ' + str(loop_counter) + ' Result: Failed to authenticate with Salesforce')
