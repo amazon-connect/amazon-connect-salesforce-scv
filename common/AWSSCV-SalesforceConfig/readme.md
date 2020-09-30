@@ -1,5 +1,5 @@
-# Salesforce Access Secrets
-Establishes a Self-Signed SSL Certificate, Salesforce Connected App, and Salesforce User and saves the access acredentials to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials as needed. These credentials are then used for the projects in this repository where authentication with Salesforce is required. Also creates an IAM Policy and Role common to the deployents from this repository.
+# Salesforce Config
+Establishes a Self-Signed SSL Certificate, Salesforce Connected App, a Salesforce User, and information about the Salesforce org. Saves the information to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials and configuration info as needed. Also creates an IAM Policy and Role common to the deployents from this repository.
 
 # Setup
 Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is reccomended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out. Much of this process is based on the [Create Your Connected App](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_travis_ci/sfdx_travis_ci_connected_app) Trailhead.
@@ -26,14 +26,15 @@ You will need OpenSSL to generate certificates. An easy way to checlk if you alr
 
 ## Collect additional Salesforce Org details
 1. Log in into your Salesforce org and go to Setup 
-2.	In the Quick Find field, type `apex`, then select **Apex Classes** from the results 
+2.	In the Quick Find field, enter `apex`, then select **Apex Classes** from the results 
 3.	Select New
 4.	Select the Version Settings tab
 5.	**Note the Salesforce.com API version in your notepad**
 6. In the Quick Find field, enter `My Domain`, then select **My Domain** from the results
 7. In the My Domain Step 4 box, note the domain name. Add it to your notes, prefixing it with **https://**, for example:
  - https://example.my.salesforce.com
-8. 
+8. In the Quick Find field, enter `Company`, then select **Company Information** from the results
+9. **Note the Salesforce.com Organization ID value in your notepad**
 
 ## Create a New Connected App
 1.	Log in into your Salesforce org and go to Setup 
