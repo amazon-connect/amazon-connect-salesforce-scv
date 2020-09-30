@@ -30,10 +30,6 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: ARN for your Salesforce config in AWS Secrets Manager.
-    sfVersion:
-        Type: String
-        Default: v49.0
-        Description: The API version of your Salesforce org.
 Resources:
     awsscvextensionroutingquery:
         Type: AWS::Lambda::Function
@@ -54,8 +50,6 @@ Resources:
                 Ref: sfHost
               SF_PRODUCTION:
                 Ref: sfProduction
-              SF_VERSION:
-                Ref: sfVersion
           FunctionName:
             !Join
                 - ''
