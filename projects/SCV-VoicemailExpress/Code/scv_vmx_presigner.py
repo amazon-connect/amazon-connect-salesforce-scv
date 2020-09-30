@@ -52,8 +52,8 @@ def lambda_handler(event, context):
         
         client = boto3.client(
             's3',
-            aws_access_key_id = use_keys['scv_vmx_iam_key_id'],
-            aws_secret_access_key = use_keys['scv_vmx_iam_key_secret'],
+            aws_access_key_id = use_keys['AWSSCV_vmx_iam_key_id'],
+            aws_secret_access_key = use_keys['AWSSCV_vmx_iam_key_secret'],
             config=my_config
         )
         
