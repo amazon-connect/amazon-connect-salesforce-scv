@@ -32,7 +32,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
 
 ## Prereqiusites for CTI Adapter deployments
 1. [CTI Adaptor for Amazon Connect](https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000EJH4yUAH) installed and configured
-2. [Salesforce Access Secrets](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceAccessSecrets) deployed
+2. [AWSSCV Salesforce Config](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceConfig) deployed
 3. [AWSSCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-CommonLayers) deployed
 4. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
@@ -59,7 +59,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
 15.	Scroll to the bottom and select Create Stack
 16.	After a minute or two, the stack should complete.
 
-### Update you Amazon Connect Instance
+### Update your Amazon Connect Instance
 1. Right-click/control-click to download the [AWSSCV-AgentWithStreaming agent whisper flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/ContactFlows/AWSSCV-AgentWithStreaming).
 2. Right-click/control-click to download the [AWSSCV-ExtensionRouter-SCV Contact Flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/ContactFlows/AWSSCV-ExtensionRouter-SCV).
 3. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
@@ -108,10 +108,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
   b. AWSSCVCommonLambdaPythonLayer: ARN of the common python layer
   c. AWSSCVCommonRole: ARN of the awsscv_common_role role
   d. ConnectInstanceName: Provide the instance name for Amazon Connect.
-  e. sfHost: The full https url to your salesforce org.
-  f. sfProduction: Is this a production org (true/false)
-  g. sfSecrets: ARN for your Salesforce credentials in AWS Secrets Manager
-  h. sfVersion: The API version of your Salesforce org.
+  e. sfConfig: ARN for your Salesforce config in AWS Secrets Manager
 12.	Select Next
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select Next

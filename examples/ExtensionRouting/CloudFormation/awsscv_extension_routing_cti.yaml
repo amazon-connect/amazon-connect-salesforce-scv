@@ -26,10 +26,10 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: ARN of the common python layer
-    sfSecrets:
+    sfConfig:
         Type: String
         Default: REPLACEME
-        Description: ARN for your Salesforce config in AWS Secrets Manager.
+        Description: ARN for your Salesforce config in AWS Secrets Manager
 Resources:
     awsscvextensionroutingquery:
         Type: AWS::Lambda::Function
@@ -44,12 +44,8 @@ Resources:
           Description: Uses Salesforce REST API to query for agent id
           Environment:
             Variables:
-              SF_CREDENTIALS_SECRETS_MANAGER_ARN:
-                Ref: sfSecrets
-              SF_HOST:
-                Ref: sfHost
-              SF_PRODUCTION:
-                Ref: sfProduction
+              sf_config_sm_arn:
+                Ref: sfConfig
           FunctionName:
             !Join
                 - ''
