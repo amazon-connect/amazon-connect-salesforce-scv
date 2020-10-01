@@ -46,3 +46,4 @@ If you have previously deployed the cloudformation templates and have the layers
 ## Layer Last Updated
 - Node.js: 2020-09-30
 - Python: 2020-09-30
+
