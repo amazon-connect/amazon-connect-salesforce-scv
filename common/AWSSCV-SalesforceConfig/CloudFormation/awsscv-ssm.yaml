@@ -76,6 +76,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - 'secretsmanager:GetSecretValue'
+                  - 'secretsmanager:UpdateSecret'
                   - 'secretsmanager:DescribeSecret'
                   - 'secretsmanager:ListSecretVersionIds'
                 Resource:
