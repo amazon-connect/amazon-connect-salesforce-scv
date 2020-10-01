@@ -273,7 +273,7 @@ Resources:
           Runtime: python3.8
           Timeout: 900
     scvvmxcorepolicy:
-        Type: AWS::IAM::Policy
+        Type: AWS::IAM::ManagedPolicy
         DependsOn:
             - scvvmxpresigner
             - scvvmxsecrets
@@ -293,7 +293,14 @@ Resources:
                   - 'connect:UpdateContactAttributes'
                 Resource:
                   - '*'
-          PolicyName: AWSSCV_vmx_core_policy
+              - Effect: Allow
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                  - 'secretsmanager:DescribeSecret'
+                  - 'secretsmanager:ListSecretVersionIds'
+                Resource:
+                  - !Ref scvvmxsecrets
+          ManagedPolicyName: AWSSCV_vmx_core_policy
           Roles:
             - awsscv_common_role
 Outputs:
