@@ -1,8 +1,8 @@
 
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys the Voicemail Express for Salesforce and Service Cloud Voice solution. In order to deploy this solution, you need to have an Amazon Connect instance deployed and configured for both CTR streaming via Kinesis Data Streams and Live Media Streaming via Kinesis Video. Additionally, your Salesforce org either needs to have Service Cloud Voice enabled or you need to have completed the CTI Adapter for Amazon Connect Configuration. Please complete these before deploying this template.
-Parameters: 
-    AWSRegion: 
+Parameters:
+    AWSRegion:
         Type: String
         Default: us-east-1
         AllowedValues:
@@ -13,8 +13,8 @@ Parameters:
           - ap-northeast-1
           - eu-central-1
           - eu-west-2
-        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region. 
-    ConnectInstanceName: 
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    ConnectInstanceName:
         Type: String
         Default: REPLACEME
         Description: Provide the instance name for Amazon Connect.
@@ -22,11 +22,11 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: Provide the ARN for the Kinesis Data Stream that receives your contact trace records.
-    RecordingsExpireInDays: 
+    RecordingsExpireInDays:
         Type: String
         Default: 7
         Description: Number of days recordings are kept before deleted. Max is 7.
-    AWSSalesforceCommonPythonLayer: 
+    AWSSalesforceCommonPythonLayer:
         Type: String
         Default: REPLACEME
         Description: ARN for the AWSSCV Common Python Layer.
@@ -42,7 +42,7 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: ARN for your Salesforce config in AWS Secrets Manager.
-    sfDeploymentType: 
+    sfDeploymentType:
         Type: String
         Default: SCV
         AllowedValues:
@@ -92,7 +92,7 @@ Resources:
             - scvvmxs3recordingsbucket
             - scvvmxs3transcriptsbucket
         Properties:
-          PolicyDocument: 
+          PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
@@ -107,7 +107,7 @@ Resources:
                   - 's3:PutObjectVersionTagging'
                   - 's3:PutObject'
                   - 's3:DeleteObject'
-                Resource: 
+                Resource:
                   - !GetAtt scvvmxs3recordingsbucket.Arn
                   - !GetAtt scvvmxs3transcriptsbucket.Arn
                   - 'arn:aws:s3:::*/*'
@@ -125,7 +125,7 @@ Resources:
             - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
     scvvmxuserkey:
         Type: AWS::IAM::AccessKey
-        Properties: 
+        Properties:
           Status: Active
           UserName: !Ref scvvmxuser
     scvvmxsecrets:
@@ -134,7 +134,7 @@ Resources:
             - scvvmxuser
             - scvvmxuserkey
         Properties:
-          Name: 
+          Name:
             !Join
                 - ''
                 - - 'AWSSCV_vmx_access_secrets_'
@@ -148,7 +148,7 @@ Resources:
         Type: AWS::Lambda::Function
         DependsOn:
             - scvvmxsecrets
-        Properties: 
+        Properties:
           Code:
             S3Bucket:
               !Join
@@ -157,7 +157,7 @@ Resources:
                   - !Ref AWSRegion
             S3Key: scv_vmx/scv_vmx_presigner.py.zip
           Description: Generates the presigned URL that allows access to the voicemail recording in S3
-          Environment: 
+          Environment:
             Variables:
               aws_region:
                 Ref: AWSRegion
@@ -165,7 +165,7 @@ Resources:
                 Ref: RecordingsExpireInDays
               secrets_key_id:
                 Ref: scvvmxsecrets
-          FunctionName: 
+          FunctionName:
             !Join
                 - ''
                 - - 'AWSSCV_vmx_presigner_'
@@ -178,7 +178,7 @@ Resources:
         Type: AWS::Lambda::Function
         DependsOn:
             - scvvmxs3recordingsbucket
-        Properties: 
+        Properties:
           Code:
             S3Bucket:
               !Join
@@ -187,13 +187,13 @@ Resources:
                   - !Ref AWSRegion
             S3Key: scv_vmx/scv_vmx_kvs_to_s3.js.zip
           Description: Extracts the voicemail from the KVS stream and writes it to S3 with tag data
-          Environment: 
+          Environment:
             Variables:
               aws_region:
                 Ref: AWSRegion
               s3_recordings_bucket:
                 Ref: scvvmxs3recordingsbucket
-          FunctionName: 
+          FunctionName:
             !Join
                 - ''
                 - - 'AWSSCV_vmx_kvs_to_s3_'
@@ -208,7 +208,7 @@ Resources:
         DependsOn:
             - scvvmxs3recordingsbucket
             - scvvmxs3transcriptsbucket
-        Properties: 
+        Properties:
           Code:
             S3Bucket:
               !Join
@@ -217,13 +217,13 @@ Resources:
                   - !Ref AWSRegion
             S3Key: scv_vmx/scv_vmx_transcriber.py.zip
           Description: Transcribes the voicemail to text and stores the transcription in S3
-          Environment: 
+          Environment:
             Variables:
               aws_region:
                 Ref: AWSRegion
               s3_transcripts_bucket:
                 Ref: scvvmxs3transcriptsbucket
-          FunctionName: 
+          FunctionName:
             !Join
                 - ''
                 - - 'AWSSCV_vmx_transcriber_'
@@ -237,7 +237,7 @@ Resources:
         DependsOn:
             - scvvmxs3recordingsbucket
             - scvvmxpresigner
-        Properties: 
+        Properties:
           Code:
             S3Bucket:
               !Join
@@ -246,7 +246,7 @@ Resources:
                   - !Ref AWSRegion
             S3Key: scv_vmx/scv_vmx_packager.py.zip
           Description: Packages the voicemail and creates a case in Salesforce.
-          Environment: 
+          Environment:
             Variables:
               s3_recordings_bucket:
                 Ref: scvvmxs3recordingsbucket
@@ -262,7 +262,7 @@ Resources:
                 Ref: sfVoicemailField
               sf_case_vm_phone_field:
                 Ref: sfVoicemailPhoneField
-          FunctionName: 
+          FunctionName:
             !Join
                 - ''
                 - - 'AWSSCV_vmx_packager_'
@@ -278,7 +278,7 @@ Resources:
             - scvvmxpresigner
             - scvvmxsecrets
         Properties:
-          PolicyDocument: 
+          PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
@@ -291,7 +291,7 @@ Resources:
                   - 'transcribe:StartTranscriptionJob'
                   - 'connect:DescribeUser'
                   - 'connect:UpdateContactAttributes'
-                Resource: 
+                Resource:
                   - '*'
           PolicyName: AWSSCV_vmx_core_policy
           Roles:
