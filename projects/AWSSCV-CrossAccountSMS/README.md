@@ -1,4 +1,4 @@
-# SCV Cross Account SMS Example
+# AWSSCV Cross Account SMS Example
 
 This project shows how to call an AWS Lambda function that exists in a separate account or a separate region using AWS Lambda permissions.  You might want to do this if you want to interact with an AWS service that is not part of the included SCV services.
 
@@ -17,7 +17,7 @@ This project shows how to call an AWS Lambda function that exists in a separate 
 - Second Amazon Web Services account
 
 ## Deployment Steps
-1. Launch the Amazon Cloudformation template scv_cross_account_sms.yaml in the account and region where your backend infrastructure exists.  THis should be in separate account as the target Service Cloud Voice Amazon Connect instance.
+1. Launch the Amazon Cloudformation template awsscv_cross_account_sms.yaml in the account and region where your backend infrastructure exists.  THis should be in separate account as the target Service Cloud Voice Amazon Connect instance.
 2. The template will ask for two parameters:
    - ConnectInstanceArn - This is the ARN of the target Amazon Connect instance.
    - LambdaLoggingLevel - This is the level at which the Lambda function will log [DEBUG, INFO, WARNING, ERROR, CRITICAL]
