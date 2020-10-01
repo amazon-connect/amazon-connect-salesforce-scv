@@ -84,7 +84,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
 22. In the imported flow, find the **Set whisper flow** block and set it to use the whisper flow that you just published.
 23. Find the Invoke AWS Lambda function block that includes the **soql** parameter. In the flow, it should be the first Lambda block the you find.
 24. Change that block to use the **InvokeSalesforceRestApiFunction** function configured for your instance.
-25. Immediately following the pprevious block, there is another Invoke AWS Lambda function block. Modify it to to use your **awsscv_extension_routing_processor** function.
+25. Immediately following the previous block, there is another Invoke AWS Lambda function block. Modify it to to use your **awsscv_extension_routing_processor** function.
 26. Scroll to the right to find the last Invoke AWS Lambda function block.
 27. Change that block to ouse the **InvokeTelephonyIntegrationApiFunction** function configured for your instance.
 28. **OPTIONAL:** There is a Set wworking queue block on the bottom of the flow that is connected to the Complete branch on the flow loop. It is set to the default BasicQueue. If you would like calls that fail to connect to an extension to go elsewhere, modify the destination here.
@@ -137,9 +137,6 @@ Example contact flows have been provided to show you how to use the Extension Ro
   - FederationIdentifier
   - Email
   - CommunityNickname
-25. Immediately following the pprevious block, there is another Invoke AWS Lambda function block. Modify it to to use your **awsscv_extension_routing_processor** function.
-26. Scroll to the right to find the last Invoke AWS Lambda function block.
-27. Change that block to ouse the **InvokeTelephonyIntegrationApiFunction** function configured for your instance.
-28. **OPTIONAL:** There is a Set wworking queue block on the bottom of the flow that is connected to the Complete branch on the flow loop. It is set to the default BasicQueue. If you would like calls that fail to connect to an extension to go elsewhere, modify the destination here.
-29. **Save and Publish** the flow
-30. You can now call this flow from your main IVR once a customer has indicated that they want to speak with a specific agent.
+18. **OPTIONAL:** There is a Set wworking queue block on the bottom of the flow that is connected to the Complete branch on the flow loop. It is set to the default BasicQueue. If you would like calls that fail to connect to an extension to go elsewhere, modify the destination here.
+19. **Save and Publish** the flow
+20. You can now call this flow from your main IVR once a customer has indicated that they want to speak with a specific agent.

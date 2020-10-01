@@ -153,9 +153,9 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: scv_vmx/scv_vmx_presigner.py.zip
+            S3Key: awsscv_vmx/awsscv_vmx_presigner.py.zip
           Description: Generates the presigned URL that allows access to the voicemail recording in S3
           Environment:
             Variables:
@@ -170,7 +170,7 @@ Resources:
                 - ''
                 - - 'AWSSCV_vmx_presigner_'
                   - !Ref ConnectInstanceName
-          Handler: scv_vmx_presigner.lambda_handler
+          Handler: awsscv_vmx_presigner.lambda_handler
           Role: !Ref AWSSCVCommonRole
           Runtime: python3.8
           Timeout: 30
@@ -183,9 +183,9 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: scv_vmx/scv_vmx_kvs_to_s3.js.zip
+            S3Key: awsscv_vmx/awsscv_vmx_kvs_to_s3.js.zip
           Description: Extracts the voicemail from the KVS stream and writes it to S3 with tag data
           Environment:
             Variables:
@@ -198,7 +198,7 @@ Resources:
                 - ''
                 - - 'AWSSCV_vmx_kvs_to_s3_'
                   - !Ref ConnectInstanceName
-          Handler: scv_vmx_kvs_to_s3.handler
+          Handler: awsscv_vmx_kvs_to_s3.handler
           Role: !Ref AWSSCVCommonRole
           Layers: [!Ref AWSSalesforceCommonNodeLayer]
           Runtime: nodejs12.x
@@ -213,9 +213,9 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: scv_vmx/scv_vmx_transcriber.py.zip
+            S3Key: awsscv_vmx/awsscv_vmx_transcriber.py.zip
           Description: Transcribes the voicemail to text and stores the transcription in S3
           Environment:
             Variables:
@@ -228,7 +228,7 @@ Resources:
                 - ''
                 - - 'AWSSCV_vmx_transcriber_'
                   - !Ref ConnectInstanceName
-          Handler: scv_vmx_transcriber.lambda_handler
+          Handler: awsscv_vmx_transcriber.lambda_handler
           Role: !Ref AWSSCVCommonRole
           Runtime: python3.8
           Timeout: 900
@@ -242,9 +242,9 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: scv_vmx/scv_vmx_packager.py.zip
+            S3Key: awsscv_vmx/awsscv_vmx_packager.py.zip
           Description: Packages the voicemail and creates a case in Salesforce.
           Environment:
             Variables:
@@ -267,7 +267,7 @@ Resources:
                 - ''
                 - - 'AWSSCV_vmx_packager_'
                   - !Ref ConnectInstanceName
-          Handler: scv_vmx_packager.lambda_handler
+          Handler: awsscv_vmx_packager.lambda_handler
           Role: !Ref AWSSCVCommonRole
           Layers: [!Ref AWSSalesforceCommonPythonLayer]
           Runtime: python3.8
