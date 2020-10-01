@@ -51,7 +51,7 @@ Resources:
           Name:
             !Join
                 - ''
-                - - 'awsscv_secrets_'
+                - - 'awsscv_salesforce_config_'
                   - !Ref ConnectInstanceName
           Description: Required credentials to access Salesforce
           SecretString: !Sub

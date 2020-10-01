@@ -22,27 +22,27 @@ import os
 def lambda_handler(event, context):
     # Uncomment print line for debugging
     # print(event)
-    
+
     # Establish an empty response and loop counter
     loop_counter = 0
-    
+
     # Process the incoming S3 event
     for recording in event['Records']:
-        
+
         # Increment loop
         loop_counter = loop_counter+1
-        
+
         # Grab incoming data elements from the S3 event
         try:
             recording_key = recording['s3']['object']['key']
             recording_name = recording_key.replace('voicemail_recordings/','')
             contact_id = recording_name.replace('.wav','')
             recording_bucket = recording['s3']['bucket']['name']
-            
+
         except:
             print('Record ' + str(loop_counter) + ' Result: Failed to extract data from event')
             continue
-        
+
         # Establish the S3 client and get the object tags
         try:
             s3_client = boto3.client('s3')
@@ -50,30 +50,30 @@ def lambda_handler(event, context):
                 Bucket=recording_bucket,
                 Key=recording_key
             )
-            
+
             object_tags = object_data['TagSet']
             loaded_tags = {}
-            
+
             for i in object_tags:
                 loaded_tags.update({i['Key']:i['Value']})
-                
+
         except:
             print('Record ' + str(loop_counter) + ' Result: Failed to extract tags from object')
             continue
-        
+
         # Build the Recording URL
         try:
             recording_url = 'https://'+recording_bucket+'.s3-'+recording['awsRegion']+'.amazonaws.com/'+recording_key
-            
+
         except:
             print('Record ' + str(loop_counter) + ' Result: Failed to generate recording URL')
             continue
-        
+
         # Do the transcription
         try:
             # Esteablish the client
             transcribe_client = boto3.client('transcribe')
-            
+
             # Submit the transcription job
             transcribe_response = transcribe_client.start_transcription_job(
                 TranscriptionJobName=contact_id,
@@ -84,13 +84,13 @@ def lambda_handler(event, context):
                 },
                 OutputBucketName=os.environ['s3_transcripts_bucket']
             )
-            
+
         except:
             print('Record ' + str(loop_counter) + ' Result: Transcription job failed')
             continue
-        
+
         print('Record ' + str(loop_counter) + ' Result: Success!')
-        
+
     return {
         'status': 'complete',
         'result': str(loop_counter) + ' records processed'

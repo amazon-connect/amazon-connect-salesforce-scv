@@ -26,7 +26,7 @@ let streamFinished = false
 const done  = () => {
     return new Promise ((resolve, reject) => {
         var checkFinished = () => {
-            if(streamFinished) { 
+            if(streamFinished) {
               console.log('finished')
               resolve()
             } else {
@@ -35,7 +35,7 @@ const done  = () => {
             }
           }
           setTimeout(checkFinished, 500)
-    })   
+    })
 };
 
 var decoder;
@@ -48,14 +48,14 @@ var kinesisvideomedia = new AWS.KinesisVideoMedia({region: process.env.aws_regio
 exports.handler = async (event) => {
     // Uncomment the following line for debugging
     console.log('Event Received ==>', JSON.stringify(event, null, 2))
-    
+
     // Establish a response container
     var responseContainer = {};
-    
+
     // Set counters for final status
     var totalRecordCount = 0;
     var processedRecordCount = 0;
-    
+
     // Process incoming records
     for (const record of event.Records) {
         // Increment record counter
@@ -74,7 +74,7 @@ exports.handler = async (event) => {
             responseContainer['record' + totalRecordCount + 'result'] = 'Failed to extract record and/or decode';
             continue;
         };
-        
+
         // Check for the positive vm_flag attribute so we know that this is a vm to process
         try {
             var vm_flag = vmrecord.Attributes.vm_flag;
@@ -90,7 +90,7 @@ exports.handler = async (event) => {
             processedRecordCount = processedRecordCount + 1;
             continue;
         };
-        
+
         // Grab kvs stream data
         try {
             var streamARN = vmrecord.Recordings[0].Location;
@@ -100,9 +100,9 @@ exports.handler = async (event) => {
         } catch(e) {
             console.log('FAIL: Counld not identify KVS info');
             responseContainer['record' + totalRecordCount + 'result'] = 'Failed to extract KVS info';
-            continue;  
+            continue;
         };
-        
+
         // Iterate through the attributes to get the tags
         try {
             var attr_data = vmrecord.Attributes;
@@ -116,9 +116,9 @@ exports.handler = async (event) => {
         } catch(e) {
             console.log('FAIL: Counld not extract vm tags');
             responseContainer['record' + totalRecordCount + 'result'] = 'Failed to extract vm tags';
-            continue;  
+            continue;
         }
-    
+
         // Process audio and write to S3
         try {
             // Establish decoder and start listening. AS we get data, push it  into the array to be processed by writer
@@ -129,7 +129,7 @@ exports.handler = async (event) => {
                     wavBufferArray.push(chunk[1].payload);
                 };
             });
-        
+
             // Establish the writer which transforms PCM data from KVS to wav using the defined params
             var Writer = require('wav').Writer;
             wavOutputStream = new Writer({
@@ -158,7 +158,7 @@ exports.handler = async (event) => {
                 // Whack the data so we have a clean start point
                 s3ObjectData = []
                 wavBufferArray = []
-                
+
                 // Increment processed records
                 processedRecordCount = processedRecordCount + 1;
                 console.log('record' + totalRecordCount + 'result Write complete');
@@ -178,13 +178,13 @@ exports.handler = async (event) => {
 
             await parseNextFragmentNew(streamARN, startFragmentNum, null);
 
-            //waiting until the recorded stream 
+            //waiting until the recorded stream
             await done();
-            
+
         } catch(e) {
             //console.log('FAIL: Counld write audio to S3');
             responseContainer['record' + totalRecordCount + 'result'] = 'Failed to write audio to S3';
-            continue; 
+            continue;
         }
     };
 
@@ -198,10 +198,10 @@ exports.handler = async (event) => {
             recordResults: responseContainer
         }
     };
-    
+
     // Uncomment the following line for debugging
     // console.log(response)
-    
+
     return response;
 };
 

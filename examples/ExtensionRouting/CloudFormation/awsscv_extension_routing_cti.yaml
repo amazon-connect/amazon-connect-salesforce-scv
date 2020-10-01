@@ -38,7 +38,7 @@ Resources:
            S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
            S3Key: awsscv_extension_routing/AWSSCV-SFQuery.py.zip
           Description: Uses Salesforce REST API to query for agent id
