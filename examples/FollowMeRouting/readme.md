@@ -21,7 +21,7 @@ Example contact flow has been provided to show you how to use the Follow-Me Rout
 - External phone number
 - Follow-Me flag set to True
   - NOTE: As the Follow-Me flag does not exist, you will need to add it
-2. [Salesforce Access Secrets](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceAccessSecrets) deployed
+2. [AWSSCV Salesforce Config](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceConfig) deployed
 3. [AWSSCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-CommonLayers) deployed
 4. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
@@ -51,32 +51,29 @@ Example contact flow has been provided to show you how to use the Follow-Me Rout
 ## Deplyoment instructions
 ### Deploy the CloudFormation template
 1. Right-click/control-click to download the [AWSSCV FollowMe Routing CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/FollowMeRouting/CloudFormation/awsscv_follow_me_routing.yaml).
-2. In a new browser tab, login to the AWS console
-3.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
-4.	Navigate to the CloudFormation console
-5.	Select Create Stack, and choose With new resources (standard)
-6.	In the Specify Template section, choose Upload a template file
-7.	Select Choose file
-8.	Navigate to the folder where you saved awsscv_follow_me_routing.yaml
-9.	Select Next
-10.	In the Stack Name field, enter AWSSCV-FollowMe
-11.	Enter the parameters as follows (most from your notepad):
+2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
+3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
+4.	Navigate to the **CloudFormation console**
+5.	Select **Create Stack**, and choose **With new resources (standard)**
+6.	In the Specify Template section, choose **Upload a template file**
+7.	Select **Choose file**
+8.	Navigate to the folder where you saved a**wsscv_follow_me_routing.yaml**
+9.	Select **Next**
+10.	In the Stack Name field, enter `AWSSCV-FollowMe`
+11.	**Enter the parameters** as follows (most from your notepad):
   a. AWSRegion: Select the region that you have deployed Amazon Connect in
   b. AWSSCVCommonLambdaPythonLayer: ARN of the common python layer
   c. AWSSCVCommonRole: ARN of the awsscv_common_role role
   d. ConnectInstanceName: Provide the instance name for Amazon Connect.
   e. sfDeploymentMode: Is this for a CTI-Based install (cti) or a Service Cloud Voice (scv) deployment?
   f. sfFollowField: The name of the checknox field that you created in Salesforce to enable the Follow-Me function.
-  g. sfHost: The full https url to your salesforce org.
-  h. sfPhoneField: Which phone field will you be using? Phone or MobilePhone?
-  i. sfProduction: Is this a production org (true/false)
-  j. sfSecrets: ARN for your Salesforce credentials in AWS Secrets Manager
-  k. sfUserField: Field is used as your Connect Username? For Service Cloud Voice, select Id. For CTI, choose the appropriate option.
-  l. sfVersion: The API version of your Salesforce org.
-12.	Select Next
+  g. sfPhoneField: Which phone field will you be using? Phone or MobilePhone?
+  h. sfConfig: ARN for your Salesforce config in AWS Secrets Manager
+  i. sfUserField: Field is used as your Connect Username? For Service Cloud Voice, select Id. For CTI, choose the appropriate option.
+12.	Select **Next**
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
-14.	Scroll to the bottom and select Next
-15.	Scroll to the bottom and select Create Stack
+14.	Scroll to the bottom and select **Next**
+15.	Scroll to the bottom and select **Create Stack**
 16.	After a minute or two, the stack should complete.
 
 ### Update you Amazon Connect Instance

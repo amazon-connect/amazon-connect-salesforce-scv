@@ -26,24 +26,10 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: ARN of the common python layer
-    sfSecrets:
+    sfConfig:
         Type: String
         Default: REPLACEME
-        Description: ARN for your Salesforce credentials in AWS Secrets Manager.
-    sfHost:
-        Type: String
-        Default: REPLACEME
-        Description: The full https url to your salesforce org.
-    sfVersion:
-        Type: String
-        Default: v49.0
-        Description: The API version of your Salesforce org.
-    sfProduction:
-        Type: String
-        Default: true
-        AllowedValues:
-          - true
-          - false
+        Description: ARN for your Salesforce config in AWS Secrets Manager.
     sfDeploymentMode:
         Type: String
         Default: scv
@@ -80,20 +66,14 @@ Resources:
            S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
            S3Key: awsscv_followme_routing/AWSSCV-FollowMe.py.zip
           Description: Uses Salesforce REST API to query for agent configuration for Follow-Me routing
           Environment:
             Variables:
-              SF_CREDENTIALS_SECRETS_MANAGER_ARN:
-                Ref: sfSecrets
-              SF_HOST:
-                Ref: sfHost
-              SF_PRODUCTION:
-                Ref: sfProduction
-              SF_VERSION:
-                Ref: sfVersion
+              sf_config_sm_arn:
+                Ref: sfConfig
               sf_deployment_mode:
                 Ref: sfDeploymentMode
               sf_follow_field:

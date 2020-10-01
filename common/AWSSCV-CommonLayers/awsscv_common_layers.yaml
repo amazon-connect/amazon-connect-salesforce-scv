@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Establishes supporting layers for Service Cloud Voice add-ons from AWS.
+Description: Establishes supporting layers for Service Cloud Voice tools, examples, and add-ons from AWS.
 Parameters:
   AWSRegion:
     Type: String
@@ -18,16 +18,16 @@ Resources:
         Type: AWS::Lambda::LayerVersion
         Properties:
           CompatibleRuntimes:
-            - python3.7
+            - python3.8
           Content:
             S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: scv_common_layer/scv_python_common.zip
+            S3Key: awsscv_common_layers/awsscv_python_common.zip
           Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
-          LayerName: aws_scvhelper_common_python
+          LayerName: awsscv_common_python
           LicenseInfo: https://opensource.org/licenses/MIT
     SCVCommonNodeLayer:
         Type: AWS::Lambda::LayerVersion
@@ -38,11 +38,11 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'scv-supporting-code-'
+                - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: scv_common_layer/scv_node_common.zip
+            S3Key: awsscv_common_layers/awsscv_node_common.zip
           Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
-          LayerName: aws_scvhelper_common_node
+          LayerName: aws_common_node
           LicenseInfo: https://opensource.org/licenses/MIT
 Outputs:
   SCVCommonPythonLayerARN:

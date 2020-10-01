@@ -32,34 +32,34 @@ Example contact flows have been provided to show you how to use the Extension Ro
 
 ## Prereqiusites for CTI Adapter deployments
 1. [CTI Adaptor for Amazon Connect](https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000EJH4yUAH) installed and configured
-2. [Salesforce Access Secrets](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceAccessSecrets) deployed
+2. [AWSSCV Salesforce Config](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceConfig) deployed
 3. [AWSSCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-CommonLayers) deployed
 4. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
 ## Service Cloud Voice deplyoment instructions
 ### Deploy the CloudFormation template
 1. Right-click/control-click to download the [AWSSCV Extension Routing CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/CloudFormation/awsscv_extension_routing_scv.yaml).
-2. In a new browser tab, login to the AWS console
-3.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
-4.	Navigate to the CloudFormation console
-5.	Select Create Stack, and choose With new resources (standard)
-6.	In the Specify Template section, choose Upload a template file
-7.	Select Choose file
-8.	Navigate to the folder where you saved awsscv_extension_routing_scv.yaml
-9.	Select Next
-10.	In the Stack Name field, enter AWSSCV-ExtensionRouting-SCV
-11.	Enter the parameters as follows (most from your notepad):
+2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
+3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
+4.	Navigate to the **CloudFormation console**
+5.	Select **Create Stack**, and choose **With new resources (standard)**
+6.	In the Specify Template section, choose **Upload a template file**
+7.	Select **Choose file**
+8.	Navigate to the folder where you saved **awsscv_extension_routing_scv.yaml**
+9.	Select **Next**
+10.	In the Stack Name field, enter `AWSSCV-ExtensionRouting-SCV`
+11.	**Enter the parameters** as follows (most from your notepad):
   a. AWSRegion: Select the region that you have deployed Amazon Connect in
   b. ConnectInstanceName: Your connect instance name
   c. Salesforce Org ID: Provide the ID for your Salesforce Org
   d. SalesforceRestApiFunctionRole: ARN of the InvokeSalesforceRestApiFunctionRole
-12.	Select Next
+12.	Select **Next**
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
-14.	Scroll to the bottom and select Next
-15.	Scroll to the bottom and select Create Stack
+14.	Scroll to the bottom and select **Next**
+15.	Scroll to the bottom and select **Create Stack**
 16.	After a minute or two, the stack should complete.
 
-### Update you Amazon Connect Instance
+### Update your Amazon Connect Instance
 1. Right-click/control-click to download the [AWSSCV-AgentWithStreaming agent whisper flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/ContactFlows/AWSSCV-AgentWithStreaming).
 2. Right-click/control-click to download the [AWSSCV-ExtensionRouter-SCV Contact Flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/ContactFlows/AWSSCV-ExtensionRouter-SCV).
 3. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
@@ -84,7 +84,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
 22. In the imported flow, find the **Set whisper flow** block and set it to use the whisper flow that you just published.
 23. Find the Invoke AWS Lambda function block that includes the **soql** parameter. In the flow, it should be the first Lambda block the you find.
 24. Change that block to use the **InvokeSalesforceRestApiFunction** function configured for your instance.
-25. Immediately following the pprevious block, there is another Invoke AWS Lambda function block. Modify it to to use your **awsscv_extension_routing_processor** function.
+25. Immediately following the previous block, there is another Invoke AWS Lambda function block. Modify it to to use your **awsscv_extension_routing_processor** function.
 26. Scroll to the right to find the last Invoke AWS Lambda function block.
 27. Change that block to ouse the **InvokeTelephonyIntegrationApiFunction** function configured for your instance.
 28. **OPTIONAL:** There is a Set wworking queue block on the bottom of the flow that is connected to the Complete branch on the flow loop. It is set to the default BasicQueue. If you would like calls that fail to connect to an extension to go elsewhere, modify the destination here.
@@ -94,28 +94,25 @@ Example contact flows have been provided to show you how to use the Extension Ro
 ## CTI Adapter deplyoment instructions
 ### Deploy the CloudFormation template
 1. Right-click/control-click to download the [AWSSCV Extension Routing CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/CloudFormation/awsscv_extension_routing_cti.yaml).
-2. In a new browser tab, login to the AWS console
-3.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
-4.	Navigate to the CloudFormation console
-5.	Select Create Stack, and choose With new resources (standard)
-6.	In the Specify Template section, choose Upload a template file
-7.	Select Choose file
-8.	Navigate to the folder where you saved awsscv_extension_routing_cti.yaml
-9.	Select Next
-10.	In the Stack Name field, enter AWSSCV-ExtensionRouting-CTI
-11.	Enter the parameters as follows (most from your notepad):
+2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
+3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
+4.	Navigate to the **CloudFormation console**
+5.	Select **Create Stack**, and choose **With new resources (standard)**
+6.	In the Specify Template section, choose **Upload a template file**
+7.	Select **Choose file**
+8.	Navigate to the folder where you saved **awsscv_extension_routing_cti.yaml**
+9.	Select **Next**
+10.	In the Stack Name field, enter `AWSSCV-ExtensionRouting-CTI`
+11.	**Enter the parameters** as follows (most from your notepad):
   a. AWSRegion: Select the region that you have deployed Amazon Connect in
   b. AWSSCVCommonLambdaPythonLayer: ARN of the common python layer
   c. AWSSCVCommonRole: ARN of the awsscv_common_role role
   d. ConnectInstanceName: Provide the instance name for Amazon Connect.
-  e. sfHost: The full https url to your salesforce org.
-  f. sfProduction: Is this a production org (true/false)
-  g. sfSecrets: ARN for your Salesforce credentials in AWS Secrets Manager
-  h. sfVersion: The API version of your Salesforce org.
-12.	Select Next
+  e. sfConfig: ARN for your Salesforce config in AWS Secrets Manager
+12.	Select **Next**
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
-14.	Scroll to the bottom and select Next
-15.	Scroll to the bottom and select Create Stack
+14.	Scroll to the bottom and select **Next**
+15.	Scroll to the bottom and select **Create Stack**
 16.	After a minute or two, the stack should complete.
 
 ### Update you Amazon Connect Instance
@@ -140,9 +137,6 @@ Example contact flows have been provided to show you how to use the Extension Ro
   - FederationIdentifier
   - Email
   - CommunityNickname
-25. Immediately following the pprevious block, there is another Invoke AWS Lambda function block. Modify it to to use your **awsscv_extension_routing_processor** function.
-26. Scroll to the right to find the last Invoke AWS Lambda function block.
-27. Change that block to ouse the **InvokeTelephonyIntegrationApiFunction** function configured for your instance.
-28. **OPTIONAL:** There is a Set wworking queue block on the bottom of the flow that is connected to the Complete branch on the flow loop. It is set to the default BasicQueue. If you would like calls that fail to connect to an extension to go elsewhere, modify the destination here.
-29. **Save and Publish** the flow
-30. You can now call this flow from your main IVR once a customer has indicated that they want to speak with a specific agent.
+18. **OPTIONAL:** There is a Set wworking queue block on the bottom of the flow that is connected to the Complete branch on the flow loop. It is set to the default BasicQueue. If you would like calls that fail to connect to an extension to go elsewhere, modify the destination here.
+19. **Save and Publish** the flow
+20. You can now call this flow from your main IVR once a customer has indicated that they want to speak with a specific agent.

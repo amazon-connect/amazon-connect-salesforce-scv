@@ -4,7 +4,7 @@ AWSSCV Common layers for AWS Lambda provides dependency modules used by the solu
 
 ## Project Components
 - CloudFormation template that builds:
-  - NodeJS Lambda Layer:
+  - NodeJS Lambda Layer
   - Python Lambda Layer
     
 ## Project Requirements
@@ -20,7 +20,7 @@ AWSSCV Common layers for AWS Lambda provides dependency modules used by the solu
 7.	Select Choose file
 8.	Navigate to the folder where you saved awsscv_common_layers.yaml
 9.	Select Next
-10.	In the Stack Name field, enter AWSSCVCommonLayers
+10.	In the Stack Name field, enter `AWSSCV-CommonLambdaLayers`
 11.	The template will ask for one parameter:
    - AWSRegion - This is the region code for the region to which you are deploying.
 12.	Select Next
@@ -32,7 +32,7 @@ AWSSCV Common layers for AWS Lambda provides dependency modules used by the solu
 
 ## Easy Upgrade process
 If you have previously deployed the cloudformation templates and have the layers in place, it is easier to just download the updated layer and add it as a new version. To do this, follow the steps below.
-1. Download the layer that you want to update from the [Layers](Layers/) directory (do not unzip the file)
+1. Download the layer that you want to update from the [Deployment](Deploy/awsscv_common_layers/) directory (do not unzip the file)
 2. Login the the [AWS Console](https://console.aws.amazon.com/console/home)
 3. Open the AWS [Lambda Console](https://console.aws.amazon.com/lambda/home)
 4. In the left navigation menu, under **Additional Resources**, select **Layers**
@@ -44,5 +44,6 @@ If you have previously deployed the cloudformation templates and have the layers
 10. Update your functions to use the new layer as appropriate
 
 ## Layer Last Updated
-- Node.js: 2020-09-24
-- Python: 2020-09-24
+- Node.js: 2020-09-30
+- Python: 2020-09-30
+
