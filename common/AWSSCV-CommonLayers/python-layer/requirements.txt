@@ -1,3 +1,4 @@
+awsscv
 requests
 pyjwt[crypto]
 phonenumbers
