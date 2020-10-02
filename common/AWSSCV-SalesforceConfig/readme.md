@@ -2,7 +2,7 @@
 Establishes a Self-Signed SSL Certificate, Salesforce Connected App, a Salesforce User, and information about the Salesforce org. Saves the information to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials and configuration info as needed. Also creates an IAM Policy and Role common to the deployents from this repository.
 
 # Setup
-Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is reccomended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out. Much of this process is based on the [Create Your Connected App](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_travis_ci/sfdx_travis_ci_connected_app) Trailhead.
+Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is reccomended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out. Much of this process is based on the [Create Your Connected App](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_travis_ci/sfdx_travis_ci_connected_app) Trailhead, but the instructions here should be used in place of those from the Trailhead.
 
 ## Prerequisite
 You will need OpenSSL to generate certificates. An easy way to checlk if you already have OpenSSL is to open a command line/terminal window and type `which ssl`. You should see a response similar to `/usr/bin/openssl`. If you do not, you will need to install OpenSSL before continuing.
@@ -105,7 +105,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
   c. sfConsumerKey: The consumer key from your connected app
   d. sfHost: The full https url to your salesforce org
   e. sfOrgId: Provide your Salesforce.com Organization ID
-  f. sfPrivateKey: The content of the server.key private key that you generated as a part of the setup process. You should only copy the content between the **BEGIN** and **END** lines
+  f. sfPrivateKey: The contents of the encoded_key.txt that you generated as a part of the setup process.
   g. sfUsername: Your awsutil username
 12.	Select Next
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
