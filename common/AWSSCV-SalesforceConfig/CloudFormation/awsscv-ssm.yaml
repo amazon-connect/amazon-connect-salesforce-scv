@@ -78,6 +78,8 @@ Resources:
                   - 'secretsmanager:GetSecretValue'
                   - 'secretsmanager:DescribeSecret'
                   - 'secretsmanager:ListSecretVersionIds'
+                  - 'secretsmanager:UpdateSecret'
+                  - 'secretsmanager:PutSecretValue'
                 Resource:
                   - !Ref awsscvcommonsecrets
     awsscvcommonrole:
