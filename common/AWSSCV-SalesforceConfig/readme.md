@@ -100,13 +100,13 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 9.	Select Next
 10.	In the Stack Name field, enter `AWSSCV-SalesforceConfig`
 11.	Enter the parameters as follows (most from your notepad):
-  a. AWSRegion: Select the region that you have deployed Amazon Connect in
-  b. ConnectInstanceName: Your connect instance name
-  c. sfConsumerKey: The consumer key from your connected app
-  d. sfHost: The full https url to your salesforce org
-  e. sfOrgId: Provide your Salesforce.com Organization ID
-  f. sfPrivateKey: The contents of the encoded_key.txt that you generated as a part of the setup process.
-  g. sfUsername: Your awsutil username
+ - AWSRegion: Select the region that you have deployed Amazon Connect in
+ - ConnectInstanceName: Your connect instance name
+ - sfConsumerKey: The consumer key from your connected app
+ - sfHost: The full https url to your salesforce org
+ - sfOrgId: Provide your Salesforce.com Organization ID
+ - sfPrivateKey: The contents of the encoded_key.txt that you generated as a part of the setup process.
+ - sfUsername: Your awsutil username
 12.	Select Next
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select Next
