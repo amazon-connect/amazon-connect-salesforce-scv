@@ -1,7 +1,7 @@
 # Installing Voicemail Express
 This document will walk you through the steps required to deploy the Voicemail Express solution to your AWS account. This solution was specifically designed to operate in a Service Cloud Voice created AWS account, but will work the same in a standarad Salesforce + Amazon Connect CTI Adapter configuration.
 
-In order to deploy this template, you must first complete the [installation prerequisites](docs/vmx_prerequistes.md). Once those are complete, you can continue with the process below.
+In order to deploy this template, you must first complete the [installation prerequisites](vmx_prerequistes.md). Once those are complete, you can continue with the process below.
 
 **Note:** You will need to save information to a notepad during the entire setup process. 
 
