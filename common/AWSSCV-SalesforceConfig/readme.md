@@ -89,7 +89,7 @@ You will need OpenSSL to generate certificates. An easy way to checlk if you alr
 ## Store Salesforce Settings in AWS Secrets Manager
 To ensure that your Salesforce credentials are secure, the Lambdas require that the credentials are stored in AWS Secrets Manager. AWS Secrets Manager is a highly secure service that helps you store and retrieve secrets.
 
-1.	Right-click/control-click to download the [CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/common/AWSSCV-SalesforceAccessSecrets/CloudFormation/awsscv-ssm.yaml).
+1.	Right-click/control-click to download the [CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/common/AWSSCV-SalesforceConfig/CloudFormation/awsscv-ssm.yaml).
 2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 3.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the CloudFormation console
