@@ -1,4 +1,4 @@
-# Amazon Connect Salesforce SCV Campground
+# Amazon Connect Campground for Service Cloud Voice
 
 This repository contains resources, examples, and projects to help Service Cloud Voice customers address some common requirements as they deploy Service Cloud Voice. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments. 
 
