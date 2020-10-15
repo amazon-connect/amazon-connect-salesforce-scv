@@ -35,7 +35,7 @@ This is simply an example that shows how one *could* approach this use case. The
 
 ## Installation
 This example can be installed in your environment to provide some baseline examples to work from. Installation has multiple prerequisites. Please complete the prerequisistes before moving to installation of this example.
-1. Complete the [Salesforce Access Secrets](../../common/AWSSCV-SalesforceAccessSecrets) setup
+1. Complete the [Salesforce Access Secrets](../../common/AWSSCV-SalesforceConfig) setup
 2. Complete the [AWSSCV Common Layers](../../common/AWSSCV-CommonLayers) Setup
 3. Complete the [Data-Directed Routing: Flow Routing](ddr_fr_prereq_config.md) prerequisite configuration
 
