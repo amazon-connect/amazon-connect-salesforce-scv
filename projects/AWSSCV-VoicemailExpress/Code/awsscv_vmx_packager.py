@@ -99,6 +99,8 @@ def lambda_handler(event, context):
             continue
 
         # Determine the queue/agent name
+        connect_client = boto3.client('connect')
+
         if loaded_tags['vm_queue_type'] == 'agent':
             vm_prefix = 'Direct'
             try:
@@ -107,7 +109,6 @@ def lambda_handler(event, context):
                 instance_id = split_1.split('/queue')[0]
                 agent_id = split_1.split('agent/')[1]
 
-                connect_client = boto3.client('connect')
                 get_agent = connect_client.describe_user(
                     UserId=agent_id,
                     InstanceId=instance_id
