@@ -2,7 +2,7 @@
 Establishes a Self-Signed SSL Certificate, Salesforce Connected App, a Salesforce User, and information about the Salesforce org. Saves the information to the AWS account using AWS Secrets Manager for secure storage and retrieval of the credentials and configuration info as needed. Also creates an IAM Policy and Role common to the deployents from this repository.
 
 # Setup
-Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is reccomended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out. Much of this process is based on the [Create Your Connected App](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_travis_ci/sfdx_travis_ci_connected_app) Trailhead, but the instructions here should be used in place of those from the Trailhead.
+Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is recommended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out. Much of this process is based on the [Create Your Connected App](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_travis_ci/sfdx_travis_ci_connected_app) Trailhead, but the instructions here should be used in place of those from the Trailhead.
 
 ## Prerequisite
 You will need OpenSSL to generate certificates. An easy way to checlk if you already have OpenSSL is to open a command line/terminal window and type `which ssl`. You should see a response similar to `/usr/bin/openssl`. If you do not, you will need to install OpenSSL before continuing.
@@ -44,7 +44,7 @@ You will need OpenSSL to generate certificates. An easy way to checlk if you alr
 5.	Select the checkbox to Enable OAuth Settings 
 6.	Set the Callback URL to `http://localhost:1717/OauthRedirect`
 7.  Select **Use digital signatures**
-8.  elect Choose File, and upload the server.crt file you created earlier
+8.  Select Choose File, and upload the server.crt file you created earlier
 9.	In the Selected OAuth Scopes section, select the following and add them to the Selected OAuth Scopes:
   * Access and manage your data (api)
   * Perform requests on your behalf at any time (refresh_token, offline_access)
@@ -96,7 +96,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 5.	Select Create Stack, and choose With new resources (standard)
 6.	In the Specify Template section, choose Upload a template file
 7.	Select Choose file
-8.	Navigate to the folder where you saved scv_ssm.yaml
+8.	Navigate to the folder where you saved awsscv-ssm.yaml
 9.	Select Next
 10.	In the Stack Name field, enter `AWSSCV-SalesforceConfig`
 11.	Enter the parameters as follows (most from your notepad):
