@@ -1,6 +1,8 @@
 # Data-Directed Routing: Flow Routing
 This example shows how you can collect data from a customer in Amazon Connect, pass that to Salesforce via REST API and invoke a flow that analyzes the data and returns routing destinations as requested. This is intended to demonstrate how existing routing logic built in Salesforce Flows can be used with Service Cloud Voice and Amazon Connect to control routing. 
 
+**NOTE:** This example has been configured for Service Cloud Voice only. Modifications would need to be made to support routing in a non-SCV environment.
+
 ## Components
 This example relies on configuration in Salesforce to work appropriately. The components used are:
 - Salesforce

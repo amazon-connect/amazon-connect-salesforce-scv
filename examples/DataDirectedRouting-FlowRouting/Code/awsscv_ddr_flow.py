@@ -56,6 +56,7 @@ def lambda_handler(event, context):
 
     except:
         response.update({'status':'fail', 'code' : 'invoke flow fail'})
+        return response
 
     # Extract the result and add it to the response
     print('respnse:' + json.dumps(get_target[0]))
@@ -102,7 +103,7 @@ def execute_flow(sf, sf_flow, **kwargs):
 
 def format_queue_target(queue):
     # Clean up the Queue ID, Split the prefix off, replace the underscores with hyphens
-    reformatted_queue = queue.split('QQ')
+    reformatted_queue = queue.split(os.environ['queue_prefix'])
     reformatted_queue = reformatted_queue[1]
     reformatted_queue = reformatted_queue.replace('_','-')
 
