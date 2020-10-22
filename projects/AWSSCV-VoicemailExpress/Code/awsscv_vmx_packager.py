@@ -180,6 +180,9 @@ def lambda_handler(event, context):
             instance_id = split_1.split('/queue')[0]
 
             # Do the update
+
+            #Initializing connect_client
+            connect_client = boto3.client('connect')
             update_flag = connect_client.update_contact_attributes(
                 InitialContactId=contact_id,
                 InstanceId=instance_id,
