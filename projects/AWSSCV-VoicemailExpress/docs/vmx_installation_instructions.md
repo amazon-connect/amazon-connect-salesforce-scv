@@ -24,27 +24,25 @@ The next step is to deploy the CloudFormation template. This template builds all
 4. Choose **Create stack**
 5. In the **Specify template** section, select **Upload a Template file**
 6. Select **Choose file**
-7. Navigate to the **scv_vmx.yaml** file that you downloaded previously and choose **Open**
+7. Navigate to the **awsscv_vmx.yaml** file that you downloaded previously and choose **Open**
 8. Wait a moment for the S3 URL to update, then select **Next**
-9. Provide a name for the stack, such as `AWSSCV-VoicemailExpresss`
+9. Provide a name for the stack, such as `AWSSCV-VoicemailExpress`
 10. **Complete the parameters** using the information that you have gathered. 
   - AWSRegion: select the region that you deployed your Amazon Connect instance to
+  - AWSSCVCommonRole: The full ARN for your awsscv_common_role role
   - AWSSalesforceCommonNodeLayer: The full ARN for your SCV Common Node layer
   - AWSSalesforceCommonPythonLayer: The full ARN for your SCV Common Python layer
   - ConnectCTRStreamARN: The full ARN for the Kinesis data stream that streams your CTRs (Contact Trace Records) from Amazon Connect
   - ConnectInstanceName: The instance alias or directory name for your Amazon Connect Instance
   - RecordingsExpireInDays: The number of days before the voicemails are deleted and the presigned URLs expire
   - sfDeploymentType: Indicate whether is is a Service Cloud Voice or CTI Adapter deployment
-  - sfHost: The full https:// URL to of your Salesforce org. It **must** include https://
-  - sfProduction: Is this a production org
-  - sfSecrets: The full ARN for your Salesforce Access secrets
-  - sfVersion: Your Salesforce API version
+  - sfConfig: The full ARN for your Salesforce Access secrets
   - sfVoicemailField: The custom field that was created to store the voicemail transcript
   - sfVoicemailPhoneField: The custom field that was created to store the voicemail customer callback number
 11. Once the parameters are complete, choose **Next**
   - **NOTE:** In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 12.	Scroll to the bottom and select **Next**
-13.	Scroll to the bottom, select the box to **acknoledge that IAM resources will be created**
+13.	Scroll to the bottom, select the box to **acknowledge that IAM resources will be created**
 14. Select **Create Stack**
 15. The deployemnt will take 8 - 10 minutes. Once the Stack shows **CREATE_COMPLETE**, you are ready to proceed. Remain in the CloudFormation console.
 
@@ -68,7 +66,7 @@ Now that the resources are deployed, we need to configure some triggers. These t
 17. In the Events section, select **PUT**
 18. In the Suffix field, enter `.wav`
 19. Drop down the **Send to** menu and choose **Lambda Function**
-20. In the **Lambda** menu, select the function that begins with **scv_vmx_transcriber**
+20. In the **Lambda** menu, select the function that begins with **AWSSCV_vmx_transcriber**
 21. Select **Save**, close the browser tab and return to the CloudFormation tab
 22. Find the S3 bucket with the Logical ID **scvvmxs3transcriptsbucket**
 23. **Select the link** in the Physical ID column to open that resource in a new tab and switch to that tab.
@@ -79,7 +77,7 @@ Now that the resources are deployed, we need to configure some triggers. These t
 28. In the Events section, select **PUT**
 29. In the Suffix field, enter `.json`
 30. Drop down the **Send to** menu and choose **Lambda Function**
-31. In the **Lambda** menu, select the function that begins with **scv_vmx_packager**
+31. In the **Lambda** menu, select the function that begins with **AWSSCV_vmx_packager**
 32. Select **Save**, close the browser tab and return to the CloudFormation tab
 
 ## Install the baseline Contact Flows
