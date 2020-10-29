@@ -14,13 +14,12 @@ This example relies on configuration in Salesforce to work appropriately. The co
     - Flows
 - AWS
     - AWS Lambda function
-    - Amazon Lex
     - Amazon Connect contact flow
     - Amazon Connect Queues
 
 ## Example Flow
 1. Customer calls into Amazon Connect
-2. Lex bot invoked to get intent, subintent, and possibly focus
+2. Contact flow invoked to get intent, subintent, and possibly focus
 3. Lambda passes received values from Lex to flow via REST API to get routing targets
 4. Flow finds an agent with the appropriate skills and a matching queue
 5. Flow returns the targets to Lambda
@@ -36,9 +35,4 @@ While this example invokes a flow, you could just as easily do a simple query us
 This is simply an example that shows how one *could* approach this use case. There are cerrtainly other ways to accomplish this type of routing and there are obvious considerations that need to be made with this approach. This example is intended to guide thought, not to serve as a strict description of how one should accomplish data-directed routing.
 
 ## Installation
-This example can be installed in your environment to provide some baseline examples to work from. Installation has multiple prerequisites. Please complete the prerequisistes before moving to installation of this example.
-1. Complete the [Salesforce Access Secrets](../../common/AWSSCV-SalesforceConfig) setup
-2. Complete the [AWSSCV Common Layers](../../common/AWSSCV-CommonLayers) Setup
-3. Complete the [Data-Directed Routing: Flow Routing](ddr_fr_prereq_config.md) prerequisite configuration
-
-Once those prerequisites are completed, you are ready to complete to [Data-Directed Routing: Flow Routing](ddr_fr_install.md) example setup.
+To install this example, start with the [prep instructions](Docs/prep.md).

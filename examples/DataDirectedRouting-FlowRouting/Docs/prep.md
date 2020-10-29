@@ -102,4 +102,11 @@ Once you have queues created, the second part of the configuration is to allow f
  - **Start date:** set it to the previous day, at any time
 15. Select **Save**
 
+## Prerequisite Installations
+This installation has multiple prerequisites. Please complete the prerequisistes before moving to installation of this example.
+1. Complete the [Salesforce Access Secrets](../../common/AWSSCV-SalesforceConfig) setup
+2. Complete the [AWSSCV Common Layers](../../common/AWSSCV-CommonLayers) Setup
+
+Once those prerequisites are completed, you are ready to complete to [Data-Directed Routing: Flow Routing](Docs/install.md) example setup.
+
 You have now completed all of the prerequisites. The next step is to perform the installation of the [Data-Directed Routing: Flow Routing](ddr_fr_install.md) example.
