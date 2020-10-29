@@ -62,7 +62,7 @@ Resources:
                   - 'connect:CreateContactFlow'
                 Resource:
                   - '*'
-          ManagedPolicyName: AWSSCV_contaact_flow_build
+          ManagedPolicyName: AWSSCV_contact_flow_build
           Roles:
             - awsscv_common_role
     awsscvddrflow:
