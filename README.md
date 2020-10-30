@@ -26,6 +26,8 @@ The repository is divided into three core sections:
 | ---- | ----------- | ----- |
 | AWSSCV-ExtensionRouter | Configures a Dial-by-extension option for Amazon Connect. | [Example](examples/ExtensionRouting) |
 | AWSSCV-FollowMeRouting | Configures an option to route calls to an agent's mobile when they are not logged in, if configured. | [Example](examples/FollowMeRouting) |
+| AWSSCV-DDR-Flow | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations | [Example](examples/DataDirectedRouting-FlowRouting) |
+
 
 ## Contributions
 
