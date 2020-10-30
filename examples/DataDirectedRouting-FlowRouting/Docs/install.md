@@ -142,4 +142,23 @@ Now that the Salesforce environment is ready, you will need to configure the AWS
 20. After ~2 minutes, your configuration will be ready to test.
 
 ## Testing the configuration
+Follow these basic steps to test the configuration
+1. **Login to Salesforce**, but do not login to Omni-Channel
+2. Open **Setup** in a new tab
+3. In the quick find, enter `contact`, and select **Contact Centers** from the result
+4. Select **Telephony Provider Settings** for your contact center
+5. Once the Amazon Connect UI opens, select **Metrics and quality**, then choose **Real-time metrics**
+6. Select **Queues**
+7. Once the queues display opens, select the **New Table** button and choose **Agent queues**
+8. Return to Salesforce and login to Omni-Channel by choosing **Phone-Available**
+9. Return to Amazon Connect and validate that the Queues and Agent queues all show staffed and that your agent is online. 
+10. **Dial the phone number** that you provisioned earlier
+11. **Press 2** for server support. Notice that the message will state that it has found someone to assist.
+12. Return to the Salesforce and **answer the incoming contact**. Once connected, return to the real-time view in Amazon Connect. Note that the call is Active in the agent personal queue. 
+13. **End the call as the customer**, but DO NOT clear the call in Salesforce.
+14. **Call in** again and **choose 2** once more. This time, since the agent is still in after call work and not available, you will hear "Nobody is currently available, however, I have identified a group of people that can help.". This indicates that the call will be queued to the target queue returned from Salesforce
+15. Return to Salesforce, **clear the old call and accept the new call**
+16. Once the call connects, **return to Amazon Connect**
+17. Validate the active call in the **server queue**
+18. Validation complete
 
