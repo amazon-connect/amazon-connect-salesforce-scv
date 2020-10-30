@@ -107,6 +107,4 @@ This installation has multiple prerequisites. Please complete the prerequisistes
 1. Complete the [Salesforce Access Secrets](../../common/AWSSCV-SalesforceConfig) setup
 2. Complete the [AWSSCV Common Layers](../../common/AWSSCV-CommonLayers) Setup
 
-Once those prerequisites are completed, you are ready to complete to [Data-Directed Routing: Flow Routing](Docs/install.md) example setup.
-
-You have now completed all of the prerequisites. The next step is to perform the installation of the [Data-Directed Routing: Flow Routing](ddr_fr_install.md) example.
+You have now completed all of the prerequisites. The next step is to perform the installation of the [Data-Directed Routing: Flow Routing](install.md) example.
