@@ -25,6 +25,7 @@ import phonenumbers
 def lambda_handler(event, context):
     # Uncomment the following line for debugging
     # print(event)
+    connect_client = boto3.client('connect')
     loop_counter = 0
 
     # Process the records in the CTR

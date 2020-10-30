@@ -62,14 +62,15 @@ You will need OpenSSL to generate certificates. An easy way to checlk if you alr
 1. In the Quick Find field, type `users` then select Users from the results 
 2. Select New User
 3. Set the required fields as:
-  * Last Name: awsutil
-  * Alias: awsutil
-  * Email: provide a valid email address
-  * Username: awsutil@<yoursalesforcedomain>.com
-  * Nickname: awsutil
-4. On the right-hand side, set User License to **Salesforce** and the Profile to **Standard User**
-5. Choose Save
-6. **Copy the username to your notepad**
+ a. Last Name: awsutil
+ b. Alias: awsutil
+ c. Email: provide a valid email address
+ d. Username: awsutil@<yoursalesforcedomain>.com
+ e. Nickname: awsutil
+4. On the right-hand side, set **User License** to **Salesforce**
+5. Set the **Profile** to **System Administrator**
+6. Choose Save
+7. **Copy the username to your notepad**
 
 ## Create a new Permission Set
 1. From Setup, enter Permission in the Quick Find box, then select Permission Sets
