@@ -25,6 +25,7 @@ import phonenumbers
 def lambda_handler(event, context):
     # Uncomment the following line for debugging
     # print(event)
+    connect_client = boto3.client('connect')
     loop_counter = 0
 
     # Process the records in the CTR
@@ -107,7 +108,6 @@ def lambda_handler(event, context):
                 instance_id = split_1.split('/queue')[0]
                 agent_id = split_1.split('agent/')[1]
 
-                connect_client = boto3.client('connect')
                 get_agent = connect_client.describe_user(
                     UserId=agent_id,
                     InstanceId=instance_id
