@@ -1,4 +1,4 @@
-# Data-Directed Routing: Flow Routing - Preparing Salesforce
+# Data-Directed Routing: Flow Routing - Preparing for the Installation
 To make this example work, you will need to add some configuration to Salesforce and Amazon Connect. In this example, we will demonstrate routing down to three tiers of skillset. In Amazon Connect, the final skillset becomes the queue, so we will need to structure everything appropriately in both platforms. 
 
 ## Add Queues to Amazon Connect
