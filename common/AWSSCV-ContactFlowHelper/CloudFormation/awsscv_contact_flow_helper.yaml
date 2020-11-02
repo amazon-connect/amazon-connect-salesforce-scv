@@ -32,7 +32,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-           S3Key: cf_code/awsscv_contact_flow_helper.py.zip
+           S3Key: cf_code/awsscv_contact_flow_helper.zip
           Description: Baseline text and math functions for ease of access in contact flows.
           FunctionName:
             !Join
@@ -40,7 +40,6 @@ Resources:
                 - - 'awsscv_contact_flow_helper_'
                   - !Ref ConnectInstanceName
           Handler: awsscv_contact_flow_helper.lambda_handler
-          Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
           Role: !Ref AWSSCVCommonRole
           Runtime: python3.8
           Timeout: 8
