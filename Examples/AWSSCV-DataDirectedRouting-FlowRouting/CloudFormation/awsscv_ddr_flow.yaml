@@ -76,7 +76,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-           S3Key: cf_code/awsscv_ddr_flow.zip
+           S3Key: awsscv_ddr_flow.zip
           Description: Uses Salesforce REST API to invoke a flow and receive a response.
           Environment:
             Variables:
@@ -107,7 +107,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-           S3Key: cf_code/awsscv_ddr_flow_target_processor.zip
+           S3Key: awsscv_ddr_flow_target_processor.zip
           Description: Processes the targets in a DDR Flow setup
           FunctionName:
             !Join
@@ -132,7 +132,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: cf_code/awsscv_contact_flow_builder.zip
+            S3Key: awsscv_contact_flow_builder.zip
           Description: Creates contact flow from template
           FunctionName:
             !Join
