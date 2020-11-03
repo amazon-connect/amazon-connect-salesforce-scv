@@ -104,7 +104,7 @@ Once you have queues created, the second part of the configuration is to allow f
 
 ## Prerequisite Installations
 This installation has multiple prerequisites. Please complete the prerequisistes before moving to installation of this example.
-1. Complete the [Salesforce Access Secrets](/Common/AWSSCV-SalesforceConfig/readme.md) setup
-2. Complete the [AWSSCV Common Layers](/Common/AWSSCV-CommonLayers/readme.md) Setup
+1. Complete the [Salesforce Access Secrets](../../../Common/AWSSCV-SalesforceConfig/readme.md) setup
+2. Complete the [AWSSCV Common Layers](../../../Common/AWSSCV-CommonLayers/readme.md) Setup
 
 You have now completed all of the prerequisites. The next step is to perform the installation of the [Data-Directed Routing: Flow Routing](install.md) example.
