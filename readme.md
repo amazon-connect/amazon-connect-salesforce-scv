@@ -12,7 +12,7 @@ The repository is divided into three core sections:
 | Name | Description | Links |
 | ---- | ----------- | ----- |
 | AWSSCV-CommonLayers | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce | [Resource](Common/AWSSCV-CommonLayers) |
-| AWSSCV-SalesforceConfig | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository. | [Common](common/AWSSCV-SalesforceConfig) |
+| AWSSCV-SalesforceConfig | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository. | [Common](Common/AWSSCV-SalesforceConfig) |
 
 ## Solutions
 
@@ -23,7 +23,7 @@ The repository is divided into three core sections:
 ## Use Case Examples
 | Name | Description | Links |
 | ---- | ----------- | ----- |
-| AWSSCV-CrossAccountSMS | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. | [Example](Solutions/AWSSCV-CrossAccountSMS) |
+| AWSSCV-CrossAccountSMS | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. | [Example](Examples/AWSSCV-CrossAccountSMS) |
 | AWSSCV-ExtensionRouter | Configures a Dial-by-extension option for Amazon Connect. | [Example](Examples/AWSSCV-ExtensionRouting) |
 | AWSSCV-FollowMeRouting | Configures an option to route calls to an agent's mobile when they are not logged in, if configured. | [Example](Examples/AWSSCV-FollowMeRouting) |
 | AWSSCV-DDR-Flow | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations | [Example](Examples/AWSSCV-DataDirectedRouting-FlowRouting) |
