@@ -36,7 +36,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: awsscv_extension_routing/AWSSCV-ProcessExtension.py.zip
+            S3Key: awsscv_process_extension.zip
           Description: Processes Salesforce REST API responce to get agent id
           Environment:
             Variables:
@@ -47,7 +47,7 @@ Resources:
                 - ''
                 - - 'awsscv_extension_routing_processor_scv_'
                   - !Ref ConnectInstanceName
-          Handler: AWSSCV-ProcessExtension.lambda_handler
+          Handler: awsscv_process_extension.lambda_handler
           Role: !Ref SalesforceRestApiFunctionRole
           Runtime: python3.8
           Timeout: 8

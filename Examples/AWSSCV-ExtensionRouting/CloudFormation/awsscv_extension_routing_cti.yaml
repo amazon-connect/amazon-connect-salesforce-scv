@@ -40,7 +40,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-           S3Key: awsscv_extension_routing/AWSSCV-SFQuery.py.zip
+           S3Key: awsscv_sf_query.zip
           Description: Uses Salesforce REST API to query for agent id
           Environment:
             Variables:
@@ -51,7 +51,7 @@ Resources:
                 - ''
                 - - 'awsscv_extension_routing_query_cti_'
                   - !Ref ConnectInstanceName
-          Handler: AWSSCV-SFQuery.lambda_handler
+          Handler: awsscv_sf_query.lambda_handler
           Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
           Role: !Ref AWSSCVCommonRole
           Runtime: python3.8
