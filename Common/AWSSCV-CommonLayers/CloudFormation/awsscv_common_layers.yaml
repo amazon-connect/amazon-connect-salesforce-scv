@@ -1,5 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Establishes supporting layers for Service Cloud Voice tools, examples, and add-ons from AWS.
+
+Mappings:
+  ConstantsMap:
+    Global:
+      S3_BUCKET_PREFIX: 'scvdev-'
+
 Parameters:
   AWSRegion:
     Type: String
@@ -22,7 +28,7 @@ Resources:
           Content:
             S3Bucket:
               !Join
-                - ''
+                - !FindInMap [ ConstantsMap, Global, S3_BUCKET_PREFIX ]
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_common_layers/awsscv_python_common.zip
@@ -37,7 +43,7 @@ Resources:
           Content:
             S3Bucket:
               !Join
-                - ''
+                - !FindInMap [ ConstantsMap, Global, S3_BUCKET_PREFIX ]
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_common_layers/awsscv_node_common.zip
