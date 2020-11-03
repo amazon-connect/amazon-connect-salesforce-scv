@@ -28,7 +28,7 @@ Resources:
             S3Key: awsscv_python_common.zip
           Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
           LayerName: awsscv_common_python
-          LicenseInfo: https://opensource.org/licenses/MIT
+          LicenseInfo: https://aws.amazon.com/apache-2-0
     SCVCommonNodeLayer:
         Type: AWS::Lambda::LayerVersion
         Properties:
@@ -43,7 +43,7 @@ Resources:
             S3Key: awsscv_nodejs_common.zip
           Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
           LayerName: aws_common_node
-          LicenseInfo: https://opensource.org/licenses/MIT
+          LicenseInfo: https://aws.amazon.com/apache-2-0
 Outputs:
   SCVCommonPythonLayerARN:
     Description: ARN for the Python common layer
