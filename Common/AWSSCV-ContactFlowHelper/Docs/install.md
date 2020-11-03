@@ -3,7 +3,7 @@ This is a simple helper Lambda that can be used standalone to help manipulate da
 
 ## Deplyoment instructions
 ### Deploy the CloudFormation template
-1. Right-click/control-click to download the [AWSSCV Contact Flow Helper template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/common/AWSSCV-ContactFlowHelper/CloudFormation/awsscv_contact_flow_helper.yaml).
+1. Right-click/control-click to download the [AWSSCV Contact Flow Helper template](/Common/AWSSCV-ContactFlowHelper/CloudFormation/awsscv_contact_flow_helper.yaml).
 2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the **CloudFormation console**
