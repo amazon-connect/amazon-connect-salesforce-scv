@@ -61,15 +61,15 @@ Example contact flow has been provided to show you how to use the Follow-Me Rout
 9.	Select **Next**
 10.	In the Stack Name field, enter `AWSSCV-FollowMe`
 11.	**Enter the parameters** as follows (most from your notepad):
-  a. AWSRegion: Select the region that you have deployed Amazon Connect in
-  b. AWSSCVCommonLambdaPythonLayer: ARN of the common python layer
-  c. AWSSCVCommonRole: ARN of the awsscv_common_role role
-  d. ConnectInstanceName: Provide the instance name for Amazon Connect.
-  e. sfDeploymentMode: Is this for a CTI-Based install (cti) or a Service Cloud Voice (scv) deployment?
-  f. sfFollowField: The name of the checknox field that you created in Salesforce to enable the Follow-Me function.
-  g. sfPhoneField: Which phone field will you be using? Phone or MobilePhone?
-  h. sfConfig: ARN for your Salesforce config in AWS Secrets Manager
-  i. sfUserField: Field is used as your Connect Username? For Service Cloud Voice, select Id. For CTI, choose the appropriate option.
+ - AWSRegion: Select the region that you have deployed Amazon Connect in
+ - AWSSCVCommonLambdaPythonLayer: ARN of the common python layer
+ - AWSSCVCommonRole: ARN of the awsscv_common_role role
+ - ConnectInstanceName: Provide the instance name for Amazon Connect.
+ - sfDeploymentMode: Is this for a CTI-Based install (cti) or a Service Cloud Voice (scv) deployment?
+ - sfFollowField: The name of the checknox field that you created in Salesforce to enable the Follow-Me function.
+ - sfPhoneField: Which phone field will you be using? Phone or MobilePhone?
+ - sfConfig: ARN for your Salesforce config in AWS Secrets Manager
+ - sfUserField: Field is used as your Connect Username? For Service Cloud Voice, select Id. For CTI, choose the appropriate option.
 12.	Select **Next**
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select **Next**
