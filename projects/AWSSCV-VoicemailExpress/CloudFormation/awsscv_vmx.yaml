@@ -53,6 +53,10 @@ Parameters:
         Type: String
         Default: vm_link__c
         Description: Custom case field created in Salesforce to store the voicemail link.
+    Production:
+        Type: String
+        Default: True
+        Description: Set this to false if you are installing the solution for Salesforce sandbox.
     sfVoicemailPhoneField:
         Type: String
         Default: vm_phone__c
