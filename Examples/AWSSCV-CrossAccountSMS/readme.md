@@ -2,6 +2,8 @@
 
 This project shows how to call an AWS Lambda function that exists in a separate account or a separate region using AWS Lambda permissions.  You might want to do this if you want to interact with an AWS service that is not part of the included SCV services.
 
+![Cross Account SNS Architecture](Docs/architecture.png)
+
 ## Project Components
 - CloudFormation template that builds:
   - IAM Role:
