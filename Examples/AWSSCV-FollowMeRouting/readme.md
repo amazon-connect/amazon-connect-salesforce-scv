@@ -21,8 +21,8 @@ Example contact flow has been provided to show you how to use the Follow-Me Rout
 - External phone number
 - Follow-Me flag set to True
   - NOTE: As the Follow-Me flag does not exist, you will need to add it
-2. [AWSSCV Salesforce Config](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceConfig) deployed
-3. [AWSSCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-CommonLayers) deployed
+2. [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig) deployed
+3. [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers) deployed
 4. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
 ### Adding the Follow-Me flag
@@ -50,7 +50,7 @@ Example contact flow has been provided to show you how to use the Follow-Me Rout
 
 ## Deplyoment instructions
 ### Deploy the CloudFormation template
-1. Right-click/control-click to download the [AWSSCV FollowMe Routing CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/FollowMeRouting/CloudFormation/awsscv_follow_me_routing.yaml).
+1. Right-click/control-click to download the [AWSSCV FollowMe Routing CloudFormation template](../../Examples/AWSSCV-FollowMeRouting/CloudFormation/awsscv_follow_me_routing.yaml).
 2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the **CloudFormation console**
@@ -77,7 +77,7 @@ Example contact flow has been provided to show you how to use the Follow-Me Rout
 16.	After a minute or two, the stack should complete.
 
 ### Update you Amazon Connect Instance
-1. Right-click/control-click to download the [AWSSCV-FollowMe contact flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/FollowMeRouting/ContactFlows/AWSSCV-FollowMe-Test).
+1. Right-click/control-click to download the [AWSSCV-FollowMe contact flow](../../Examples/AWSSCV-FollowMeRouting/ContactFlows/AWSSCV-FollowMe-Test).
 2. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 3. Navigate to the [Amazon Connect Console](https://console.aws.amazon.com/connect/home)
 4. Select your **Amazon Connect instance**
