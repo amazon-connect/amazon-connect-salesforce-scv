@@ -32,13 +32,13 @@ Example contact flows have been provided to show you how to use the Extension Ro
 
 ## Prereqiusites for CTI Adapter deployments
 1. [CTI Adaptor for Amazon Connect](https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000EJH4yUAH) installed and configured
-2. [AWSSCV Salesforce Config](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-SalesforceConfig) deployed
-3. [AWSSCV Common Layers](https://github.com/amazon-connect/amazon-connect-salesforce-scv/tree/master/common/AWSSCV-CommonLayers) deployed
+2. [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig) deployed
+3. [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers) deployed
 4. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
 ## Service Cloud Voice deplyoment instructions
 ### Deploy the CloudFormation template
-1. Right-click/control-click to download the [AWSSCV Extension Routing CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/CloudFormation/awsscv_extension_routing_scv.yaml).
+1. Right-click/control-click to download the [AWSSCV Extension Routing CloudFormation template](../../Examples/AWSSCV-ExtensionRouting/CloudFormation/awsscv_extension_routing_scv.yaml).
 2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the **CloudFormation console**
@@ -60,8 +60,8 @@ Example contact flows have been provided to show you how to use the Extension Ro
 16.	After a minute or two, the stack should complete.
 
 ### Update your Amazon Connect Instance
-1. Right-click/control-click to download the [AWSSCV-AgentWithStreaming agent whisper flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/ContactFlows/AWSSCV-AgentWithStreaming).
-2. Right-click/control-click to download the [AWSSCV-ExtensionRouter-SCV Contact Flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/ContactFlows/AWSSCV-ExtensionRouter-SCV).
+1. Right-click/control-click to download the [AWSSCV-AgentWithStreaming agent whisper flow](../../Examples/AWSSCV-ExtensionRouting/ContactFlows/AWSSCV-AgentWithStreaming).
+2. Right-click/control-click to download the [AWSSCV-ExtensionRouter-SCV Contact Flow](../../Examples/AWSSCV-ExtensionRouting/ContactFlows/AWSSCV-ExtensionRouter-SCV).
 3. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 4. Navigate to the [Amazon Connect Console](https://console.aws.amazon.com/connect/home)
 5. Select your **Amazon Connect instance**
@@ -93,7 +93,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
 
 ## CTI Adapter deplyoment instructions
 ### Deploy the CloudFormation template
-1. Right-click/control-click to download the [AWSSCV Extension Routing CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/CloudFormation/awsscv_extension_routing_cti.yaml).
+1. Right-click/control-click to download the [AWSSCV Extension Routing CloudFormation template](../../Examples/AWSSCV-ExtensionRouting/CloudFormation/awsscv_extension_routing_cti.yaml).
 2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the **CloudFormation console**
@@ -116,7 +116,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
 16.	After a minute or two, the stack should complete.
 
 ### Update you Amazon Connect Instance
-1. Right-click/control-click to download the [AWSSCV-ExtensionRouter-CTI Contact Flow](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/examples/ExtensionRouting/ContactFlows/AWSSCV-ExtensionRouter-CTI).
+1. Right-click/control-click to download the [AWSSCV-ExtensionRouter-CTI Contact Flow](../../Examples/AWSSCV-ExtensionRouting/ContactFlows/AWSSCV-ExtensionRouter-CTI).
 2. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 3. Navigate to the [Amazon Connect Console](https://console.aws.amazon.com/connect/home)
 4. Select your **Amazon Connect instance**
