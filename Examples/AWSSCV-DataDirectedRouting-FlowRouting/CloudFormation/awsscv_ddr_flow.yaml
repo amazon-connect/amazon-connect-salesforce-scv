@@ -1,0 +1,164 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda functions required to enable the Data-Directed Routing - Flow Routing examples.
+Parameters:
+    AWSRegion:
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    ConnectInstanceID:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance ID for Amazon Connect.
+    BasicQueueARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of your default queue in Amazon Connect
+    AWSSCVCommonRole:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the awsscv_common_role role
+    AWSSCVCommonLambdaPythonLayer:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the common python layer
+    InvokeTelephonyFunctionARN:
+        Type: String
+        Default: arn
+        Description: ARN for the Salesforce Invoke Telephony API Lambda Function
+    sfConfig:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for your Salesforce config in AWS Secrets Manager.
+    sfOrgId:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the ID for your Salesforce Org
+    sfQueuePrefix:
+        Type: String
+        Default: QQ
+        Description: The prefix used for Salesforce Queues. The default is QQ.
+Resources:
+    cfFlowBuilderPolicy:
+        Type: AWS::IAM::ManagedPolicy
+        Properties:
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'connect:CreateContactFlow'
+                Resource:
+                  - '*'
+          ManagedPolicyName: AWSSCV_contact_flow_build
+          Roles:
+            - awsscv_common_role
+    awsscvddrflow:
+        Type: AWS::Lambda::Function
+        DependsOn:
+          - cfFlowBuilderPolicy
+        Properties:
+          Code:
+           S3Bucket:
+              !Join
+                - ''
+                - - 'awsscv-supporting-code-'
+                  - !Ref AWSRegion
+           S3Key: awsscv_ddr_flow.zip
+          Description: Uses Salesforce REST API to invoke a flow and receive a response.
+          Environment:
+            Variables:
+              sf_org_id:
+                Ref: sfOrgId
+              queue_prefix:
+                Ref: sfQueuePrefix
+              sf_config_sm_arn:
+                Ref: sfConfig
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_ddr_flow_'
+                  - !Ref ConnectInstanceName
+          Handler: awsscv_ddr_flow.lambda_handler
+          Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
+          Role: !Ref AWSSCVCommonRole
+          Runtime: python3.8
+          Timeout: 8
+    awsscvddrflowtargetprocessor:
+        Type: AWS::Lambda::Function
+        DependsOn:
+          - cfFlowBuilderPolicy
+        Properties:
+          Code:
+           S3Bucket:
+              !Join
+                - ''
+                - - 'awsscv-supporting-code-'
+                  - !Ref AWSRegion
+           S3Key: awsscv_ddr_flow_target_processor.zip
+          Description: Processes the targets in a DDR Flow setup
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_ddr_flow_target_processor_'
+                  - !Ref ConnectInstanceName
+          Handler: awsscv_ddr_flow_target_processor.lambda_handler
+          Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
+          Role: !Ref AWSSCVCommonRole
+          Runtime: python3.8
+          Timeout: 8
+    contactFlowBuilder:
+        Type: AWS::Lambda::Function
+        DependsOn:
+          - cfFlowBuilderPolicy
+          - awsscvddrflowtargetprocessor
+          - awsscvddrflow
+        Properties:
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - 'awsscv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: awsscv_contact_flow_builder.zip
+          Description: Creates contact flow from template
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_contact_flow_builder_'
+                  - !Ref ConnectInstanceName
+          Handler: awsscv_contact_flow_builder.lambda_handler
+          Role: !Ref AWSSCVCommonRole
+          Environment:
+            Variables:
+              instanceID:
+                Ref: ConnectInstanceID
+          Runtime: python3.8
+          Timeout: 8
+    ContactFlowBuild:
+      Type: 'Custom::ConnectContactFlow'
+      Version: '1.0'
+      DependsOn:
+        - contactFlowBuilder
+      Properties:
+        ServiceToken: !GetAtt contactFlowBuilder.Arn
+        flow_arn: !GetAtt awsscvddrflow.Arn
+        telephony_arn: !Ref InvokeTelephonyFunctionARN
+        processor_arn: !GetAtt awsscvddrflowtargetprocessor.Arn
+        queue_arn: !Ref BasicQueueARN
+        flow_name: !Join
+            - ''
+            - - 'AWSSCVDataDirectedRouting-Flow-'
+              - !Ref ConnectInstanceName
