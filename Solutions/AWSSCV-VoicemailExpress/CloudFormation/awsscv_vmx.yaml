@@ -159,7 +159,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: awsscv_vmx/awsscv_vmx_presigner.py.zip
+            S3Key: awsscv_vmx_presigner.zip
           Description: Generates the presigned URL that allows access to the voicemail recording in S3
           Environment:
             Variables:
@@ -189,7 +189,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: awsscv_vmx/awsscv_vmx_kvs_to_s3.js.zip
+            S3Key: awsscv_vmx_kvs_to_s3.zip
           Description: Extracts the voicemail from the KVS stream and writes it to S3 with tag data
           Environment:
             Variables:
@@ -219,7 +219,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: awsscv_vmx/awsscv_vmx_transcriber.py.zip
+            S3Key: awsscv_vmx_transcriber.zip
           Description: Transcribes the voicemail to text and stores the transcription in S3
           Environment:
             Variables:
@@ -248,7 +248,7 @@ Resources:
                 - ''
                 - - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: awsscv_vmx/awsscv_vmx_packager.py.zip
+            S3Key: awsscv_vmx_packager.zip
           Description: Packages the voicemail and creates a case in Salesforce.
           Environment:
             Variables:
