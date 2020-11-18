@@ -57,6 +57,10 @@ Parameters:
         Type: String
         Default: vm_phone__c
         Description: Custom phone field created in Salesforce to store the callback phone number.
+    sfContactAttributesField:
+        Type: String
+        Default: connect_contact_attributes__c
+        Description: Custom field created in Salesforce to store the contact attributes.
 Resources:
     scvvmxs3recordingsbucket:
         Type: AWS::S3::Bucket
@@ -262,6 +266,8 @@ Resources:
                 Ref: sfVoicemailField
               sf_case_vm_phone_field:
                 Ref: sfVoicemailPhoneField
+              sf_case_vm_attributes:
+                Ref: sfContactAttributesField
           FunctionName:
             !Join
                 - ''
@@ -291,6 +297,7 @@ Resources:
                   - 'transcribe:StartTranscriptionJob'
                   - 'connect:DescribeUser'
                   - 'connect:UpdateContactAttributes'
+                  - 'connect:GetContactAttributes'
                 Resource:
                   - '*'
               - Effect: Allow
