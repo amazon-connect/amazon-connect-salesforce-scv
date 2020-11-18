@@ -36,5 +36,20 @@ Before deploying the Voicemail Express solutions, you will need to complete a fe
 11.	On the step 4 page, select Save
 12.	When the page reloads, scroll to the new field you created and **copy the field name (not the label) to your notepad**. It should end in __c
 
+## Create a custom field for the contact Attributes
+1.	Log in into your Salesforce org and go to Setup 
+2.	In the Quick Find field type `Object`
+3.	Select Object Manager from the results
+4.	Find and select Case
+5.	Choose Fields & Relationships
+6.	Select New
+7.	Choose Text Area (Rich), then select Next
+8.	Set a value for field label, such as `Connect Contact Attributes`
+9.	Set # Visible Lines to 25
+10.	Select Next
+11.	On the Step 3 page, select Next
+12.	On the step 4 page, select Save
+13.	When the page reloads, scroll to the new field you created and **copy the field name (not the label) to your notepad**. It should end in __c
+
 ## Prerequistes Complete
 You have copleted the prequisites for the Voicemail Express solution. You may now proceed to the [installation instructions](vmx_installation_instructions.md).

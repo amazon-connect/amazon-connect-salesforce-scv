@@ -111,11 +111,14 @@ def lambda_handler(event, context):
                 agent_id = split_1.split('agent/')[1]
 
                 get_agent = connect_client.describe_user(
-                    UserId=agent_id,
-                    InstanceId=instance_id
+                    UserId = agent_id,
+                    InstanceId = instance_id
                 )
                 print(get_agent['User']['IdentityInfo'])
                 entity_name = get_agent['User']['IdentityInfo']['FirstName']+' '+get_agent['User']['IdentityInfo']['LastName']
+                full_agent_id = get_agent['User']['Username']
+                sf_agent_id = full_agent_id.split('@')[0]
+
             except:
                 print('Record ' + str(loop_counter) + ' Result: Failed to find agent')
                 entity_name = 'UNKNOWN'
@@ -137,6 +140,20 @@ def lambda_handler(event, context):
         except:
             international_phone = '+' + loaded_tags['vm_from']
 
+        # Get the existing contact attributes from the call
+        try:
+            queue_arn = loaded_tags['vm_queue_arn']
+            split_1 = queue_arn.split('instance/')[1]
+            instance_id = split_1.split('/queue')[0]
+            contact_attributes = connect_client.get_contact_attributes(
+                InstanceId = instance_id,
+                InitialContactId = contact_id
+            )
+            contact_attributes = json.dumps(contact_attributes['Attributes'])
+
+        except:
+            print('Record ' + str(loop_counter) + ' Result: Failed to extract attributes')
+            contact_attributes = 'UNKNOWN'
         # Perform the salesforce login
         try:
             sf = Salesforce()
@@ -147,15 +164,30 @@ def lambda_handler(event, context):
 
         # Create a case in Salesforce
         try:
-            data = {
-                'Subject': vm_prefix + ' voicemail for: ' + entity_name + ', from : ' + international_phone,
-                'Description': 'Voicemail transcript: ' + transcript_contents,
-                'Status': 'New',
-                'Priority': loaded_tags['vm_priority'],
-                'Origin': 'Phone',
-                os.environ['sf_case_vm_phone_field']: international_phone,
-                os.environ['sf_case_vm_field']: formatted_url
-            }
+            if loaded_tags['vm_queue_type'] == 'agent':
+                data = {
+                    'Subject': vm_prefix + ' voicemail for: ' + entity_name + ', from : ' + international_phone,
+                    'Description': 'Voicemail transcript: ' + transcript_contents,
+                    'Status': 'New',
+                    'Priority': loaded_tags['vm_priority'],
+                    'Origin': 'Phone',
+                    'OwnerId': sf_agent_id,
+                    os.environ['sf_case_vm_attributes']: contact_attributes,
+                    os.environ['sf_case_vm_phone_field']: international_phone,
+                    os.environ['sf_case_vm_field']: formatted_url
+                }
+
+            else:
+                data = {
+                    'Subject': vm_prefix + ' voicemail for: ' + entity_name + ', from : ' + international_phone,
+                    'Description': 'Voicemail transcript: ' + transcript_contents,
+                    'Status': 'New',
+                    'Priority': loaded_tags['vm_priority'],
+                    'Origin': 'Phone',
+                    os.environ['sf_case_vm_attributes']: contact_attributes,
+                    os.environ['sf_case_vm_phone_field']: international_phone,
+                    os.environ['sf_case_vm_field']: formatted_url
+                }
             print(data)
 
             response = sf.create(sobject='Case', data=data)
