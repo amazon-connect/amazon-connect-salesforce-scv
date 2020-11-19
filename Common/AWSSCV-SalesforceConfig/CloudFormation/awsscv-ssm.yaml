@@ -44,6 +44,14 @@ Parameters:
         Default: REPLACEME
         Description: The entire contents of the encoded_key.txt file that you generated as a part of the setup process
         NoEcho: true
+    sfMode:
+      Type: String
+      Default: PROD
+      AllowedValues:
+        - PROD
+        - DEV
+        - SANDBOX
+      Description: The type of Salesforce org
 Resources:
     awsscvcommonsecrets:
         Type: AWS::SecretsManager::Secret
@@ -55,7 +63,7 @@ Resources:
                   - !Ref ConnectInstanceName
           Description: Required credentials to access Salesforce
           SecretString: !Sub
-            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}","PrivateKey":"${PK}","Version":"${VR}"}'
+            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}","PrivateKey":"${PK}","Version":"${VR}", "Mode":"${MD}"}'
             - OT: PLACEHOLDER
               CK: !Ref sfConsumerKey
               UN: !Ref sfUsername
@@ -63,6 +71,7 @@ Resources:
               SH: !Ref sfHost
               PK: !Ref sfPrivateKey
               VR: !Ref sfVersion
+              MD: !Ref sfMode
     awsscvcommonsecretspolicy:
         Type: AWS::IAM::ManagedPolicy
         DependsOn:

@@ -108,6 +108,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
  - sfOrgId: Provide your Salesforce.com Organization ID
  - sfPrivateKey: The contents of the encoded_key.txt that you generated as a part of the setup process.
  - sfUsername: Your awsutil username
+ - sfMode: The type of Salesforce org (PROD, DEV, SANDBOX)
 12.	Select Next
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select Next
