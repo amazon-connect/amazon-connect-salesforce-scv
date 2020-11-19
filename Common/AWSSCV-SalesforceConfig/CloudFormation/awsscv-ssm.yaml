@@ -51,7 +51,7 @@ Parameters:
         - PROD
         - DEV
         - SANDBOX
-      Description: The mode of the Salesforce org
+      Description: The type of Salesforce org
 Resources:
     awsscvcommonsecrets:
         Type: AWS::SecretsManager::Secret
