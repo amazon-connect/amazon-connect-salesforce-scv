@@ -49,6 +49,14 @@ Parameters:
           - CTI
           - SCV
         Description: Is this a CTI Adapter configuration or Service Cloud Voice?
+    sfOrgType:
+        Type: String
+        Default: PROD
+        AllowedValues:
+          - PROD
+          - DEV
+          - SANDBOX
+        Description: What is the type of Salesforce Org?
     sfVoicemailField:
         Type: String
         Default: vm_link__c
