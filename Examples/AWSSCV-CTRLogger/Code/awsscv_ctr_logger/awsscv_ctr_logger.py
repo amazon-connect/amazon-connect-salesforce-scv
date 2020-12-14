@@ -27,4 +27,4 @@ def log_to_console(record):
 def log_to_s3(record):
     s3_client = boto3.client('s3')
     contactId = record['ContactId']
-    s3_client.put_object(Body=json.dumps(record, skipkeys = True, indent = 2), Bucket=s3_bucket, Key=contactId + '_ctr.json')
+    s3_client.put_object(Body=json.dumps(record, skipkeys = True, indent = 2), Bucket=s3_bucket, Key=contactId + '.json')

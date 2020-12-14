@@ -28,7 +28,7 @@ Parameters:
   CTRKinesisStream:
     Type: String
     Default: REPLACEME
-    Description: Provide the ARN of the Kinesis stream used for CTRs
+    Description: ARN of the Kinesis stream used for CTRs
 
   Format:
     Type: String
@@ -106,7 +106,7 @@ Resources:
       FunctionName:
         !Join
         - ''
-        - - 'awsscv_ctr_logger'
+        - - 'awsscv_ctr_logger_'
           - !Ref ConnectInstanceName
       Handler: awsscv_ctr_logger.lambda_handler
       Role: !Ref AWSSCVCommonRole
