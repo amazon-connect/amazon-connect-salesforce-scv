@@ -29,9 +29,9 @@ For these deployments, the following AWS Lambda function is provided:
 - AWSSCVCommonRole: ARN of the awsscv_common_role role
 - ConnectInstanceName: Provide the instance name for Amazon Connect.
 - CTRKinesisStream: ARN of the CTR Kinesis stream
-_ Format: Pretty print (true) the CTR output
-_ LambdaLoggingLevel: INFO or DEBUG
-_ WriteTo: Where to send the CTR data (s3, console, or both)
+- Format: Pretty print (true) the CTR output
+- LambdaLoggingLevel: INFO or DEBUG
+- WriteTo: Where to send the CTR data (s3, console, or both)
 12.	Select **Next**
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select **Next**
