@@ -1,0 +1,124 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda functions required to enable logging of Amazon Connect Contact Trace Records to CloudWatch, S3, or both.
+Parameters:
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - eu-central-1
+      - eu-west-2
+    Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+
+  AWSSCVCommonRole:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the awsscv_common_role role
+
+  ConnectInstanceName:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the instance name for Amazon Connect.
+
+  CTRKinesisStream:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the Kinesis stream used for CTRs
+
+  Format:
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: Pretty print CTR output
+
+  LambdaLoggingLevel:
+    Type: String
+    Default: INFO
+    AllowedValues:
+      - DEBUG
+      - INFO
+
+  WriteTo:
+    Type: String
+    Default: both
+    AllowedValues:
+      - console
+      - s3
+      - both
+
+Resources:
+  awsscvctrloggerbucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName:
+        !Join
+        - ''
+        - - 'awsscv-ctr-logger-'
+          - !Ref ConnectInstanceName
+
+  awsscvctrloggers3policy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - awsscvctrloggerbucket
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+            Resource:
+              - !GetAtt awsscvctrloggerbucket.Arn
+      ManagedPolicyName: awsscv_ctr_logger_s3_access
+      Roles:
+        - awsscv_common_role
+
+  awsscvctrloggerlambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - 'awsscv-supporting-code-'
+            - !Ref AWSRegion
+        S3Key: awsscv_ctr_logger.zip
+      Description: Lambda function to log CTR data
+      Environment:
+        Variables:
+          format:
+            Ref: Format
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          s3Bucket:
+            Ref: awsscvctrloggerbucket
+          writeTo:
+            Ref: WriteTo
+      FunctionName:
+        !Join
+        - ''
+        - - 'awsscv_ctr_logger_'
+          - !Ref ConnectInstanceName
+      Handler: awsscv_ctr_logger.lambda_handler
+      Role: !Ref AWSSCVCommonRole
+      Runtime: python3.8
+      Timeout: 8
+
+  awsscvctrloggertrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      Enabled: true
+      EventSourceArn: !Ref CTRKinesisStream
+      FunctionName: !GetAtt awsscvctrloggerlambda.Arn
+      MaximumBatchingWindowInSeconds: 0
+      StartingPosition: LATEST
