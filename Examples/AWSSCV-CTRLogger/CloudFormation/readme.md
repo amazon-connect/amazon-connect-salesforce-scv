@@ -3,5 +3,5 @@ The **awsscv_ctr_logger.yaml** cloudformation template deploys the following res
 
 Resource Name | Type | Description
 ------------ | ------------- | -------------
-AWSSCV_contact_flow_build | IAM Policy | IAM policy that adds the permissions to create contact flows
+awsscv_ctr_logger_s3_access | IAM Policy | IAM policy that adds the permissions to access the generated S3 bucket
 awsscv_ctr_logger_%INSTANCENAME% | Lambda Function | Called by contact flow. Invokes a Salesforce flow
