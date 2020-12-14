@@ -15,12 +15,17 @@ Parameters:
       - eu-west-2
     Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
 
+  AWSSCVCommonRole:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the awsscv_common_role role
+
   ConnectInstanceName:
     Type: String
     Default: REPLACEME
     Description: Provide the instance name for Amazon Connect.
 
-  CTRKinesisStreamARN:
+  CTRKinesisStream:
     Type: String
     Default: REPLACEME
     Description: Provide the ARN of the Kinesis stream used for CTRs
@@ -40,21 +45,44 @@ Parameters:
       - DEBUG
       - INFO
 
-  S3BucketARN:
-    Type: String
-    Default: REPLACEME
-    Description: ARN of your S3 bucket for storing CTRs
-
   WriteTo:
     Type: String
     Default: both
-    AlloweValues:
+    AllowedValues:
       - console
       - s3
       - both
 
 Resources:
-  awsscv_ctr_logger:
+  awsscvctrloggerbucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName:
+        !Join
+        - ''
+        - - 'awsscv-ctr-logger-'
+          - !Ref ConnectInstanceName
+
+  awsscvctrloggers3policy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - awsscvctrloggerbucket
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+            Resource:
+              - !GetAtt awsscvctrloggerbucket.Arn
+      ManagedPolicyName: awsscv_ctr_logger_s3_access
+      Roles:
+        - awsscv_common_role
+
+  awsscvctrloggerlambda:
     Type: AWS::Lambda::Function
     Properties:
       Code:
@@ -64,7 +92,7 @@ Resources:
           - - 'awsscv-supporting-code-'
             - !Ref AWSRegion
         S3Key: awsscv_ctr_logger.zip
-      Description:
+      Description: Lambda function to log CTR data
       Environment:
         Variables:
           format:
@@ -72,7 +100,7 @@ Resources:
           lambda_logging_level:
             Ref: LambdaLoggingLevel
           s3Bucket:
-            Ref: S3Bucket
+            Ref: awsscvctrloggerbucket
           writeTo:
             Ref: WriteTo
       FunctionName:
@@ -84,3 +112,13 @@ Resources:
       Role: !Ref AWSSCVCommonRole
       Runtime: python3.8
       Timeout: 8
+
+  awsscvctrloggertrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      Enabled: true
+      EventSourceArn: !Ref CTRKinesisStream
+      FunctionName: !GetAtt awsscvctrloggerlambda.Arn
+      MaximumBatchingWindowInSeconds: 0
+      StartingPosition: LATEST
