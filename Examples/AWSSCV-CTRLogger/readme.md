@@ -2,7 +2,7 @@
 This example shows how you can capture CTR events from a Kinesis stream and process those events to store CTR data in S3 or log CTR data to CloudWatch.
 
 ## Deployment Resources
-To enable Follow-Me routing, we need to deploy one AWS Lambda function and import one contact flow. Additionally, we need to configure a custom field in the Salesforce User object, and ensure that users have an appropriate phone number in the Mobile field.
+To enable CTR logging, we need to deploy one AWS Lambda function.
 
 ### AWS Lambda Function
 For these deployments, the following AWS Lambda function is provided:
