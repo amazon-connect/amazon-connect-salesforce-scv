@@ -112,7 +112,7 @@ Resources:
           FunctionName:
             !Join
                 - ''
-                - - 'awsscv_ddr_flow_target_processor_'
+                - - 'awsscv_ddr_target_proc_'
                   - !Ref ConnectInstanceName
           Handler: awsscv_ddr_flow_target_processor.lambda_handler
           Layers: [!Ref AWSSCVCommonLambdaPythonLayer]
