@@ -50,9 +50,11 @@ Now that the Salesforce environment is ready, you will need to configure the AWS
 10. In the Stack Name field, enter `AWSSCV-DDR-Flow`
 11. **Enter the parameters** as follows (most from your notepad):
  - AWSRegion: Select the region that you have deployed Amazon Connect in
- - ConnectInstanceName: Your connect instance name
- - AWSSCVCommonRole: The ARN of the awsscv_common_role role
  - AWSSCVCommonLambdaPythonLayer: ARN of the common python layer
+ - AWSSCVCommonRole: The ARN of the awsscv_common_role role
+ - ConnectInstanceID: Your Connect Instance ID
+ - ConnectInstanceName: Your Connect instance name
+ - InvokeTelephonyFunctionARN: ARN for the Salesforce Invoke Telephony API Lambda Function
  - sfConfig: ARN for your Salesforce config in AWS Secrets Manager
  - sfOrgId: Provide the ID for your Salesforce Org
  - sfQueuePrefix: The prefix used for Salesforce Queues. The default is QQ.
