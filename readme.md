@@ -19,7 +19,7 @@ The repository is divided into three core sections:
 | Name | Description | Links |
 | ---- | ----------- | ----- |
 | AWSSCV-Voicemail Express | Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice | [Solution](Solutions/AWSSCV-VoicemailExpress)
-| AWSSCV-CTRLogger | Configures a Lambda function to log Amazon Connect Contact Trace records to CloudWatch, S3, or both | [Example](amazon-connect-salesforce-scv/Solutions/AWSSCV-CTRLogger) |
+| AWSSCV-CTRLogger | Configures a Lambda function to log Amazon Connect Contact Trace records to CloudWatch, S3, or both | [Solution](Solutions/AWSSCV-CTRLogger) |
 
 ## Use Case Examples
 | Name | Description | Links |
