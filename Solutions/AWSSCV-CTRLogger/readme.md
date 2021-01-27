@@ -9,12 +9,12 @@ For these deployments, the following AWS Lambda function is provided:
 - awsscv_ctr_logger_%InstanceName% (awsscv-ctr-logger.py): Provides ability to receive CTR events from Kinesis, store those events in S3, and/or log those events to CloudWatch.
 
 ## Prerequisites for all deployments
-1. [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig) deployed
+1. [AWSSCV Salesforce Config](amazon-connect-salesforce-scv/Common/AWSSCV-SalesforceConfig) deployed
 2. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
 ## Deplyoment instructions
 ### Deploy the CloudFormation template
-1. Right-click/control-click to download the [AWSSCV CTRLogger template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/Examples/AWSSCV-CTRLogger/CloudFormation/awsscv_ctr_logger.yaml).
+1. Right-click/control-click to download the [AWSSCV CTRLogger template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/Solutions/AWSSCV-CTRLogger/CloudFormation/awsscv_ctr_logger.yaml).
 2. In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 3.	Make sure you are in the **same region** as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
 4.	Navigate to the **CloudFormation console**
