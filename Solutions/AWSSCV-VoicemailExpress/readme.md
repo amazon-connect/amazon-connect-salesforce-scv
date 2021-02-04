@@ -12,7 +12,7 @@ With Voicemail Express, customers can have the option to leave a voicemail for a
 Voicemails in this solution are configured for a lifecycle of up to 7 days. After 7 days, the recordings are deleted and the presigned URL is no longer valid. During deployment, you have the option to reduce this lifecycle window, if desired. Once the recording is deleted, the generated case will still maintain a copy of the transcript for future reference. 
 
 To deploy Voicemail express, you will need to complete the following:
-1. Complete the [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig/readme.md) setup
-2. Complete the [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers/readme.md) Setup
+1. Complete the [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers/readme.md) Setup 
+2. Complete the [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig/readme.md) setup
 3. Complete the [Voicemail Express Prerequisites](Docs/vmx_prerequistes.md)
 4. Complete the [Voicemail Express Installation](Docs/vmx_installation_instructions.md)
