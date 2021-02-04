@@ -1,0 +1,317 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  Creates a CloudWatch Dashboard and set of CloudWatch Alarms for monitoring Amazon Connect resources.
+  Optionally uses Salesforce API's to send alerts to a specified chatter feed when certain Amazon Connect metrics breach configured alarm thresholds.
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Environment
+        Parameters:
+          - ConnectInstanceId
+          - SalesforceOrgId
+          - DashboardName
+          - SnsTopicArn
+          - ChatterFeedId
+
+      - Label:
+          default: Concurrent Calls Alarm
+        Parameters:
+          - ConcurrentCallsPeriod
+          - ConcurrentCallsEvaluationPeriods
+          - ConcurrentCallsThreshold
+
+      - Label:
+          default: Concurrent Calls Percentage Alarm
+        Parameters:
+          - ConcurrentCallsPercentagePeriod
+          - ConcurrentCallsPercentageEvaluationPeriods
+          - ConcurrentCallsPercentageThreshold
+
+      - Label:
+          default: Throttled Calls Percentage Alarm
+        Parameters:
+          - ThrottledCallsPeriod
+          - ThrottledCallsEvaluationPeriods
+          - ThrottledCallsThreshold
+
+      - Label:
+          default: Misconfigured Phone Numbers Alarm
+        Parameters:
+          - MisconfiguredPhoneNumbersPeriod
+          - MisconfiguredPhoneNumbersEvaluationPeriods
+          - MisconfiguredPhoneNumbersThreshold
+
+      - Label:
+          default: Missed Calls Calls Alarm
+        Parameters:
+          - MissedCallsPeriod
+          - MissedCallsEvaluationPeriods
+          - MissedCallsThreshold
+
+      - Label:
+          default: Contact Flow Alarms
+        Parameters:
+          - ContactFlowName
+          - ContactFlowFatalErrorsPeriod
+          - ContactFlowFatalErrorsEvaluationPeriods
+          - ContactFlowFatalErrorsThreshold
+
+Parameters:
+  ConnectInstanceId:
+    Description: The id of the Connect instance to monitor.
+    Type: String
+
+  SalesforceOrgId:
+    Description: The id of the Salesforce organization.
+    Type: String
+
+  SnsTopicArn:
+    Type: String
+    Description: Remote account SNS Topic ARN
+
+  DashboardName:
+    Description: The CloudWatch dashboard name.
+    Type: String
+    Default: AmazonConnectMetrics
+    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
+    ConstraintDescription: "Dashboard name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+
+  ConcurrentCallsPeriod:
+    Description: Data evaluation period in seconds
+    Type: Number
+    Default: 60
+  ConcurrentCallsEvaluationPeriods:
+    Description: Group size of data evaluation periods
+    Type: Number
+    Default: 3
+  ConcurrentCallsThreshold:
+    Description: Limit above which alarms are raised
+    Type: Number
+    Default: 90
+
+  ConcurrentCallsPercentagePeriod:
+    Description: Data evaluation period in seconds
+    Type: Number
+    Default: 60
+  ConcurrentCallsPercentageEvaluationPeriods:
+    Description: Group size of data evaluation periods
+    Type: Number
+    Default: 3
+  ConcurrentCallsPercentageThreshold:
+    Description: Limit above which alarms are raised
+    Type: Number
+    Default: 0.8
+
+  ThrottledCallsPeriod:
+    Description: Data evaluation period in seconds
+    Type: Number
+    Default: 60
+  ThrottledCallsEvaluationPeriods:
+    Description: Group size of data evaluation periods
+    Type: Number
+    Default: 3
+  ThrottledCallsThreshold:
+    Description: Limit above which alarms are raised
+    Type: Number
+    Default: 1
+
+  MisconfiguredPhoneNumbersPeriod:
+    Description: Data evaluation period in seconds
+    Type: Number
+    Default: 10
+  MisconfiguredPhoneNumbersEvaluationPeriods:
+    Description: Group size of data evaluation periods
+    Type: Number
+    Default: 1
+  MisconfiguredPhoneNumbersThreshold:
+    Description: Limit above which alarms are raised
+    Type: Number
+    Default: 1
+
+  MissedCallsPeriod:
+    Description: Data evaluation period in seconds
+    Type: Number
+    Default: 60
+  MissedCallsEvaluationPeriods:
+    Description: Group size of data evaluation periods
+    Type: Number
+    Default: 1
+  MissedCallsThreshold:
+    Description: Limit above which alarms are raised
+    Type: Number
+    Default: 1
+
+  ContactFlowName:
+    Description: The contact flow name
+    Type: String
+  ContactFlowFatalErrorsPeriod:
+    Description: Data evaluation period in seconds
+    Type: Number
+    Default: 60
+  ContactFlowFatalErrorsEvaluationPeriods:
+    Description: Group size of data evaluation periods
+    Type: Number
+    Default: 1
+  ContactFlowFatalErrorsThreshold:
+    Description: Limit above which alarms are raised
+    Type: Number
+    Default: 1
+
+Resources:
+  SnsTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      TopicName: !Ref SnsTopicName
+
+  AlarmDashboard:
+    Type: "AWS::CloudWatch::Dashboard"
+    Properties:
+      DashboardName: !Ref DashboardName
+      DashboardBody: !Sub '{"widgets":[{"type":"metric","x":0,"y":10,"width":9,"height":6,"properties":{"title":"Misconfigured Phone Numbers","annotations":{"alarms":["arn:aws:cloudwatch:us-west-2:131983176673:alarm:Connect Misconfigured Phone Numbers InstanceId 73423fe5-d01a-4f52-88e3-70dc5cbbe4c7"]},"view":"timeSeries","stacked":false,"legend":{"position":"hidden"}}},{"type":"metric","x":0,"y":1,"width":6,"height":6,"properties":{"title":"Concurrent Calls","annotations":{"alarms":["arn:aws:cloudwatch:us-west-2:131983176673:alarm:Connect Concurrent Calls InstanceId 73423fe5-d01a-4f52-88e3-70dc5cbbe4c7"]},"view":"timeSeries","stacked":false,"legend":{"position":"hidden"}}},{"type":"metric","x":6,"y":1,"width":6,"height":6,"properties":{"title":"Concurrent Calls Percentage","annotations":{"alarms":["arn:aws:cloudwatch:us-west-2:131983176673:alarm:Connect Concurrent Calls Percentage InstanceId 73423fe5-d01a-4f52-88e3-70dc5cbbe4c7"]},"view":"timeSeries","stacked":false,"legend":{"position":"hidden"}}},{"type":"metric","x":12,"y":7,"width":6,"height":3,"properties":{"title":"Throttled Calls","annotations":{"alarms":["arn:aws:cloudwatch:us-west-2:131983176673:alarm:Connect Throttled Calls InstanceId 73423fe5-d01a-4f52-88e3-70dc5cbbe4c7"]},"view":"singleValue","stacked":false,"legend":{"position":"hidden"}}},{"type":"metric","x":0,"y":7,"width":6,"height":3,"properties":{"view":"singleValue","metrics":[["AWS/Connect","ConcurrentCalls","InstanceId","73423fe5-d01a-4f52-88e3-70dc5cbbe4c7","MetricGroup","VoiceCalls"]],"region":"us-west-2","period":300,"title":"Concurrent Calls"}},{"type":"metric","x":6,"y":7,"width":6,"height":3,"properties":{"view":"singleValue","metrics":[["AWS/Connect","ConcurrentCallsPercentage","InstanceId","73423fe5-d01a-4f52-88e3-70dc5cbbe4c7","MetricGroup","VoiceCalls"]],"region":"us-west-2","title":"Concurrent Calls Percentage"}},{"type":"metric","x":12,"y":1,"width":6,"height":6,"properties":{"title":"Throttled Calls","annotations":{"alarms":["arn:aws:cloudwatch:us-west-2:131983176673:alarm:Connect Throttled Calls InstanceId 73423fe5-d01a-4f52-88e3-70dc5cbbe4c7"]},"view":"timeSeries","stacked":false,"legend":{"position":"hidden"}}},{"type":"text","x":0,"y":0,"width":18,"height":1,"properties":{"markdown":"# Amazon Connect Alarm Dashboard"}},{"type":"metric","x":9,"y":10,"width":9,"height":6,"properties":{"title":"Connect Contact Flow Fatal Errors [Oktank Main]","annotations":{"alarms":["arn:aws:cloudwatch:us-west-2:131983176673:alarm:Connect Contact Flow Fatal Errors Contact Flow Oktank Main InstanceId 73423fe5-d01a-4f52-88e3-70dc5cbbe4c7"]},"view":"timeSeries","stacked":false}}]}'
+
+  ConcurrentCallsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "Connect Concurrent Calls InstanceId ${ConnectInstanceId}"
+      AlarmDescription: !Sub "The number of concurrent active voice calls in the connect instance during the evaluation period was greater than ${ConcurrentCallsThreshold}. All active voice calls are included, not only active calls that are connected to agents. Open a support ticket with Amazon and request a Concurrent call limit increase for the instance ${ConnectInstanceId} in account ${AWS::AccountId}"
+      Namespace: AWS/Connect
+      MetricName: ConcurrentCalls
+      Statistic: Maximum
+      Unit: Count
+      AlarmActions:
+        - !Ref SnsTopicArn
+      OKActions:
+        - !Ref SnsTopicArn
+      Period: !Ref ConcurrentCallsPeriod
+      Threshold: !Ref ConcurrentCallsThreshold
+      EvaluationPeriods: !Ref ConcurrentCallsEvaluationPeriods
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref ConnectInstanceId
+        - Name: MetricGroup
+          Value: VoiceCalls
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: "ignore"
+
+  ConcurrentCallsPercentageAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "Connect Concurrent Calls Percentage InstanceId ${ConnectInstanceId}"
+      AlarmDescription: !Sub "The number of concurrent active voice calls in the connect instance during the evaluation period was greater than ${ConcurrentCallsPercentageThreshold}. All active voice calls are included, not only active calls that are connected to agents. Open a support ticket with Amazon and request a Concurrent call limit increase for the instance ${ConnectInstanceId} in account ${AWS::AccountId}"
+      Namespace: AWS/Connect
+      MetricName: ConcurrentCallsPercentage
+      Statistic: Maximum
+      Unit: Count
+      AlarmActions:
+        - !Ref SnsTopicArn
+      OKActions:
+        - !Ref SnsTopicArn
+      Period: !Ref ConcurrentCallsPercentagePeriod
+      Threshold: !Ref ConcurrentCallsPercentageThreshold
+      EvaluationPeriods: !Ref ConcurrentCallsPercentageEvaluationPeriods
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref ConnectInstanceId
+        - Name: MetricGroup
+          Value: VoiceCalls
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: "ignore"
+
+  ThrottledCallsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "Connect Throttled Calls InstanceId ${ConnectInstanceId}"
+      AlarmDescription: !Sub "The number of voice calls that were throttled by the Amazon Connect service because the rate of calls per second (Callrate) exceeded the configured limit for the instance during the evaluation period was greater than ${ThrottledCallsThreshold}.  Open a support ticket with Amazon and request a Callrate limit increase for the instance ${ConnectInstanceId} in account ${AWS::AccountId}"
+      Namespace: AWS/Connect
+      MetricName: ThrottledCalls
+      Statistic: Maximum
+      Unit: Count
+      AlarmActions:
+        - !Ref SnsTopicArn
+      OKActions:
+        - !Ref SnsTopicArn
+      Period: !Ref ThrottledCallsPeriod
+      Threshold: !Ref ThrottledCallsThreshold
+      EvaluationPeriods: !Ref ThrottledCallsEvaluationPeriods
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref ConnectInstanceId
+        - Name: MetricGroup
+          Value: VoiceCalls
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: "ignore"
+
+  MisconfiguredPhoneNumbersAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "Connect Misconfigured Phone Numbers InstanceId ${ConnectInstanceId}"
+      AlarmDescription: !Sub "The number of calls that failed because the phone number is not associated with a contact flow.  Review phone number / contact flow assignments in the instance ${ConnectInstanceId} in account ${AWS::AccountId}"
+      Namespace: AWS/Connect
+      MetricName: MisconfiguredPhoneNumbers
+      Statistic: SampleCount
+      Unit: Count
+      AlarmActions:
+        - !Ref SnsTopicArn
+      OKActions:
+        - !Ref SnsTopicArn
+      Period: !Ref MisconfiguredPhoneNumbersPeriod
+      Threshold: !Ref MisconfiguredPhoneNumbersThreshold
+      EvaluationPeriods: !Ref MisconfiguredPhoneNumbersEvaluationPeriods
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref ConnectInstanceId
+        - Name: MetricGroup
+          Value: VoiceCalls
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: "notBreaching"
+
+  MissedCallsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "Connect Missed Calls InstanceId ${ConnectInstanceId}"
+      AlarmDescription: !Sub "The number of calls that were missed by agents during the refresh interval.  A missed call is one that is not answered by an agent within 20 seconds.  Review configuration in the instance ${ConnectInstanceId} in account ${AWS::AccountId}"
+      Namespace: AWS/Connect
+      MetricName: MissedCalls
+      Statistic: SampleCount
+      Unit: Count
+      AlarmActions:
+        - !Ref SnsTopicArn
+      OKActions:
+        - !Ref SnsTopicArn
+      Period: !Ref MissedCallsPeriod
+      Threshold: !Ref MissedCallsThreshold
+      EvaluationPeriods: !Ref MissedCallsEvaluationPeriods
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref ConnectInstanceId
+        - Name: MetricGroup
+          Value: VoiceCalls
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: "notBreaching"
+
+  ContactFlowFatalErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "Connect Contact Flow Fatal Errors Contact Flow ${ContactFlowName} InstanceId ${ConnectInstanceId}"
+      AlarmDescription: !Sub "The number of times a contact flow failed to execute due to a system error.  Review the contact flow ${ContactFlowName} in the instance ${ConnectInstanceId} in account ${AWS::AccountId}"
+      Namespace: AWS/Connect
+      MetricName: ContactFlowFatalErrors
+      Statistic: SampleCount
+      Unit: Count
+      AlarmActions:
+        - !Ref SnsTopicArn
+      OKActions:
+        - !Ref SnsTopicArn
+      Period: !Ref ContactFlowFatalErrorsPeriod
+      Threshold: !Ref ContactFlowFatalErrorsThreshold
+      EvaluationPeriods: !Ref ContactFlowFatalErrorsEvaluationPeriods
+      Dimensions:
+        - Name: InstanceId
+          Value: !Ref ConnectInstanceId
+        - Name: MetricGroup
+          Value: ContactFlow
+        - Name: ContactFlowName
+          Value: !Ref ContactFlowName
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: "notBreaching"
