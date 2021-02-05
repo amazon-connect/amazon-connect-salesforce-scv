@@ -191,6 +191,7 @@ def lambda_handler(event, context):
             print(data)
 
             response = sf.create(sobject='Case', data=data)
+            print('Record ' + str(loop_counter) + ' Result: Case created [' + response['id'] + ']')
             sf_case = response
 
         except:
