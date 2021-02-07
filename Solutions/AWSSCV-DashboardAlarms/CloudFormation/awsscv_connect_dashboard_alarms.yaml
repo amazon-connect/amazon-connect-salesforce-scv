@@ -8,10 +8,12 @@ Metadata:
       - Label:
           default: Environment
         Parameters:
+          - AWSRegion
+          - AWSSalesforceCommonPythonLayer
+          - AWSSCVCommonRole
           - ConnectInstanceId
           - SalesforceOrgId
           - DashboardName
-          - SnsTopicArn
           - ChatterFeedId
 
       - Label:
@@ -58,6 +60,29 @@ Metadata:
           - ContactFlowFatalErrorsThreshold
 
 Parameters:
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - eu-central-1
+      - eu-west-2
+    Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice.
+
+  AWSSCVCommonRole:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the awsscv_common_role role
+
+  AWSSalesforceCommonPythonLayer:
+    Type: String
+    Default: REPLACEME
+    Description: ARN for the AWSSCV Common Python Layer.
+
   ConnectInstanceId:
     Description: The id of the Connect instance to monitor.
     Type: String
@@ -65,10 +90,6 @@ Parameters:
   SalesforceOrgId:
     Description: The id of the Salesforce organization.
     Type: String
-
-  SnsTopicArn:
-    Type: String
-    Description: Remote account SNS Topic ARN
 
   DashboardName:
     Description: The CloudWatch dashboard name.
@@ -159,10 +180,45 @@ Parameters:
     Default: 1
 
 Resources:
+  SCVAlarmToChatterLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - 'scvdev-awsscv-supporting-code-'
+            - !Ref AWSRegion
+        S3Key: awsscv_alarm_to_chatter.zip
+      Description: Writes alarm to Salesforce Chatter feed
+      Environment:
+        Variables:
+          Region:
+            Ref: AWSRegion
+      FunctionName:
+        !Join
+        - ''
+        - - 'AWSSCV_alarm_to_chatter_'
+          - !Ref ConnectInstanceId
+      Handler: awsscv_alarm_to_chatter.handler
+      Role: !Ref AWSSCVCommonRole
+      Layers: [ !Ref AWSSalesforceCommonPythonLayer ]
+      Runtime: python3.8
+      Timeout: 900
+
   SnsTopic:
     Type: "AWS::SNS::Topic"
+    DependsOn:
+      - SCVAlarmToChatterLambda
     Properties:
-      TopicName: !Ref SnsTopicName
+      TopicName:
+        !Join
+        - ''
+        - - 'AWSSCV_alarm_'
+          - !Ref ConnectInstanceId
+      Subscription:
+        - Protocol: lambda
+          Endpoint: !GetAtt SCVAlarmToChatterLambda.Arn
 
   AlarmDashboard:
     Type: "AWS::CloudWatch::Dashboard"
@@ -180,9 +236,9 @@ Resources:
       Statistic: Maximum
       Unit: Count
       AlarmActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       OKActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       Period: !Ref ConcurrentCallsPeriod
       Threshold: !Ref ConcurrentCallsThreshold
       EvaluationPeriods: !Ref ConcurrentCallsEvaluationPeriods
@@ -204,9 +260,9 @@ Resources:
       Statistic: Maximum
       Unit: Count
       AlarmActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       OKActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       Period: !Ref ConcurrentCallsPercentagePeriod
       Threshold: !Ref ConcurrentCallsPercentageThreshold
       EvaluationPeriods: !Ref ConcurrentCallsPercentageEvaluationPeriods
@@ -228,9 +284,9 @@ Resources:
       Statistic: Maximum
       Unit: Count
       AlarmActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       OKActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       Period: !Ref ThrottledCallsPeriod
       Threshold: !Ref ThrottledCallsThreshold
       EvaluationPeriods: !Ref ThrottledCallsEvaluationPeriods
@@ -252,9 +308,9 @@ Resources:
       Statistic: SampleCount
       Unit: Count
       AlarmActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       OKActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       Period: !Ref MisconfiguredPhoneNumbersPeriod
       Threshold: !Ref MisconfiguredPhoneNumbersThreshold
       EvaluationPeriods: !Ref MisconfiguredPhoneNumbersEvaluationPeriods
@@ -276,9 +332,9 @@ Resources:
       Statistic: SampleCount
       Unit: Count
       AlarmActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       OKActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       Period: !Ref MissedCallsPeriod
       Threshold: !Ref MissedCallsThreshold
       EvaluationPeriods: !Ref MissedCallsEvaluationPeriods
@@ -300,9 +356,9 @@ Resources:
       Statistic: SampleCount
       Unit: Count
       AlarmActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       OKActions:
-        - !Ref SnsTopicArn
+        - !Ref SnsTopic
       Period: !Ref ContactFlowFatalErrorsPeriod
       Threshold: !Ref ContactFlowFatalErrorsThreshold
       EvaluationPeriods: !Ref ContactFlowFatalErrorsEvaluationPeriods
