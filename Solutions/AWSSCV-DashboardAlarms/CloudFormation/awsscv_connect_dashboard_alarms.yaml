@@ -214,7 +214,7 @@ Resources:
       TopicName:
         !Join
         - ''
-        - - 'AWSSCV_alarm_'
+        - - 'AWSSCV_alarm_topic_'
           - !Ref ConnectInstanceId
       Subscription:
         - Protocol: lambda
