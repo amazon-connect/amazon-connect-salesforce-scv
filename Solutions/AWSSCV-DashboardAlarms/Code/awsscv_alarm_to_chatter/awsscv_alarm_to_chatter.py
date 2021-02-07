@@ -1,6 +1,8 @@
+import logging
 from awsscv.sf import Salesforce
 
 logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
 def lambda_handler(event, context):
     sf = Salesforce()
@@ -12,6 +14,7 @@ def lambda_handler(event, context):
         return { "Success": True, "Id": results['id'] }
 
     except Exception as err:
+        logger.err(err)
         return { "Success": False, "Error": str(err) }
 
 def format_record(record):
@@ -59,5 +62,7 @@ def format_record(record):
     messageSegments.extend([
         { 'markupType': 'UnorderedList', 'type': 'MarkupEnd' }
     ])
+
+    logger.debug(messageSegments)
 
     return messageSegments

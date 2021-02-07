@@ -140,7 +140,7 @@ Parameters:
   MisconfiguredPhoneNumbersPeriod:
     Description: Data evaluation period in seconds
     Type: Number
-    Default: 10
+    Default: 60
   MisconfiguredPhoneNumbersEvaluationPeriods:
     Description: Group size of data evaluation periods
     Type: Number
