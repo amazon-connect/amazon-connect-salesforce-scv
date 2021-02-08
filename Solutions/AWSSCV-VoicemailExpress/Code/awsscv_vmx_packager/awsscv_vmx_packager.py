@@ -18,13 +18,16 @@
 # Import the necessary moduels for this flow to work
 import json
 import os
+import logger
 import boto3
 from awsscv.sf import Salesforce
 import phonenumbers
 
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
+
 def lambda_handler(event, context):
-    # Uncomment the following line for debugging
-    # print(event)
+    log.debug(event)
     connect_client = boto3.client('connect')
     loop_counter = 0
 
@@ -42,8 +45,9 @@ def lambda_handler(event, context):
             transcript_bucket = os.environ['s3_transcripts_bucket']
             recording_bucket = os.environ['s3_recordings_bucket']
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to extract keys')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Result: Failed to extract keys')
             continue
 
         # Invoke presigner Lambda to generate presigned URL for recording and format for Salesforce
@@ -63,8 +67,9 @@ def lambda_handler(event, context):
             response_from_presigner = json.load(lambda_response['Payload'])
             formatted_url = '<a href="' + response_from_presigner['presigned_url'] + '" rel="noopener noreferrer" target="_blank">Play Voicemail</a>'
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to generate presigned URL')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Result: Failed to generate presigned URL')
             continue
 
         # Extract the tags from the recording object
@@ -81,8 +86,9 @@ def lambda_handler(event, context):
             for i in object_tags:
                 loaded_tags.update({i['Key']:i['Value']})
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to extract tags')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Result: Failed to extract tags')
             continue
 
         # Grab the transcript
@@ -95,8 +101,9 @@ def lambda_handler(event, context):
 
             transcript_contents = json_content['results']['transcripts'][0]['transcript']
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to retrieve transcript')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Result: Failed to retrieve transcript')
             continue
 
         # Determine the queue/agent name
@@ -114,21 +121,23 @@ def lambda_handler(event, context):
                     UserId = agent_id,
                     InstanceId = instance_id
                 )
-                print(get_agent['User']['IdentityInfo'])
+                log.debug(get_agent['User']['IdentityInfo'])
                 entity_name = get_agent['User']['IdentityInfo']['FirstName']+' '+get_agent['User']['IdentityInfo']['LastName']
                 full_agent_id = get_agent['User']['Username']
                 sf_agent_id = full_agent_id.split('@')[0]
 
-            except:
-                print('Record ' + str(loop_counter) + ' Result: Failed to find agent')
+            except Exception as e:
+                log.error(e)
+                log.debug('Record ' + str(loop_counter) + ' Result: Failed to find agent')
                 entity_name = 'UNKNOWN'
 
         else:
             vm_prefix = 'Queue'
             try:
                 entity_name = loaded_tags['vm_queue_name']
-            except:
-                print('Record ' + str(loop_counter) + ' Result: Failed to extract queue name')
+            except Exception as e:
+                log.error(e)
+                log.debug('Record ' + str(loop_counter) + ' Result: Failed to extract queue name')
                 entity_name = 'UNKNOWN'
 
         # Build the human readable phone number for the subject
@@ -137,7 +146,8 @@ def lambda_handler(event, context):
             parsed_phone = phonenumbers.parse(incoming_phone, None)
             international_phone = phonenumbers.format_number(parsed_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
 
-        except:
+        except Exception as e:
+            log.error(e)
             international_phone = '+' + loaded_tags['vm_from']
 
         # Get the existing contact attributes from the call
@@ -151,15 +161,17 @@ def lambda_handler(event, context):
             )
             contact_attributes = json.dumps(contact_attributes['Attributes'])
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to extract attributes')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Result: Failed to extract attributes')
             contact_attributes = 'UNKNOWN'
         # Perform the salesforce login
         try:
             sf = Salesforce()
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to authenticate with Salesforce')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Result: Failed to authenticate with Salesforce')
             continue
 
         # Create a case in Salesforce
@@ -188,24 +200,26 @@ def lambda_handler(event, context):
                     os.environ['sf_case_vm_phone_field']: international_phone,
                     os.environ['sf_case_vm_field']: formatted_url
                 }
-            print(data)
+            log.debug(data)
 
             response = sf.create(sobject='Case', data=data)
-            print('Record ' + str(loop_counter) + ' Result: Case created [' + response['id'] + ']')
+            log.debug('Record ' + str(loop_counter) + ' Result: Case created [' + response['id'] + ']')
             sf_case = response
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to create case')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Result: Failed to create case')
             continue
 
         # Delete the transcription
         try:
             transcript_delete = transcript_object.delete()
 
-        except:
-            print('Record ' + str(loop_counter) + ' Failed to delete transcript')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Failed to delete transcript')
 
-        print('Record ' + str(loop_counter) + ' Result: Success!')
+        log.debug('Record ' + str(loop_counter) + ' Result: Success!')
 
         # Clear the vm_flag for this contact
         try:
@@ -223,8 +237,9 @@ def lambda_handler(event, context):
                 }
             )
 
-        except:
-            print('Record ' + str(loop_counter) + ' Failed to change vm_flag')
+        except Exception as e:
+            log.error(e)
+            log.debug('Record ' + str(loop_counter) + ' Failed to change vm_flag')
 
     return {
         'status': 'complete',

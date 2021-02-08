@@ -17,13 +17,16 @@
 
 import json
 import boto3
+import logger
 from botocore.client import Config
 import base64
 import os
 
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
+
 def lambda_handler(event, context):
-    # Uncomment the following line for debugging
-    # print(event)
+    logger.debug(event)
 
     # Establsih an empty response
     response = {}
@@ -34,7 +37,8 @@ def lambda_handler(event, context):
     try:
         use_keys = get_secret()
 
-    except:
+    except Exception as e:
+        logger.error(e)
         response.update({'result':'fail'})
         response.update({'detail':'key retrieval failed'})
         return response
@@ -57,7 +61,8 @@ def lambda_handler(event, context):
             config=my_config
         )
 
-    except:
+    except Exception as e:
+        logger.error(e)
         response.update({'result':'fail'})
         response.update({'detail':'s3 client init failed'})
         return response
@@ -73,7 +78,8 @@ def lambda_handler(event, context):
 
         return response
 
-    except:
+    except Exception as e:
+        logger.error(e)
         response.update({'result':'fail'})
         response.update({'detail':'presigned url generation failed'})
         print(response)
@@ -81,15 +87,14 @@ def lambda_handler(event, context):
 
 # Sub to retrieve the secrets from Secrets Manager
 def get_secret():
-
     # Set vars
     secret_response = {}
     try:
-
         secret_name = os.environ['secrets_key_id']
         region_name = os.environ['aws_region']
 
-    except:
+    except Exception as e:
+        logger.error(e)
         secret_response.update({'result':'fail'})
         secret_response.update({'detail':'environment vars failed'})
         return secret_response
@@ -102,7 +107,8 @@ def get_secret():
             region_name=region_name
         )
 
-    except:
+    except Exception as e:
+        logger.error(e)
         secret_response.update({'result':'fail'})
         secret_response.update({'detail':'AWS Secrets Manager session failed'})
         return secret_response
@@ -112,7 +118,8 @@ def get_secret():
             SecretId=secret_name
         )
 
-    except:
+    except Exception as e:
+        logger.error(e)
         secret_response.update({'result':'fail'})
         secret_response.update({'detail':'failed to get secrets'})
         return secret_response
