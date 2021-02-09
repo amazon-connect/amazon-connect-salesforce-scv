@@ -1,21 +1,23 @@
-import logging
+import os, logging
 from awsscv.sf import Salesforce
 
 logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
 def lambda_handler(event, context):
+    logger.debug(event)
+
     sf = Salesforce()
 
     try:
         for record in event['Records']:
             results = sf.create_formatted_chatter_post('0F94W000000pThySAE', format_record(record), 'AllUsers');
 
-        return { "Success": True, "Id": results['id'] }
+        return { "success": True, "id": results['id'] }
 
-    except Exception as err:
-        logger.err(err)
-        return { "Success": False, "Error": str(err) }
+    except Exception as e:
+        logger.err(e)
+        return { "success": False, "error": str(e) }
 
 def format_record(record):
     messageSegments = []
@@ -37,7 +39,6 @@ def format_record(record):
     for key in message:
         value = message[key]
 
-        print('Processing: {} - {}'.format(key, value))
         messageSegments.extend([
             { 'markupType': 'Paragraph', 'type': 'MarkupBegin' },
             { 'text': '{} - {}'.format(key, value), 'type': 'Text' },

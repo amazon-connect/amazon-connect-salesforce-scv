@@ -20,11 +20,13 @@ import os
 import json
 from awsscv.sf import Salesforce
 
-def lambda_handler(event, context):
-    # Uncomment the following line for debugging
-    # print(event)
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
-    # Establsih an empty response
+def lambda_handler(event, context):
+    logger.debug(event)
+
+    # Establish an empty response
     response = {}
     # Set the default result to success
     response.update({'result':'success'})
@@ -51,13 +53,16 @@ def lambda_handler(event, context):
                 # Prep the response
                 response.update({'Username' : query_result[0][sf_sso_object]})
 
-            except:
+            except Exception as e:
+                logger.error(e)
                 response.update({'result':'fail', 'code' : 'SF Query Fail'})
 
-        except:
+        except Exception as e:
+            logger.error(e)
             response.update({'result':'fail', 'code' : 'SF Login Fail'})
 
-    except:
+    except Exception as e:
+        logger.error(e)
         response.update({'result':'fail', 'code' : 'Query failed to build'})
 
     return response

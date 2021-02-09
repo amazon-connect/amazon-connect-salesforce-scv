@@ -17,7 +17,7 @@
 
 import json
 import boto3
-import logger
+import logging
 from botocore.client import Config
 import base64
 import os
@@ -82,7 +82,7 @@ def lambda_handler(event, context):
         logger.error(e)
         response.update({'result':'fail'})
         response.update({'detail':'presigned url generation failed'})
-        print(response)
+        logger.debug(response)
         return response
 
 # Sub to retrieve the secrets from Secrets Manager

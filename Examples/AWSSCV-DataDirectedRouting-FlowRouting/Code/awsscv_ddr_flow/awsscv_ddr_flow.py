@@ -21,13 +21,16 @@ import os
 import json
 from awsscv.sf import Salesforce
 
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
+
 # Core function
 def lambda_handler(event, context):
+    # REMEMBER to comment out the line below in production to reduce PII issues
+    logger.debug(event)
+
     # Create an empty response container
     response = {}
-
-    # REMEMBER to comment out the line below in production to reduce PII issues
-    # print('Incomong event: ' + json.dumps(event))
 
     # Handle EventBridge pings that keep the function warm
     if 'source' in event:
@@ -59,9 +62,9 @@ def lambda_handler(event, context):
         return response
 
     # Extract the result and add it to the response
-    print('respnse:' + json.dumps(get_target[0]))
+    logger.debug('respnse:' + json.dumps(get_target[0]))
     response.update(get_target[0]['outputValues'])
-    print(response)
+    logger.debug(response)
 
     # Check for a queue target and reformat if it exists:
     if response['has_queue'] == '1':
