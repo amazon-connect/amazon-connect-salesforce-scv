@@ -101,8 +101,7 @@ Parameters:
     Type: String
 
   SalesforceChatterFeedId:
-    Description: The id of the Salesforce chatter feed.
-    Default: REPLACEME
+    Description: The id of the Salesforce chatter feed. (Optional)
     Type: String
 
   DashboardName:
@@ -193,9 +192,17 @@ Parameters:
     Type: Number
     Default: 1
 
+Conditions:
+  HasSalesforceChatterFeedId:
+    'Fn::Not':
+      - !Equals
+        - ''
+        - !Ref SalesforceChatterFeedId
+
 Resources:
   SCVAlarmToChatterLambda:
     Type: AWS::Lambda::Function
+    Condition: HasSalesforceChatterId
     Properties:
       Code:
         S3Bucket:
@@ -222,6 +229,27 @@ Resources:
       Runtime: python3.8
       Timeout: 900
 
+  SCVAlarmToLog:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - 'scvdev-awsscv-supporting-code-'
+            - !Ref AWSRegion
+        S3Key: awsscv_alarm_to_log.zip
+      Description: Writes alarm to CloudWatch logs
+      FunctionName:
+        !Join
+        - ''
+        - - 'AWSSCV_alarm_to_log_'
+          - !Ref ConnectInstanceId
+      Handler: awsscv_alarm_to_log.lambda_handler
+      Role: !Ref AWSSCVCommonRole
+      Runtime: python3.8
+      Timeout: 900
+
   SnsTopic:
     Type: "AWS::SNS::Topic"
     DependsOn:
@@ -238,9 +266,17 @@ Resources:
 
   SCVAlarmToChatterLambdaPermission:
     Type: "AWS::Lambda::Permission"
+    Condition: HasSalesforceChatterFeedId
     Properties:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref SCVAlarmToChatterLambda
+      Principal: sns.amazonaws.com
+
+  SCVAlarmToLogPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref SCVAlarmToLog
       Principal: sns.amazonaws.com
 
   AlarmDashboard:
