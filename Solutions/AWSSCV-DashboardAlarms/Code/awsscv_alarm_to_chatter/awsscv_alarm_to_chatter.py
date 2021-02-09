@@ -1,4 +1,4 @@
-import os, logging
+import os, json, logging
 from awsscv.sf import Salesforce
 
 logger = logging.getLogger()
