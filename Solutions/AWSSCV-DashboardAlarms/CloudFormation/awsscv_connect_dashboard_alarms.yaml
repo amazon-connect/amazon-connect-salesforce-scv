@@ -14,6 +14,7 @@ Metadata:
           - ConnectInstanceId
           - SalesforceConfig
           - SalesforceOrgId
+          - SalesforceChatterFeedId
           - DashboardName
           - ChatterFeedId
 
@@ -96,6 +97,11 @@ Parameters:
 
   SalesforceOrgId:
     Description: The id of the Salesforce organization.
+    Default: REPLACEME
+    Type: String
+
+  SalesforceChatterFeedId:
+    Description: The id of the Salesforce chatter feed.
     Default: REPLACEME
     Type: String
 
@@ -203,12 +209,14 @@ Resources:
         Variables:
           sf_config_sm_arn:
             Ref: SalesforceConfig
+          sf_chatter_feed_id:
+            Ref: SalesforceChatterFeedId
       FunctionName:
         !Join
         - ''
         - - 'AWSSCV_alarm_to_chatter_'
           - !Ref ConnectInstanceId
-      Handler: awsscv_alarm_to_chatter.handler
+      Handler: awsscv_alarm_to_chatter.lambda_handler
       Role: !Ref AWSSCVCommonRole
       Layers: [ !Ref AWSSalesforceCommonPythonLayer ]
       Runtime: python3.8
@@ -227,6 +235,13 @@ Resources:
       Subscription:
         - Protocol: lambda
           Endpoint: !GetAtt SCVAlarmToChatterLambda.Arn
+
+  SCVAlarmToChatterLambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref SCVAlarmToChatterLambda
+      Principal: sns.amazonaws.com
 
   AlarmDashboard:
     Type: "AWS::CloudWatch::Dashboard"
