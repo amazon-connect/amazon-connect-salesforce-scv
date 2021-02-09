@@ -18,10 +18,13 @@
 import json
 import boto3
 import os
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
 def lambda_handler(event, context):
-    # Uncomment print line for debugging
-    # print(event)
+    logger.debug(event)
 
     # Establish an empty response and loop counter
     loop_counter = 0
@@ -39,8 +42,9 @@ def lambda_handler(event, context):
             contact_id = recording_name.replace('.wav','')
             recording_bucket = recording['s3']['bucket']['name']
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to extract data from event')
+        except Exception as e:
+            logger.error(e)
+            logger.debug('Record {0} Result: Failed to extract data from event'.format(loop_counter))
             continue
 
         # Establish the S3 client and get the object tags
@@ -57,16 +61,18 @@ def lambda_handler(event, context):
             for i in object_tags:
                 loaded_tags.update({i['Key']:i['Value']})
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to extract tags from object')
+        except Exception as e:
+            logger.error(e)
+            logger.debug('Record {0} Result: Failed to extract tags from object'.format(loop_counter))
             continue
 
         # Build the Recording URL
         try:
-            recording_url = 'https://'+recording_bucket+'.s3-'+recording['awsRegion']+'.amazonaws.com/'+recording_key
+            recording_url = 'https://{0}.s3-{1}.amazonaws.com/{2}'.format(recording_bucket, recording['awsRegion'], recording_key)
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Failed to generate recording URL')
+        except Exception as e:
+            logger.error(e)
+            logger.debug('Record {0} Result: Failed to generate recording URL'.format(loop_counter))
             continue
 
         # Do the transcription
@@ -85,13 +91,14 @@ def lambda_handler(event, context):
                 OutputBucketName=os.environ['s3_transcripts_bucket']
             )
 
-        except:
-            print('Record ' + str(loop_counter) + ' Result: Transcription job failed')
+        except Exception as e:
+            logger.error(e)
+            logger.debug('Record {0} Result: Transcription job failed'.format(loop_counter))
             continue
 
-        print('Record ' + str(loop_counter) + ' Result: Success!')
+        logger.debug('Record {0} Result: Success!'.format(loop_counter))
 
     return {
         'status': 'complete',
-        'result': str(loop_counter) + ' records processed'
+        'result': '{0} records processed'.format(loop_counter)
     }

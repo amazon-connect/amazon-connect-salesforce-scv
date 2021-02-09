@@ -14,9 +14,11 @@ import urllib3
 http = urllib3.PoolManager()
 flowPath = os.environ['LAMBDA_TASK_ROOT'] + '/awsscv_ddr_flow_cf.json'
 
-def lambda_handler(event, context):
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
-    print(event)
+def lambda_handler(event, context):
+    logger.debug(event)
 
     # Create response container
     response = {'result':'success'}
@@ -46,11 +48,12 @@ def lambda_handler(event, context):
         new_content = new_content.replace('REPLACETELEPHONY',telephony_arn)
         new_content = new_content.replace('REPLACEQUEUE',queue_arn)
 
-        print('We have the template and modifications were successful')
+        logger.debug('We have the template and modifications were successful')
         response.update({'template_setup':'complete'})
 
-    except:
-        print('failed to get file and parse')
+    except Exception as e:
+        logger.error(e)
+        logger.debug('failed to get file and parse')
         cf_send(event, context, 'FAILED', {})
         response.update({'template_setup':'failed'})
         response.update({'result':'fail'})
@@ -71,8 +74,9 @@ def lambda_handler(event, context):
         cf_send(event, context, 'SUCCESS', {})
         response.update({'flow_build':'complete'})
 
-    except:
-        print('failed to create contact flow')
+    except Exception as e:
+        logger.error(e)
+        logger.debug('failed to create contact flow')
         cf_send(event, context, 'FAILED', {})
         response.update({'flow_build':'failed'})
         response.update({'result':'fail'})
@@ -83,7 +87,7 @@ def lambda_handler(event, context):
 def cf_send(event, context, responseStatus, responseData, physicalResourceId=None, noEcho=False):
     responseUrl = event['ResponseURL']
 
-    print(responseUrl)
+    logger.debug(responseUrl)
 
     responseBody = {}
     responseBody['Status'] = responseStatus
@@ -97,7 +101,7 @@ def cf_send(event, context, responseStatus, responseData, physicalResourceId=Non
 
     json_responseBody = json.dumps(responseBody)
 
-    print("Response body:\n" + json_responseBody)
+    logger.debug("Response body:\n{}".format(json_responseBody))
 
     headers = {
         'content-type' : '',
@@ -107,7 +111,8 @@ def cf_send(event, context, responseStatus, responseData, physicalResourceId=Non
     try:
 
         response = http.request('PUT',responseUrl,body=json_responseBody.encode('utf-8'),headers=headers)
-        print("Status code: " + response.reason)
+        logger.debug("Status code: {0}".format(response.reason))
 
     except Exception as e:
-        print("send(..) failed executing requests.put(..): " + str(e))
+        logger.error(e)
+        logger.debug("send(..) failed executing requests.put(..): {}".format(str(e)))

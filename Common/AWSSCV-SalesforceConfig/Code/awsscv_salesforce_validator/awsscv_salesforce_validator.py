@@ -15,54 +15,22 @@
  **********************************************************************************************************************
 """
 
-import logging
-import os
-import json
+# Import the necessary moduels for this flow to work
 from awsscv.sf import Salesforce
 
-logger = logging.getLogger()
-logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
-
 def lambda_handler(event, context):
-    logger.debug(event)
 
-    # Establish an empty response
-    response = {}
-    # Set the default result to success
-    response.update({'result':'success'})
-
-    # Handle EventBridge pings that keep the function warm
-    if 'source' in event:
-        response.update({'statusCode': 200,'response' : 'warm', 'event' : 'EventBridge ping'})
-        return response
-
-    # Extract passed params and build query
     try:
-        sf_sso_object = event['Details']['Parameters']['sf_sso_object']
-        sf_extension = event['Details']['Parameters']['sf_extension']
-        sf_query = "SELECT Id, " + sf_sso_object + " FROM User WHERE Extension ='" + sf_extension + "'"
+        sf = Salesforce()
+        qr = sf.query("SELECT Id, Username FROM User LIMIT 1")
 
-        # Login to Salesforce
-        try:
-            sf = Salesforce()
-
-            # Do the Query
-            try:
-                query_result = sf.query(query=sf_query)
-
-                # Prep the response
-                response.update({'Username' : query_result[0][sf_sso_object]})
-
-            except Exception as e:
-                logger.error(e)
-                response.update({'result':'fail', 'code' : 'SF Query Fail'})
-
-        except Exception as e:
-            logger.error(e)
-            response.update({'result':'fail', 'code' : 'SF Login Fail'})
+        return {
+            "success": True,
+            "message": "Salesforce connectivity validation was successful."
+        }
 
     except Exception as e:
-        logger.error(e)
-        response.update({'result':'fail', 'code' : 'Query failed to build'})
-
-    return response
+        return {
+            "success": False,
+            "message": "Salesforce connectivity validation failed. {}".format(str(e))
+        }
