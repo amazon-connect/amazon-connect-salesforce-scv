@@ -1,8 +1,8 @@
 # Keeping Lambda Functions Warm
 
-When working with Lambda functions in a voice interaction, fast response times are critical. With AWS Lambda, if a funciton has not been used in a while, the resources allocated to it can be redistributed elsewhere. This can cause a delay the next time the function is executed. To prevent this, you can use Amazon EventBrdige to periodically call the function, keeping it ready to execute quickly. In this example, we will show you how to modify the existing Salesforce-provided Lambda functions for Service Cloud voice to properly handle Amazon EventBridge events. This modification is NOT NECESSARY for EventBridge to work and to keep your function active, however it can generate errors and throw off reporting. Since the modification is simple, it is reasonable to just adapt the code to handle the EventBridge event properly and eliminate those errors. 
+When working with Lambda functions in a voice interaction, fast response times are critical. With AWS Lambda, if a funciton has not been used in a while, the resources allocated to it can be redistributed elsewhere. This can cause a delay the next time the function is executed. To prevent this, you can use Amazon EventBridge to periodically call the function, keeping it ready to execute quickly. In this example, we will show you how to modify the existing Salesforce-provided Lambda functions for Service Cloud voice to properly handle Amazon EventBridge events. This modification is NOT NECESSARY for EventBridge to work and to keep your function active, however EventBridge can generate errors as it sends events to your functions that they are not designed to respond to. Since the modification is simple, it is reasonable to just adapt the code to handle the EventBridge events properly and eliminate those errors. 
 
-There are three Salesforce-provided Lambda functions that would benefit the most from this configurartion. They are:
+There are three Salesforce-provided Lambda functions that would benefit most from this modification. They are:
 - InvokeTelephonyIntegrationApiFunction
 - kvsConsumerTrigger
 - kvsTranscriber
@@ -10,6 +10,7 @@ There are three Salesforce-provided Lambda functions that would benefit the most
 **NOTE:** You can set all three functions as targets for one EventBridge rule.
 
 In this example, we will show you how to modify the **InvokeTelephonyIntegrationApiFunction** function. This modification simply looks at the incoming event and determines if it is an EventBridge event. If so, it responds accordingly. If not, it continues to evaluate the existing funciton code. Since the **InvokeTelephonyIntegrationApiFunction** function is written for Node.js, we will use the following code:
+
 ````javascript
     // BEGIN AWS modification for EventBridge
     let eventSource = event.source || 'undefined';
@@ -21,7 +22,7 @@ In this example, we will show you how to modify the **InvokeTelephonyIntegration
     // END AWS modification for EventBridge
 ````
 
-Essentially, we set the value for eventSource to the incoming event value of **source**, if it exists. If this is an EventBridge event, the **source** with be `aws.events`. Then, we check the valure of eventSource. If it is an EventBridge event, we configure a response, log the response, and return the response. We're using the **result** variable since that is what the Lambda function uses as well. That's it! We insert this code into the function just before the default code and now it will be ready to respond accordingly. For other functions in other languages, a similar approach can be taken. for example, if the function was in Python, we could do something like:
+Essentially, we set the value for `eventSource` to the incoming event value of **source**, if it exists. If this is an EventBridge event, the **source** will be `aws.events`. Once set, we check the valure of eventSource. If it is an EventBridge event, we configure a response, log the response, and return the response. We're using the **result** variable since that is what the Lambda function is configured to use under normal operation. That's it! We insert this code into the function just after the main result variable declaration and it will be ready to respond accordingly. For other functions in other languages, a similar approach can be taken. for example, if the function was in Python, we could do something like:
 
 ````python
     # BEGIN AWS modification for EventBridge
