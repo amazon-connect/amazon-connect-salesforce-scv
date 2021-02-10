@@ -28,11 +28,15 @@ def lambda_handler(event, context):
         sf = Salesforce()
         qr = sf.query("SELECT Id, Username FROM User LIMIT 1")
 
+        logger.debug(qr)
+
         return {
             "Status": "SUCCESS"
         }
 
     except Exception as e:
+        logger.error(e)
+
         return {
             "Status": "FAILURE",
             "Reason": str(e)
