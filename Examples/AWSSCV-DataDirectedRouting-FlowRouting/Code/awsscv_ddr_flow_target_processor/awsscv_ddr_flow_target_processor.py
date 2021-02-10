@@ -18,6 +18,10 @@
 # Import the necessary moduels for this flow to work
 import json
 import os
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
 def lambda_handler(event, context):
     # Establish response container
@@ -56,7 +60,7 @@ def lambda_handler(event, context):
 
     response.update({'remaining_targets':remaining_targets})
 
-    print(next_target)
-    print(remaining_targets)
+    logger.debug(next_target)
+    logger.debug(remaining_targets)
 
     return response

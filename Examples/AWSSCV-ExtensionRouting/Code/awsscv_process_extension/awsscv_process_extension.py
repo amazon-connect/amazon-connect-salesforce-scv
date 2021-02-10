@@ -17,14 +17,17 @@
 
 import json
 import os
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
 def lambda_handler(event, context):
     ########## START Standard AWSSCV function setup ##########
 
-    # Uncomment the following line for debugging
-    # print(event)
+    logger.debug(event)
 
-    # Establsih an empty response
+    # Establish an empty response
     response = {}
     # Set the default result to success
     response.update({'result':'success'})
@@ -40,7 +43,8 @@ def lambda_handler(event, context):
     try:
         org_id = os.environ['sf_org_id']
 
-    except:
+    except Exception as e:
+        logger.error(e)
         response.update({'result':'fail'})
         response.update({'fail_message':'Invalid Lambda config - missing Salesforce org ID'})
         return response
@@ -59,7 +63,8 @@ def lambda_handler(event, context):
             response.update({'result':'fail'})
             response.update({'fail_message':'Id value empty'})
 
-    except:
+    except Exception as e:
+        logger.error(e)
         response.update({'result':'fail'})
         response.update({'fail_message':'Id key not passed'})
 

@@ -69,6 +69,8 @@ exports.handler = async (event) => {
             var vmrecord = JSON.parse(payload);
             // Uncomment the following line for debugging
             // console.log(vmrecord)
+            // Grab ContactID
+            var currentContactID = vmrecord.ContactId;
         } catch(e) {
             console.log('FAIL: Record extraction failed');
             responseContainer['record' + totalRecordCount + 'result'] = 'Failed to extract record and/or decode';
@@ -77,16 +79,20 @@ exports.handler = async (event) => {
 
         // Check for the positive vm_flag attribute so we know that this is a vm to process
         try {
-            var vm_flag = vmrecord.Attributes.vm_flag;
-            if (vm_flag != 1) {
-                responseContainer['record' + totalRecordCount + 'result'] = 'IGNORE - not a voicemail to process';
+            var vm_flag = vmrecord.Attributes.vm_flag || '99';
+            if (vm_flag == '0') { 
+                responseContainer['record ' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' - IGNORE - voicemail already processed';
                 processedRecordCount = processedRecordCount + 1;
                 continue;
+            } else if (vm_flag == '1') {
+                console.log('Record #' + totalRecordCount  + ' ContactID: ' + currentContactID + ' -  is a voicemail - begin processing.')
             } else {
-                console.log('Record #' + totalRecordCount  + ' is a voicemail - begin processing.')
+                responseContainer['record' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' - IGNORE - voicemail flag not valid';
+                processedRecordCount = processedRecordCount + 1;
+                continue;
             }
         } catch(e) {
-            responseContainer['record' + totalRecordCount + 'result'] = 'IGNORE - voicemail flag not identified';
+            responseContainer['record' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' - IGNORE - Some other bad thing happened with the attribute comparison.';
             processedRecordCount = processedRecordCount + 1;
             continue;
         };
@@ -95,7 +101,6 @@ exports.handler = async (event) => {
         try {
             var streamARN = vmrecord.Recordings[0].Location;
             var startFragmentNum = vmrecord.Recordings[0].FragmentStartNumber;
-            var currentContactID = vmrecord.ContactId;
             var streamName = vmrecord.Recordings[0].Location.substring(streamARN.indexOf("/") + 1, streamARN.lastIndexOf("/"));
         } catch(e) {
             console.log('FAIL: Counld not identify KVS info');
@@ -161,8 +166,8 @@ exports.handler = async (event) => {
 
                 // Increment processed records
                 processedRecordCount = processedRecordCount + 1;
-                console.log('record' + totalRecordCount + 'result Write complete');
-                responseContainer['record' + totalRecordCount + 'result'] = 'Write complete';
+                console.log('record' + totalRecordCount + 'result ContactID: ' + currentContactID + ' -  Write complete');
+                responseContainer['record' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' -  Write complete';
                 streamFinished = true;
             });
 
@@ -183,7 +188,7 @@ exports.handler = async (event) => {
 
         } catch(e) {
             //console.log('FAIL: Counld write audio to S3');
-            responseContainer['record' + totalRecordCount + 'result'] = 'Failed to write audio to S3';
+            responseContainer['record' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' -  Failed to write audio to S3';
             continue;
         }
     };

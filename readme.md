@@ -19,6 +19,7 @@ The repository is divided into three core sections:
 | Name | Description | Links |
 | ---- | ----------- | ----- |
 | AWSSCV-Voicemail Express | Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice | [Solution](Solutions/AWSSCV-VoicemailExpress)
+| AWSSCV-CTRLogger | Configures a Lambda function to log Amazon Connect Contact Trace records to CloudWatch, S3, or both | [Solution](Solutions/AWSSCV-CTRLogger) |
 
 ## Use Case Examples
 | Name | Description | Links |
@@ -27,7 +28,6 @@ The repository is divided into three core sections:
 | AWSSCV-ExtensionRouter | Configures a Dial-by-extension option for Amazon Connect. | [Example](Examples/AWSSCV-ExtensionRouting) |
 | AWSSCV-FollowMeRouting | Configures an option to route calls to an agent's mobile when they are not logged in, if configured. | [Example](Examples/AWSSCV-FollowMeRouting) |
 | AWSSCV-DDR-Flow | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations | [Example](Examples/AWSSCV-DataDirectedRouting-FlowRouting) |
-
 
 ## Contributions
 
