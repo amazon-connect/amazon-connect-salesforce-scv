@@ -87,17 +87,17 @@ This example will require the following **new configuration**
 15.  Make sure that you are still on the same function, if not, re-open the **InvokeTelephonyIntegrationApiFunction** function
 16.  Scroll to the **Function code** section and select **Action** then choose **Upload a .zip file**
 
-    ![](Docs/import_zip.png)
+     ![](Docs/import_zip.png)
 
 17.  In the popup, select **Upload**, select the zip file you just created, and choose **Save**
 
-    ![](Docs/upload_zip.png)
+     ![](Docs/upload_zip.png)
 
 18.  The file will update. Once it has loaded, select the **Test Events** dropdown at the top of the page and choose **Configure test events**
 19.  In the **Event template** selection box, choose **Amazon Cloudwatch**
 20.  Give the new event a name, such as `EventBridgeTest` and choose **Create**
 
-    ![](Docs/create_event.png)
+     ![](Docs/create_event.png)
 
 21.  Once the test event is create, make sure it is selected and choose **Test**
 22.  Once the test completes, you should receive the following result:
