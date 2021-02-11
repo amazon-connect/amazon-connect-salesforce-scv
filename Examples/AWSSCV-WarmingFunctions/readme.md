@@ -100,12 +100,9 @@ This example will require the following **new configuration**
 4.  Choose Events, then select Create Rule
 5.  Provide a name for the Rule, such as `KeepSCVFunctionsWarm`
 6.  Provide a description, if desired
-![](Docs/create.png)
 7.  In the **Define pattern** section, select **Schedule**
 8.  Set the Schedule options as **Fixed rate** every **5 Minutes**
-![](Docs/pattern.png)
 9.  Leave the **Select event bus** settings to their defaults
 10. In the **Select targets** section, leave **Lambda function** selected, then choose your **InvokeTelephonyIntegrationApiFunction** function from the **Function** dropdown
-![](Docs/targets.png)
 11. Select **Create**
 12. Your rule is now enabled and will execute every 5 minutes, keeping the function warm
