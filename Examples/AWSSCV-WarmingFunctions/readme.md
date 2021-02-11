@@ -60,7 +60,7 @@ This example will require the following **new configuration**
 4.  Open your existing **InvokeTelephonyIntegrationApiFunction** function
 5.  Once the function loads, select **Action** and choose **Export function**
 
-    ![](Docs/export_action.png)
+    ![](Docs/export_actions.png)
     
 6.  In the **Export your funciton** window, select **Download deployment package**
 
