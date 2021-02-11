@@ -1,5 +1,7 @@
 # Keeping Lambda Functions Warm
 
+**NOTE:** Salesforce is in the process of enabling Amazon EventBridge and Amazon Simple Notification Service for Service Cloud Voice created accounts. Please validate service availability before proceeding with this configuration.
+
 When working with Lambda functions in a voice interaction, fast response times are critical. With AWS Lambda, if a funciton has not been used in a while, the resources allocated to it can be redistributed elsewhere. This can cause a delay the next time the function is executed. To prevent this, you can use Amazon EventBridge to periodically call the function, keeping it ready to execute quickly. In this example, we will show you how to modify the existing Salesforce-provided Lambda functions for Service Cloud voice to properly handle Amazon EventBridge events. This modification is NOT NECESSARY for EventBridge to work and to keep your function active, however EventBridge can generate errors as it sends events to your functions that they are not designed to respond to. Since the modification is simple, it is reasonable to just adapt the code to handle the EventBridge events properly and eliminate those errors. 
 
 There are three Salesforce-provided Lambda functions that would benefit most from this modification. They are:
