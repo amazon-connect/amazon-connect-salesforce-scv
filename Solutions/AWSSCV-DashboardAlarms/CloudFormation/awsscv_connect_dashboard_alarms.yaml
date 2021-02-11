@@ -9,14 +9,13 @@ Metadata:
           default: Environment
         Parameters:
           - AWSRegion
-          - AWSSalesforceCommonPythonLayer
           - AWSSCVCommonRole
+          - AWSSalesforceCommonPythonLayer
           - ConnectInstanceId
           - SalesforceConfig
           - SalesforceOrgId
           - SalesforceChatterFeedId
           - DashboardName
-          - ChatterFeedId
 
       - Label:
           default: Concurrent Calls Alarm
@@ -202,7 +201,7 @@ Conditions:
 Resources:
   SCVAlarmToChatterLambda:
     Type: AWS::Lambda::Function
-    Condition: HasSalesforceChatterId
+    Condition: HasSalesforceChatterFeedId
     Properties:
       Code:
         S3Bucket:
@@ -307,7 +306,7 @@ Resources:
         - Name: MetricGroup
           Value: VoiceCalls
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: "ignore"
+      TreatMissingData: "notBreaching"
 
   ConcurrentCallsPercentageAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -331,7 +330,7 @@ Resources:
         - Name: MetricGroup
           Value: VoiceCalls
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: "ignore"
+      TreatMissingData: "notBreaching"
 
   ThrottledCallsAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -355,7 +354,7 @@ Resources:
         - Name: MetricGroup
           Value: VoiceCalls
       ComparisonOperator: GreaterThanOrEqualToThreshold
-      TreatMissingData: "ignore"
+      TreatMissingData: "notBreaching"
 
   MisconfiguredPhoneNumbersAlarm:
     Type: AWS::CloudWatch::Alarm
