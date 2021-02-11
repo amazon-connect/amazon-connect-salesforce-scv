@@ -114,3 +114,28 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 14.	Scroll to the bottom and select Next
 15.	Scroll to the bottom and select Create Stack
 16.	After a minute or two, the stack should complete.
+
+## Post Install Validation
+Once the Salesforce Config CloudFormation stack is complete, the Salesforce integration should be validated.
+
+1. While in the Stack details, select **Resources**
+2. Find the Lambda function with the Logical ID **scvsalesforcevalidator**
+3. **Select the link** in the Physical ID column to open that resource in a new tab and switch to that tab.
+4. Select the **Test** button
+5. Provide an **Event name**
+6. You may keep the default test payload
+7. Select the **Create** button
+8. Select the **Test** button
+
+If the test is successful, results will be displayed indicating success.
+
+If the test is not successful, results will be displayed indicating a failure.  You may set a logging level to further debug your configuration.
+1. In the **Environment variables** section, select the **Edit** button
+2. Select the **Add environment variable** button
+3. Enter **lambda_logging_level** in the **Key** field
+4. Enter **DEBUG** in the **Value** field
+5. Select the **Save** button
+6. Select the **Test** button
+
+Additional details will be displayed in the **Log output** section of the **Execution result** panel.
+
