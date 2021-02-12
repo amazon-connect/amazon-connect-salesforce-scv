@@ -1,15 +1,42 @@
-/**********************************************************************************************************************
- *  Lambda function to trigger real time transcription service in Java                                                *
- **********************************************************************************************************************/
 'use strict';
-const AWS = require('aws-sdk');
+
 const SCVLoggingUtil = require('./SCVLoggingUtil.js');
+const api = require('./sfRestApi.js');
+const queryEngine = require('./queryEngine.js');
+const utils = require('./utils.js');
+const flatten = require('flat');
 
-AWS.config.correctClockSkew = true;
-const lambda = new AWS.Lambda();
+// --------------- Events -----------------------
 
-exports.handler = (event, context, callback) => {
-    console.log("SCV - kvs_trigger.handler: function invoked");
+// invoked by invoking lambda through amazon connect
+async function dispatch_query(soql, event){
+    const parameters = event.Details.Parameters;
+    let response;
+    try {
+        const queryResult = await queryEngine.invokeQuery(soql, parameters);
+        return flatten(queryResult);
+    }
+    catch (e) {
+        response = {
+            statusCode: e.response.status ? e.response.status : 500,
+            result: e
+        }
+    }
+    return flatten(response);
+}
+
+async function dispatch_search(sosl){
+    const searchResult = await api.searchRecord(sosl);
+    if (searchResult.length == 1){
+        return flatten(searchResult[0])
+    }else{
+        return searchResult
+    }
+}
+
+// --------------- Main handler -----------------------
+exports.handler = async (event) => {
+    let result = {};
     
     // BEGIN AWS modification for EventBridge
     let eventSource = event.source || 'undefined';
@@ -19,53 +46,31 @@ exports.handler = (event, context, callback) => {
         return result
     }
     // END AWS modification for EventBridge
+    
+    const { methodName, objectApiName, recordId, soql, sosl } = event.Details.Parameters;
 
-    let payload = "";
-    let languageCodeSelected = "en-US";
-
-    if (typeof event.Details.ContactData.Attributes.languageCode !== 'undefined' && event.Details.ContactData.Attributes.languageCode !== null) {
-        languageCodeSelected = event.Details.ContactData.Attributes.languageCode;
+    switch (methodName) {
+        case 'createRecord':
+            result = await api.createRecord(utils.formatObjectApiName(objectApiName), 
+                                            utils.getSObjectFieldValuesFromConnectLambdaParams(event.Details.Parameters));
+            break;
+        case 'updateRecord':
+            result = await api.updateRecord(utils.formatObjectApiName(objectApiName), recordId, 
+                                            utils.getSObjectFieldValuesFromConnectLambdaParams(event.Details.Parameters));
+            break;
+        case 'queryRecord':
+            result = dispatch_query(soql, event);
+            break;
+        case 'searchRecord':
+            result = dispatch_search(sosl);
+            break;
+        default:
+            SCVLoggingUtil.warn("invokeSfRestApi.handler.handler", SCVLoggingUtil.EVENT_TYPE.VOICECALL, "Unsupported method", {});
+            throw new Error(`Unsupported method: ${methodName}`);
     }
 
-    payload = {
-        streamARN: event.Details.ContactData.MediaStreams.Customer.Audio.StreamARN,
-        startFragmentNum: event.Details.ContactData.MediaStreams.Customer.Audio.StartFragmentNumber,
-        audioStartTimestamp: event.Details.ContactData.MediaStreams.Customer.Audio.StartTimestamp,
-        customerPhoneNumber: event.Details.ContactData.CustomerEndpoint.Address,
-        voiceCallId: event.Details.ContactData.InitialContactId,
-        languageCode: languageCodeSelected,
-        // These default to true for backwards compatability purposes
-        streamAudioFromCustomer: event.Details.ContactData.Attributes.streamAudioFromCustomer !== "false",
-        streamAudioToCustomer: event.Details.ContactData.Attributes.streamAudioToCustomer !== "false",
-        instanceARN: event.Details.ContactData.InstanceARN
-    };
-
-    const params = {
-        // not passing in a ClientContext
-        'FunctionName': process.env.transcriptionFunction,
-        // InvocationType is RequestResponse by default
-        // LogType is not set so we won't get the last 4K of logs from the invoked function
-        // Qualifier is not set so we use $LATEST
-        'InvokeArgs': JSON.stringify(payload)
-    };
-
-    lambda.invokeAsync(params, function(err, data) {
-        if (err) {
-            throw (err);
-        } else {
-            if (callback)
-                callback(null, buildResponse());
-            else
-                SCVLoggingUtil.info("kvs_trigger.handler.handler", SCVLoggingUtil.EVENT_TYPE.TRANSCRIPTION, "nothing to callback so letting it go");
-        }
-    });
-
-    callback(null, buildResponse());
+    if(result.success === false){
+        throw new Error(result.errorMessage);
+    } else
+        return result;
 };
-
-function buildResponse() {
-    return {
-        // Async Java lambda is trigger, return "Success" for now
-        lambdaResult:"Success"
-    };
-}
