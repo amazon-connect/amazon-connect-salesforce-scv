@@ -35,3 +35,7 @@ The repository is divided into three core sections:
 ## Contributions
 
 Make sure the `.gitignore` per language is applied. 
+
+## Status
+![Status](https://codebuild.us-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiVlBLcm9mQlRQV01ZbDRES1FwM3JRNVlJYzB0MlNYYzN1V25weU9CSUN1ckxHQWFTbitsRFo2RHUzR3FDblJjZjR5ZnJhY2F6VHBYSEtVaXcwcVNKVXM0PSIsIml2UGFyYW1ldGVyU3BlYyI6IklPR2ExNWp1MnN6T1pYZ3MiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
+
