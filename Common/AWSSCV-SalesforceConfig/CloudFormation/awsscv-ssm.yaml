@@ -144,3 +144,8 @@ Resources:
         Layers: [ !Ref AWSSalesforceCommonPythonLayer ]
         Runtime: python3.8
         Timeout: 900
+
+Outputs:
+  scvsalesforcevalidator:
+    Description: Execute this Lambda function to validate the Salesforce configuration.
+    Value: !Ref scvsalesforcevalidator
