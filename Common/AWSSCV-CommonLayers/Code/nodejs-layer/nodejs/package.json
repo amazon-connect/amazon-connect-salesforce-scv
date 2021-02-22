@@ -8,6 +8,7 @@
   "author": "",
   "license": "MIT 0",
   "dependencies": {
+    "awsscv": "^1.0.0",
     "aws-sdk": "^2.573.0",
     "axios": "^0.21.1",
     "ebml": "^3.0.0",
