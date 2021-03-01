@@ -101,6 +101,7 @@ exports.handler = async (event) => {
         try {
             var streamARN = vmrecord.Recordings[0].Location;
             var startFragmentNum = vmrecord.Recordings[0].FragmentStartNumber;
+            var stopFragmentNum = vmrecord.Recordings[0].FragmentStopNumber;
             var streamName = vmrecord.Recordings[0].Location.substring(streamARN.indexOf("/") + 1, streamARN.lastIndexOf("/"));
         } catch(e) {
             console.log('FAIL: Counld not identify KVS info');
@@ -181,7 +182,7 @@ exports.handler = async (event) => {
             var data = await kinesisvideo.getDataEndpoint(stream_params).promise();
             kinesisvideomedia.endpoint = new AWS.Endpoint(data.DataEndpoint);
 
-            await parseNextFragmentNew(streamARN, startFragmentNum, null);
+            await parseNextFragmentNew(streamARN, startFragmentNum, stopFragmentNum, null);
 
             //waiting until the recorded stream
             await done();
@@ -211,11 +212,12 @@ exports.handler = async (event) => {
 };
 
 // Data extraction function
-async function parseNextFragmentNew(streamArn, fragmentNumber, contToken) {
+async function parseNextFragmentNew(streamArn, startFragmentNumber, stopFragmentNumber, contToken) {
+    console.log(`StartFragmentNumber: ${startFragmentNumber}, StopFragmentNumber: ${stopFragmentNumber}`);
     var fragment_paramsData = {
         StartSelector: {
             StartSelectorType: 'FRAGMENT_NUMBER',
-            AfterFragmentNumber: fragmentNumber,
+            AfterFragmentNumber: startFragmentNumber,
         },
         StreamName: streamArn.split('/')[1]
     };
@@ -226,6 +228,13 @@ async function parseNextFragmentNew(streamArn, fragmentNumber, contToken) {
         request.removeListener('httpData', listener);
         request.on('httpData', function (chunk, response) {
             decoder.write(chunk);
+
+            // If we just processed the stopFragmentNumber, flush the wav output and exit
+            if (startFragmentNumber === stopFragmentNumber) {
+                wavOutputStream.write(Buffer.concat(wavBufferArray));
+                wavOutputStream.end();
+                resolve({});
+            }
         });
         request.on('httpDone', function (response) {
             wavOutputStream.write(Buffer.concat(wavBufferArray));
