@@ -136,18 +136,48 @@ exports.handler = async (event) => {
             // Establish decoder and start listening. AS we get data, push it  into the array to be processed by writer
             decoder = new Decoder();
             decoder.on('data', chunk => {
+                /**
+                 * Check the shouldProcessKvs field.  If it's true, then proceed with looking at this chunk.  If it's
+                 * false, then don't look at this chunk at all.
+                 *
+                 * This will be set to false once the current fragment number greater than the stop fragment number
+                 * indicating that we've gone as far as we should go in this KVS.
+                 *
+                 */
                 if (shouldProcessKvs) {
                     const {name, value} = chunk[1];
 
                     switch (name) {
                         case 'TagName':
+                            /**
+                             * This chunk contains a tag name indicating what type of data is contained in the next
+                             * TagString chunk.
+                             *
+                             * Store the value of the chunk in the currentTagName field.
+                             *
+                             */
                             currentTagName = value;
                             break;
 
                         case 'TagString':
+                            /**
+                             * This chunk contains a tag string containing the value of the tag name above.  If the
+                             * current tag name is AWS_KINESISVIDEO_FRAGMENT_NUMBER we know that this tag string is
+                             * the value of the AWS_KINESISVIDEO_FRAGMENT_NUMBER.
+                             *
+                             * Store the BigInt value of the chunk in the currentFragment field.  Fragment numbers are
+                             * very large and require a BigInt data type.
+                             *
+                             */
                             if (currentTagName === 'AWS_KINESISVIDEO_FRAGMENT_NUMBER') {
                                 currentFragment = BigInt(value);
-                                //console.log(`Start: ${startFragmentNum}, Current: ${currentFragment}, Stop: ${stopFragmentNum}`);
+
+                                /**
+                                 * If the current fragment number is after the stop fragment number from the CTR, then
+                                 * set the shouldProcessKvs field to false to tell the system to not look at this
+                                 * stream in this Lambda execution any longer.
+                                 *
+                                 */
                                 if (currentFragment > stopFragmentNum) {
                                     console.log(`Current fragment number [${currentFragment}] is greater than the stop fragment number [${stopFragmentNum}].  Stopping KVS processing.`);
                                     shouldProcessKvs = false;
@@ -157,6 +187,10 @@ exports.handler = async (event) => {
 
                         case 'Block':
                         case 'SimpleBlock':
+                            /**
+                             * This chunk contains audio data so write it to the wav file buffer.
+                             *
+                             */
                             wavBufferArray.push(chunk[1].payload);
                             break;
 
