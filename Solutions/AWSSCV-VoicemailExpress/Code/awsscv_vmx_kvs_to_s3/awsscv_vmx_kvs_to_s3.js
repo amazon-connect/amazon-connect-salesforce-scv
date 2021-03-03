@@ -27,14 +27,14 @@ const done  = () => {
     return new Promise ((resolve, reject) => {
         var checkFinished = () => {
             if(streamFinished) {
-              console.log('finished')
-              resolve()
+                console.log('finished')
+                resolve()
             } else {
-              console.log('not finished, waiting 500 ms...')
-              setTimeout(checkFinished, 500)
+                console.log('not finished, waiting 500 ms...')
+                setTimeout(checkFinished, 500)
             }
-          }
-          setTimeout(checkFinished, 500)
+        }
+        setTimeout(checkFinished, 500)
     })
 };
 
@@ -58,6 +58,12 @@ exports.handler = async (event) => {
 
     // Process incoming records
     for (const record of event.Records) {
+        let shouldProcessKvs = true;
+        let currentTagName = '';
+        let currentTagString = '';
+        let currentFragment = BigInt(0);
+
+
         // Increment record counter
         totalRecordCount = totalRecordCount + 1
         console.log('Starting record #' + totalRecordCount)
@@ -80,7 +86,7 @@ exports.handler = async (event) => {
         // Check for the positive vm_flag attribute so we know that this is a vm to process
         try {
             var vm_flag = vmrecord.Attributes.vm_flag || '99';
-            if (vm_flag == '0') { 
+            if (vm_flag == '0') {
                 responseContainer['record ' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' - IGNORE - voicemail already processed';
                 processedRecordCount = processedRecordCount + 1;
                 continue;
@@ -100,8 +106,8 @@ exports.handler = async (event) => {
         // Grab kvs stream data
         try {
             var streamARN = vmrecord.Recordings[0].Location;
-            var startFragmentNum = vmrecord.Recordings[0].FragmentStartNumber;
-            var stopFragmentNum = vmrecord.Recordings[0].FragmentStopNumber;
+            var startFragmentNum = BigInt(vmrecord.Recordings[0].FragmentStartNumber);
+            var stopFragmentNum = BigInt(vmrecord.Recordings[0].FragmentStopNumber);
             var streamName = vmrecord.Recordings[0].Location.substring(streamARN.indexOf("/") + 1, streamARN.lastIndexOf("/"));
         } catch(e) {
             console.log('FAIL: Counld not identify KVS info');
@@ -130,10 +136,35 @@ exports.handler = async (event) => {
             // Establish decoder and start listening. AS we get data, push it  into the array to be processed by writer
             decoder = new Decoder();
             decoder.on('data', chunk => {
-                const {name} = chunk[1];
-                if (name === 'Block' || name === 'SimpleBlock') {
-                    wavBufferArray.push(chunk[1].payload);
-                };
+                if (shouldProcessKvs) {
+                    const {name, value} = chunk[1];
+
+                    switch (name) {
+                        case 'TagName':
+                            currentTagName = value;
+                            break;
+
+                        case 'TagString':
+                            if (currentTagName === 'AWS_KINESISVIDEO_FRAGMENT_NUMBER') {
+                                currentFragment = BigInt(value);
+                                //console.log(`Start: ${startFragmentNum}, Current: ${currentFragment}, Stop: ${stopFragmentNum}`);
+                                if (currentFragment > stopFragmentNum) {
+                                    console.log(`Current fragment number [${currentFragment}] is greater than the stop fragment number [${stopFragmentNum}].  Stopping KVS processing.`);
+                                    shouldProcessKvs = false;
+                                }
+                            }
+                            break;
+
+                        case 'Block':
+                        case 'SimpleBlock':
+                            wavBufferArray.push(chunk[1].payload);
+                            break;
+
+                        default:
+                            break;
+
+                    }
+                }
             });
 
             // Establish the writer which transforms PCM data from KVS to wav using the defined params
@@ -182,7 +213,7 @@ exports.handler = async (event) => {
             var data = await kinesisvideo.getDataEndpoint(stream_params).promise();
             kinesisvideomedia.endpoint = new AWS.Endpoint(data.DataEndpoint);
 
-            await parseNextFragmentNew(streamARN, startFragmentNum, stopFragmentNum, null);
+            await parseNextFragmentNew(streamARN, startFragmentNum.toString(), null);
 
             //waiting until the recorded stream
             await done();
@@ -212,12 +243,11 @@ exports.handler = async (event) => {
 };
 
 // Data extraction function
-async function parseNextFragmentNew(streamArn, startFragmentNumber, stopFragmentNumber, contToken) {
-    console.log(`StartFragmentNumber: ${startFragmentNumber}, StopFragmentNumber: ${stopFragmentNumber}`);
+async function parseNextFragmentNew(streamArn, fragmentNumber, contToken) {
     var fragment_paramsData = {
         StartSelector: {
             StartSelectorType: 'FRAGMENT_NUMBER',
-            AfterFragmentNumber: startFragmentNumber,
+            AfterFragmentNumber: fragmentNumber,
         },
         StreamName: streamArn.split('/')[1]
     };
@@ -228,13 +258,6 @@ async function parseNextFragmentNew(streamArn, startFragmentNumber, stopFragment
         request.removeListener('httpData', listener);
         request.on('httpData', function (chunk, response) {
             decoder.write(chunk);
-
-            // If we just processed the stopFragmentNumber, flush the wav output and exit
-            if (startFragmentNumber === stopFragmentNumber) {
-                wavOutputStream.write(Buffer.concat(wavBufferArray));
-                wavOutputStream.end();
-                resolve({});
-            }
         });
         request.on('httpDone', function (response) {
             wavOutputStream.write(Buffer.concat(wavBufferArray));
