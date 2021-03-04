@@ -144,9 +144,12 @@ exports.handler = async (event) => {
                  * indicating that we've gone as far as we should go in this KVS.
                  *
                  */
-                if (shouldProcessKvs) {
-                    const {name, value} = chunk[1];
 
+                const {name, value} = chunk[1];
+
+                console.log(`Examining a chunk named: ${name}`);
+
+                if (shouldProcessKvs) {
                     switch (name) {
                         case 'TagName':
                             /**
