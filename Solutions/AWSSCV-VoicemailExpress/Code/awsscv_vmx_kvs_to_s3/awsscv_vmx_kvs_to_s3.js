@@ -147,7 +147,7 @@ exports.handler = async (event) => {
 
                 const {name, value} = chunk[1];
 
-                console.log(`Examining a chunk named: ${name}`);
+                //console.log(`Examining a chunk named: ${name}`);
 
                 if (shouldProcessKvs) {
                     switch (name) {
