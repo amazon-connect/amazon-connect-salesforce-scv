@@ -48,7 +48,7 @@ Resources:
 Outputs:
   SCVCommonPythonLayerARN:
     Description: ARN for the Python common layer
-    Value: !GetAtt SCVCommonPythonLayer.Arn
+    Value: !Ref SCVCommonPythonLayer
   SCVCommonNodeLayerARN:
     Description: ARN for the node.js common layer
-    Value: !GetAtt SCVCommonNodeLayer.Arn
+    Value: !Ref SCVCommonNodeLayer
