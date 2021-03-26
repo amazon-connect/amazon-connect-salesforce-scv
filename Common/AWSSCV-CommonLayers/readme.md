@@ -31,7 +31,7 @@ AWSSCV Common layers for AWS Lambda provides dependency modules used by the solu
 17. The ARN's for the two (2) layers will be available in the Cloudformation stack outputs
 
 ## Examples
-Python code examples are available in the [PYthon examples folder](Docs/Examples/python)
+Python code examples are available in the [Python examples folder](Docs/Examples/python)
 ## Layer Last Updated
 - Node.js: 2020-09-30
 - Python: 2020-09-30
