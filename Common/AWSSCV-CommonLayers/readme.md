@@ -30,19 +30,8 @@ AWSSCV Common layers for AWS Lambda provides dependency modules used by the solu
 16.	After a minute or two, the stack should complete.
 17. The ARN's for the two (2) layers will be available in the Cloudformation stack outputs
 
-## Easy Upgrade process
-If you have previously deployed the cloudformation templates and have the layers in place, it is easier to just download the updated layer and add it as a new version. To do this, follow the steps below.
-1. Download the layer that you want to update from the [Deployment](Deploy/awsscv_common_layers/) directory (do not unzip the file)
-2. Login the the [AWS Console](https://console.aws.amazon.com/console/home)
-3. Open the AWS [Lambda Console](https://console.aws.amazon.com/lambda/home)
-4. In the left navigation menu, under **Additional Resources**, select **Layers**
-5. Select the name of the layer that you want to update
-6. Choose **Create Version**
-7. Select the **Upload** button, navigate to the downloaded layer zip, and select it
-8. Select the **Compatible runtimes**. For Node.js, select version 12.x and any newer versions. For Python, select version 3.8 and any newer versions.
-9. Choose **Create**
-10. Update your functions to use the new layer as appropriate
-
+## Examples
+Python code examples are available in the [Examples folder](Docs/Examples)
 ## Layer Last Updated
 - Node.js: 2020-09-30
 - Python: 2020-09-30
