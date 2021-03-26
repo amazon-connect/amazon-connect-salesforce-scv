@@ -148,12 +148,12 @@ Resources:
 Outputs:
   scvsalesforcevalidator:
     Description: Execute this Lambda function to validate the Salesforce configuration.
-    Value: !Ref scvsalesforcevalidator
+    Value: !GetAtt scvsalesforcevalidator.Arn
   awsscvcommonrole:
     Description: Provides foundational access to Kinesis, KVS, CloudWatch Logs, and the Salesforce secrets
-    Value: !Ref awsscvcommonrole
+    Value: !GetAtt awsscvcommonrole.Arn
   awsscvcommonsecrets:
     Description: Required credentials to access Salesforce
-    Value: !Ref awsscvcommonsecrets
+    Value: !GetAtt awsscvcommonsecrets.Arn
 
 
