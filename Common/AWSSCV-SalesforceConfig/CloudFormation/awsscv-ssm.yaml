@@ -154,6 +154,6 @@ Outputs:
     Value: !GetAtt awsscvcommonrole.Arn
   awsscvcommonsecrets:
     Description: Required credentials to access Salesforce
-    Value: !GetAtt awsscvcommonsecrets.Arn
+    Value: !Ref awsscvcommonsecrets
 
 
