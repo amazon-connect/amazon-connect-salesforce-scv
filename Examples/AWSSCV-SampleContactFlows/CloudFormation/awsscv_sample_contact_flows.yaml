@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda functions required to enable the Data-Directed Routing - Flow Routing examples.
+Parameters:
+    AWSRegion:
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    ConnectInstanceID:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance ID for Amazon Connect.
+    BasicQueueARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of your default queue in Amazon Connect
+    AWSSCVCommonRoleARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the awsscv_common_role role
+    AWSSCVCommonLambdaPythonLayerARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the common python layer
+    InvokeTelephonyFunctionARN:
+        Type: String
+        Default: arn
+        Description: ARN for the Salesforce Invoke Telephony API Lambda Function
+
+Resources:
+    ContactFlowBuilderPolicy:
+        Type: AWS::IAM::ManagedPolicy
+        Properties:
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'connect:CreateContactFlow'
+                Resource:
+                  - '*'
+          ManagedPolicyName: AWSSCV_contact_flow_build
+          Roles:
+            - awsscv_common_role
+
+    CcontactFlowBuilder:
+        Type: AWS::Lambda::Function
+        DependsOn:
+          - ContactFlowBuilderPolicy
+        Properties:
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - 'awsscv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: awsscv_sample_contact_flow_builder.zip
+          Description: Creates contact flow from template
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_sample_contact_flow_builder_'
+                  - !Ref ConnectInstanceName
+          Handler: awsscv_contact_flow_builder.lambda_handler
+          Role: !Ref AWSSCVCommonRole
+          Environment:
+            Variables:
+              instanceID:
+                Ref: ConnectInstanceID
+          Runtime: python3.8
+          Timeout: 120
+
+    ContactFlowBuild:
+      Type: 'Custom::ConnectContactFlow'
+      Version: '1.0'
+      DependsOn:
+        - ContactFlowBuilder
+      Properties:
+        ServiceToken: !GetAtt ContactFlowBuilder.Arn
+        telephony_arn: !Ref InvokeTelephonyFunctionARN
+        queue_arn: !Ref BasicQueueARN
