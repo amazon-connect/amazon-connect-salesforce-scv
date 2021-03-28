@@ -1,0 +1,313 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the Voicemail Express for Salesforce and Service Cloud Voice solution. In order to deploy this solution, you need to have an Amazon Connect instance deployed and configured for both CTR streaming via Kinesis Data Streams and Live Media Streaming via Kinesis Video. Additionally, your Salesforce org either needs to have Service Cloud Voice enabled or you need to have completed the CTI Adapter for Amazon Connect Configuration. Please complete these before deploying this template.
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "AWS"
+        Parameters:
+          - AWSRegion
+          - AWSS3BucketPrefix
+          - AWSLambdaLoggingLevel
+
+      - Label:
+          default: "Amazon Connect"
+        Parameters:
+          - ConnectInstanceName
+          - ConnectCTRStreamARN
+
+      - Label:
+          default: "Salesforce"
+        Parameters:
+          - SalesforceOrgId
+          - SalesforceHost
+          - SalesforceUsername
+          - SalesforceVersion
+          - SalesforceMode
+          - SalesforceDeploymentType
+          - SalesforceConsumerKey
+          - SalesforcePrivateKey
+
+      - Label:
+          default: "Voicemail Express"
+        Parameters:
+          - RecordingsExpireInDays
+          - SalesforceVoicemailField
+          - SalesforceVoicemailPhoneField
+          - SalesforceContactAttributesField
+
+      - Label:
+          default: "CTR Logger"
+        Parameters:
+          - CTRLoggerFormatEvents
+          - CTRLoggerWriteTo
+
+    ParameterLabels:
+      AWSRegion:
+        default: "AWS Region"
+      AWSS3BucketPrefix:
+        default: "AWS S3 Bucket Prefix"
+      AWSLambdaLoggingLevel:
+        default: "AWS Lambda Logging Level"
+
+      ConnectInstanceName:
+        default: "Amazon Connect Instance Name"
+      ConnectCTRStreamARN:
+        default: "Amazon Connect CTR Stream ARN"
+
+      SalesforceOrgId:
+        default: "Salesforce Org Id"
+      SalesforceHost:
+        default: "Salesforce Host"
+      SalesforceUsername:
+        default: "Salesforce Username"
+      SalesforceVersion:
+        default: "Salesforce API Version"
+      SalesforceMode:
+        default: "Salesforce Mode"
+      SalesforceDeploymentType:
+        default: "Salesforce Deployment Type"
+      SalesforceConsumerKey:
+        default: "Salesforce Connected App Consumer Key"
+      SalesforcePrivateKey:
+        default: "Salesforce Private Key"
+
+      RecordingsExpireInDays:
+        default: "Recordings Expire in Days"
+      SalesforceVoicemailField:
+        default: "Salesforce Voicemail Link Field"
+      SalesforceVoicemailPhoneField:
+        default: "Salesforce Voicemail Phone Field"
+      SalesforceContactAttributesField:
+        default: "Salesforce Voicemail Contact Attributes Field"
+
+      CTRLoggerFormatEvents:
+        default: "CTR Logger Format Events"
+      CTRLoggerWriteTo:
+        default: "CTR Logger Write Events To"
+
+Parameters:
+  AWSS3BucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - eu-central-1
+      - eu-west-2
+    Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice.
+  AWSLambdaLoggingLevel:
+    Type: String
+    Default: INFO
+    AllowedValues:
+      - DEBUG
+      - INFO
+  ConnectInstanceName:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the instance name for Amazon Connect.
+  ConnectCTRStreamARN:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the ARN for the Kinesis Data Stream that receives your contact trace records.
+  RecordingsExpireInDays:
+    Type: String
+    Default: 7
+    Description: Number of days recordings are kept before deleted. Max is 7.
+  SalesforceConsumerKey:
+    Type: String
+    Default: REPLACEME
+    Description: The consumer key for your connected app
+    NoEcho: true
+  SalesforceUsername:
+    Type: String
+    Default: REPLACEME
+    Description: The username for the user that you created
+  SalesforceOrgId:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the ID for your Salesforce Org
+  SalesforceHost:
+    Type: String
+    Default: REPLACEME
+    Description: The full https url to your salesforce org.
+  SalesforceVersion:
+    Type: String
+    Default: 'v51.0'
+    AllowedValues:
+      - 'v49.0'
+      - 'v50.0'
+      - 'v51.0'
+    Description: The current API version number
+  SalesforcePrivateKey:
+    Type: String
+    Default: REPLACEME
+    Description: The entire contents of the encoded_key.txt file that you generated as a part of the setup process
+    NoEcho: true
+  SalesforceMode:
+    Type: String
+    Default: PROD
+    AllowedValues:
+      - PROD
+      - DEV
+      - SANDBOX
+    Description: The type of Salesforce org
+  SalesforceDeploymentType:
+    Type: String
+    Default: SCV
+    AllowedValues:
+      - CTI
+      - SCV
+    Description: Is this a CTI Adapter configuration or Service Cloud Voice?
+  SalesforceVoicemailField:
+    Type: String
+    Default: vm_link__c
+    Description: Custom case field created in Salesforce to store the voicemail link.
+  SalesforceVoicemailPhoneField:
+    Type: String
+    Default: vm_phone__c
+    Description: Custom phone field created in Salesforce to store the callback phone number.
+  SalesforceContactAttributesField:
+    Type: String
+    Default: connect_contact_attributes__c
+    Description: Custom field created in Salesforce to store the contact attributes.
+  CTRLoggerFormatEvents:
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: Pretty print CTR output
+  CTRLoggerWriteTo:
+    Type: String
+    Default: both
+    AllowedValues:
+      - console
+      - s3
+      - both
+
+Resources:
+  CommonLayersStack:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref AWSS3BucketPrefix
+          - 'awsscv-supporting-code-'
+          - !Ref AWSRegion
+          - '.s3-'
+          - !Ref AWSRegion
+          - '.amazonaws.com'
+          - '/awsscv_common_layers.yaml'
+      Parameters:
+        AWSRegion: !Ref AWSRegion
+
+  SalesforceConfigStack:
+    Type: "AWS::CloudFormation::Stack"
+    DependsOn:
+      - CommonLayersStack
+    Properties:
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref AWSS3BucketPrefix
+          - 'awsscv-supporting-code-'
+          - !Ref AWSRegion
+          - '.s3-'
+          - !Ref AWSRegion
+          - '.amazonaws.com'
+          - '/awsscv-ssm.yaml'
+      Parameters:
+        AWSRegion: !Ref AWSRegion
+        ConnectInstanceName: !Ref ConnectInstanceName
+        AWSSalesforceCommonPythonLayer:
+          Fn::GetAtt:
+            - CommonLayersStack
+            - Outputs.SCVCommonPythonLayerARN
+        sfConsumerKey: !Ref SalesforceConsumerKey
+        sfUsername: !Ref SalesforceUsername
+        sfOrgId: !Ref SalesforceOrgId
+        sfHost: !Ref AWSRegion
+        sfVersion: !Ref SalesforceVersion
+        sfPrivateKey: !Ref SalesforcePrivateKey
+        sfMode: !Ref SalesforceMode
+
+  VoicemailExpressStack:
+    Type: "AWS::CloudFormation::Stack"
+    DependsOn:
+      - CommonLayersStack
+      - SalesforceConfigStack
+    Properties:
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref AWSS3BucketPrefix
+          - 'awsscv-supporting-code-'
+          - !Ref AWSRegion
+          - '.s3-'
+          - !Ref AWSRegion
+          - '.amazonaws.com'
+          - '/awsscv_vmx.yaml'
+      Parameters:
+        AWSRegion: !Ref AWSRegion
+        ConnectInstanceName: !Ref ConnectInstanceName
+        ConnectCTRStreamARN: !Ref ConnectCTRStreamARN
+        RecordingsExpireInDays: !Ref RecordingsExpireInDays
+        AWSSCVCommonRole:
+          Fn::GetAtt:
+            - SalesforceConfigStack
+            - Outputs.awsscvcommonrole
+        AWSSalesforceCommonPythonLayer:
+          Fn::GetAtt:
+            - CommonLayersStack
+            - Outputs.SCVCommonPythonLayerARN
+        AWSSalesforceCommonNodeLayer:
+          Fn::GetAtt:
+            - CommonLayersStack
+            - Outputs.SCVCommonNodeLayerARN
+        sfConfig:
+          Fn::GetAtt:
+            - SalesforceConfigStack
+            - Outputs.awsscvcommonsecrets
+        sfDeploymentType: !Ref SalesforceDeploymentType
+        sfVoicemailField: !Ref SalesforceVoicemailField
+        sfVoicemailPhoneField: !Ref SalesforceVoicemailPhoneField
+        sfContactAttributesField: !Ref SalesforceContactAttributesField
+
+  CTRLoggerStack:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref AWSS3BucketPrefix
+          - 'awsscv-supporting-code-'
+          - !Ref AWSRegion
+          - '.s3-'
+          - !Ref AWSRegion
+          - '.amazonaws.com'
+          - '/awsscv_ctr_logger.yaml'
+      Parameters:
+        AWSRegion: !Ref AWSRegion
+        AWSSCVCommonRole:
+          Fn::GetAtt:
+            - SalesforceConfigStack
+            - Outputs.awsscvcommonrole
+        ConnectInstanceName: !Ref ConnectInstanceName
+        CTRKinesisStream: !Ref ConnectCTRStreamARN
+        Format: !Ref CTRLoggerFormatEvents
+        LambdaLoggingLevel: !Ref AWSLambdaLoggingLevel
+        WriteTo: !Ref CTRLoggerWriteTo
+
