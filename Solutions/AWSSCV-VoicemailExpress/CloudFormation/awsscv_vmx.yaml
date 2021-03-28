@@ -161,7 +161,7 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - !Reg AWSS3BucketPrefix
+                - - !Ref AWSS3BucketPrefix
                   - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_vmx_presigner.zip
