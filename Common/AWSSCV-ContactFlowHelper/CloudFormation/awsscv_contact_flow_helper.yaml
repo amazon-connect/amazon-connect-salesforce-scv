@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys the AWS Lambda function the provides the contact flow helper tools.
 Parameters:
+    AWSS3BucketPrefix:
+      Type: String
+      Default: ''
+      Description: Not required and only used for development purposes.
     AWSRegion:
         Type: String
         Default: us-east-1
@@ -30,7 +34,8 @@ Resources:
            S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
            S3Key: awsscv_contact_flow_helper.zip
           Description: Baseline text and math functions for ease of access in contact flows.

@@ -6,8 +6,8 @@ Metadata:
       - Label:
           default: "AWS"
         Parameters:
-          - AWSRegion
           - AWSS3BucketPrefix
+          - AWSRegion
           - AWSLambdaLoggingLevel
 
       - Label:

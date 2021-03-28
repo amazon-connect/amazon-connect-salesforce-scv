@@ -61,6 +61,10 @@ Metadata:
           - ContactFlowFatalErrorsThreshold
 
 Parameters:
+  AWSS3BucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
   AWSRegion:
     Type: String
     Default: us-east-1
@@ -212,7 +216,8 @@ Resources:
         S3Bucket:
           !Join
           - ''
-          - - 'scvdev-awsscv-supporting-code-'
+          - - !Ref AWSS3BucketPrefix
+            - 'awsscv-supporting-code-'
             - !Ref AWSRegion
         S3Key: awsscv_alarm_to_chatter.zip
       Description: Writes alarm to Salesforce Chatter feed
@@ -240,7 +245,8 @@ Resources:
         S3Bucket:
           !Join
           - ''
-          - - 'scvdev-awsscv-supporting-code-'
+          - - !Ref AWSS3BucketPrefix
+            - 'awsscv-supporting-code-'
             - !Ref AWSRegion
         S3Key: awsscv_alarm_to_log.zip
       Description: Writes alarm to CloudWatch logs

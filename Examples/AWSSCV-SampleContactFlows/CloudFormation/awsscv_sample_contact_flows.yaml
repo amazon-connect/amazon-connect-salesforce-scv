@@ -1,6 +1,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys the AWS Lambda functions required to enable the Data-Directed Routing - Flow Routing examples.
 Parameters:
+    AWSS3BucketPrefix:
+      Type: String
+      Default: ''
+      Description: Not required and only used for development purposes.
     AWSRegion:
         Type: String
         Default: us-east-1
@@ -35,7 +39,7 @@ Parameters:
         Description: ARN of the common python layer
     InvokeTelephonyFunctionARN:
         Type: String
-        Default: arn
+        Default: REPLACEME
         Description: ARN for the Salesforce Invoke Telephony API Lambda Function
 
 Resources:
@@ -54,7 +58,7 @@ Resources:
           Roles:
             - awsscv_common_role
 
-    CcontactFlowBuilder:
+    ContactFlowBuilder:
         Type: AWS::Lambda::Function
         DependsOn:
           - ContactFlowBuilderPolicy
@@ -63,7 +67,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_sample_contact_flow_builder.zip
           Description: Creates contact flow from template
@@ -73,7 +78,7 @@ Resources:
                 - - 'awsscv_sample_contact_flow_builder_'
                   - !Ref ConnectInstanceName
           Handler: awsscv_contact_flow_builder.lambda_handler
-          Role: !Ref AWSSCVCommonRole
+          Role: !Ref AWSSCVCommonRoleARN
           Environment:
             Variables:
               instanceID:
