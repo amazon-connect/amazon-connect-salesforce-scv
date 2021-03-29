@@ -33,7 +33,7 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: ARN of the awsscv_common_role role
-    AWSSCVCommonLambdaPythonLayerARN:
+    AWSSCVCommonPythonLayerARN:
         Type: String
         Default: REPLACEME
         Description: ARN of the common python layer
