@@ -21,7 +21,7 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: Provide the instance name for Amazon Connect.
-    ConnectInstanceID:
+    ConnectInstanceId:
         Type: String
         Default: REPLACEME
         Description: Provide the instance ID for Amazon Connect.
