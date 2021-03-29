@@ -82,7 +82,7 @@ Resources:
           Environment:
             Variables:
               instanceID:
-                Ref: ConnectInstanceID
+                Ref: ConnectInstanceId
           Runtime: python3.8
           Timeout: 120
 
