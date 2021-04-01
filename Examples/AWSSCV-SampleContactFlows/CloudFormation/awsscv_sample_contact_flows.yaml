@@ -25,7 +25,7 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: Provide the instance ID for Amazon Connect.
-    BasicQueueARN:
+    ConnectBasicQueueARN:
         Type: String
         Default: REPLACEME
         Description: ARN of your default queue in Amazon Connect
@@ -54,7 +54,7 @@ Resources:
                   - 'connect:CreateContactFlow'
                 Resource:
                   - '*'
-          ManagedPolicyName: AWSSCV_contact_flow_build
+          ManagedPolicyName: awsscv_contact_flow_build
           Roles:
             - awsscv_common_role
 
@@ -79,9 +79,10 @@ Resources:
                   - !Ref ConnectInstanceName
           Handler: awsscv_contact_flow_builder.lambda_handler
           Role: !Ref AWSSCVCommonRoleARN
+          Layers: [ !Ref AWSSalesforceCommonPythonLayerARN ]
           Environment:
             Variables:
-              instanceID:
+              ConnectInstanceId:
                 Ref: ConnectInstanceId
           Runtime: python3.8
           Timeout: 120
@@ -93,5 +94,5 @@ Resources:
         - ContactFlowBuilder
       Properties:
         ServiceToken: !GetAtt ContactFlowBuilder.Arn
-        telephony_arn: !Ref InvokeTelephonyFunctionARN
-        queue_arn: !Ref BasicQueueARN
+        InvokeTelephonyFunctionARN: !Ref InvokeTelephonyFunctionARN
+        ConnectBasicQueueARN: !Ref ConnectBasicQueueARN
