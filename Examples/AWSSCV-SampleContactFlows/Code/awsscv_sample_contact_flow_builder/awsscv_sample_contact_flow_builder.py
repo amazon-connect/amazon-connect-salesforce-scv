@@ -1,31 +1,23 @@
 import sys, json, os, logging
 from awsscv.cfb import ContactFlowBuilder
 
-flowPath = os.environ['LAMBDA_TASK_ROOT'] + '/awsscv_ddr_flow_cf.json'
-
 logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
-
-config = {
-    "DDRFlow": {
-        "Name": "SomeTestFlow",
-        "Type": "CONTACT_FLOW",
-        "Description": "Some test flow",
-        "Source": os.environ['LAMBDA_TASK_ROOT'] + '/awsscv_ddr_flow_cf.json',
-        "SubMap": {
-        }
-    }
-}
 
 
 def lambda_handler(event, context):
     logger.debug(event)
 
+    task_root = os.environ['LAMBDA_TASK_ROOT']
+
     cfb = ContactFlowBuilder()
 
+    config_source = open(task_root + '/config.json').read()
+    config_content = json.loads(config_source)
+
     try:
-        for (k, v) in config.items():
-            file_source = open(v['Source']).read()
+        for (k, v) in config_content.items():
+            file_source = open(task_root + '/' + v['Source']).read()
             flow_content = json.loads(file_source)['ContactFlow']['Content']
 
             result = cfb.create_contact_flow(
