@@ -1,9 +1,16 @@
-import sys, json, os, logging
+import sys
+from pip._internal import main
+
+main(['install', 'requests', '--target', '/tmp/'])
+sys.path.insert(0, '/tmp/')
+
+import os, json, logging, boto3, requests, urllib3
 from awsscv.cfb import ContactFlowBuilder
 
 logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 
+http = urllib3.PoolManager()
 
 def lambda_handler(event, context):
     logger.debug(event)
@@ -21,12 +28,11 @@ def lambda_handler(event, context):
             flow_content = json.loads(file_source)['ContactFlow']['Content']
 
             result = cfb.create_contact_flow(
-                event['Parameters']['ConnectInstanceId'],
+                os.getenv('connect_instance_id'),
                 v['Name'],
                 v['Type'],
                 v['Description'],
                 flow_content,
-                v['Tags'],
                 v['SubMap']
             )
 
@@ -36,7 +42,7 @@ def lambda_handler(event, context):
     except Exception as e:
         logger.error(e)
         cf_send(event, context, 'FAILED', {})
-        return e
+        raise e
 
 
 def cf_send(event, context, status, data, physical_resource_id=None, no_echo=False):
