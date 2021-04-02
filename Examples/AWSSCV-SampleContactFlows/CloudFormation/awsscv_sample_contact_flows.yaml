@@ -83,6 +83,8 @@ Resources:
           Environment:
             Variables:
               connect_instance_id: !Ref ConnectInstanceId
+              connect_basic_queue_arn: !Ref ConnectBasicQueueARN
+              invoke_telephony_function_arn: !Ref InvokeTelephonyFunctionARN
               lambda_logging_level: INFO
           Runtime: python3.8
           Timeout: 120
