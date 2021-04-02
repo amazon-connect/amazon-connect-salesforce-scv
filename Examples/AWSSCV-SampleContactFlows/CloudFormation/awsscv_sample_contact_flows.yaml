@@ -82,8 +82,8 @@ Resources:
           Layers: [ !Ref AWSSalesforceCommonPythonLayerARN ]
           Environment:
             Variables:
-              ConnectInstanceId:
-                Ref: ConnectInstanceId
+              connect_instance_id: !Ref ConnectInstanceId
+              lambda_logging_level: INFO
           Runtime: python3.8
           Timeout: 120
 
