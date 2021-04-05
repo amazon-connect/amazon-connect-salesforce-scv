@@ -1,6 +1,14 @@
 {
-  "DDRFlow": {
-    "Name": "SomeTestFlow",
+  "A001": {
+    "Name": "A001",
+    "Type": "CONTACT_FLOW",
+    "Description": "Some test flow",
+    "Source": "awsscv_ddr_flow_cf.json",
+    "Tags": {},
+    "SubMap": {}
+  },
+  "A002": {
+    "Name": "A002",
     "Type": "CONTACT_FLOW",
     "Description": "Some test flow",
     "Source": "awsscv_ddr_flow_cf.json",
