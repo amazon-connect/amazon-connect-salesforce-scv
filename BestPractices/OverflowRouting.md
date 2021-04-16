@@ -73,10 +73,10 @@ Now, lets consider what happens as calls come in.
 --IMAGE PLACEHOLDER--
 
 9. Now, all agents assigned to all routing profiles are eligible to take the call and the first agent that comes available will get it. This happened dynamically and, more importantly we never: 
-  1. Moved the call to another queue
-  2. Never changed the priority of the call
-  3. Never moved or reassigned agents
-  4. Never moved or reassigned routing profiles
+  - Moved the call to another queue
+  - Never changed the priority of the call
+  - Never moved or reassigned agents
+  - Never moved or reassigned routing profiles
 
 --IMAGE PLACEHOLDER--
 
