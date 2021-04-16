@@ -57,9 +57,11 @@ Now, lets consider what happens as calls come in.
 --IMAGE PLACEHOLDER--
  
 5. Since this is the heart of the business, all routing profiles have Coffee Maker Support as the highest priority except for the Logistics routing profile. The business determined that the agents in the Logistics routing profile don't really have the skillset to help with these calls under normal circumstances, but if things get bad, we want to bring them in, but only if there are no other logistics-focused calls waiting.
+
 --IMAGE PLACEHOLDER--
  
 6. The next thing that we consider is the Delay setting. Routing profiles will only be eligible for this call if they have the queue assigned AND the call has passed the Delay configured for the queue in the relevant routing profile. This is constantly being evaluated while the call is in queue. So lets say the call has been in queue for 15 seconds. The Sales routing profile has a delay of 120 seconds and the Logistics routing profile has a delay of 300 seconds. Based on that, those routing profiles are not currently eligible to take the call. 
+
 --IMAGE PLACEHOLDER--
 
 7. As time progresses, and the call reaches 120 seconds in queue, the Sales routing profile, and all agents assigned to it, becomes eligible to handle the call as well because it has now passed the configured delay. 
@@ -80,4 +82,4 @@ Now, lets consider what happens as calls come in.
 
 In this example, by simply configuring the routing profiles to match our business needs, we expanded the pool of agents that could handle this call in its original queue by increasing the routing profiles that could be considered for routing, thereby increasing the pool of agents. The following video walks through this scenario in more detail.
 
---Video Placeholder--
+--VIDEO PLACEHOLDER--
