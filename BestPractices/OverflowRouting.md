@@ -41,15 +41,19 @@ And we've built the following routing profiles:
 Now, lets consider what happens as calls come in. 
 
 1. A customer calls into the contact center
+
 --IMAGE PLACEHOLDER--
 
 2. Based on options selected, data lookups, and whatever other mechanism are put into place, a skillset for this call is identified. In this case, they need support for their coffee maker, so they are sent to the Coffee Maker Support queue.
+
 --IMAGE PLACEHOLDER--
 
 3. Now that the call is in queue, Connect will look across all routing profiles to see which ones have the Coffee Maker Support queue in them. Since our business is all about coffee makers, and we want to make sure our customers' calls are answered, we have added the Coffee Maker Support queue to each of the routing profiles. So, at this point in the evaluation, all available agents are elgible to take this call. 
+
 --IMAGE PLACEHOLDER--
 
 4. To determine which agent SHOULD get this call, Connect orders the pools of agents based on the priority of the Coffee Maker Support queue in the routing profile.
+
 --IMAGE PLACEHOLDER--
  
 5. Since this is the heart of the business, all routing profiles have Coffee Maker Support as the highest priority except for the Logistics routing profile. The business determined that the agents in the Logistics routing profile don't really have the skillset to help with these calls under normal circumstances, but if things get bad, we want to bring them in, but only if there are no other logistics-focused calls waiting.
@@ -59,9 +63,11 @@ Now, lets consider what happens as calls come in.
 --IMAGE PLACEHOLDER--
 
 7. As time progresses, and the call reaches 120 seconds in queue, the Sales routing profile, and all agents assigned to it, becomes eligible to handle the call as well because it has now passed the configured delay. 
+
 --IMAGE PLACEHOLDER--
 
 8. Finally, once the call hits 300 seconds, the last routing profile, Logistics, becomes eligble to take the call as well (as long as no calls exist in its other, higher priority, queues).
+
 --IMAGE PLACEHOLDER--
 
 9. Now, all agents assigned to all routing profiles are eligible to take the call and the first agent that comes available will get it. This happened dynamically and, more importantly we never: 
@@ -73,4 +79,5 @@ Now, lets consider what happens as calls come in.
 --IMAGE PLACEHOLDER--
 
 In this example, by simply configuring the routing profiles to match our business needs, we expanded the pool of agents that could handle this call in its original queue by increasing the routing profiles that could be considered for routing, thereby increasing the pool of agents. The following video walks through this scenario in more detail.
+
 --Video Placeholder--
