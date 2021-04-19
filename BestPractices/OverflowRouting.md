@@ -42,44 +42,50 @@ Now, lets consider what happens as calls come in.
 
 1. A customer calls into the contact center
 
---IMAGE PLACEHOLDER--
+![Slide 1](img/routing/01.png)
 
-2. Based on options selected, data lookups, and whatever other mechanism are put into place, a skillset for this call is identified. In this case, they need support for their coffee maker, so they are sent to the Coffee Maker Support queue.
+2. A contact flow is invoked that provides the customer experience, handles back-end data acquisition, executes any custom integrations, etc.
 
---IMAGE PLACEHOLDER--
+![Slide 2](img/routing/02.png)
 
-3. Now that the call is in queue, Connect will look across all routing profiles to see which ones have the Coffee Maker Support queue in them. Since our business is all about coffee makers, and we want to make sure our customers' calls are answered, we have added the Coffee Maker Support queue to each of the routing profiles. So, at this point in the evaluation, all available agents are elgible to take this call. 
+3. Based on options selected, data lookups, and whatever other mechanism are put into place, a skillset for this call is identified. 
 
---IMAGE PLACEHOLDER--
+![Slide 3](img/routing/03.png)
 
-4. To determine which agent SHOULD get this call, Connect orders the pools of agents based on the priority of the Coffee Maker Support queue in the routing profile.
+4. In this case, they need support for their coffee maker, so they are sent to the Coffee Maker Support queue.
 
---IMAGE PLACEHOLDER--
+![Slide 4](img/routing/04.png)
  
-5. Since this is the heart of the business, all routing profiles have Coffee Maker Support as the highest priority except for the Logistics routing profile. The business determined that the agents in the Logistics routing profile don't really have the skillset to help with these calls under normal circumstances, but if things get bad, we want to bring them in, but only if there are no other logistics-focused calls waiting.
+5. Now that the call is in queue, Connect will look across all routing profiles to see which ones have the Coffee Maker Support queue in them. 
 
---IMAGE PLACEHOLDER--
+![Slide 5](img/routing/05.png)
  
-6. The next thing that we consider is the Delay setting. Routing profiles will only be eligible for this call if they have the queue assigned AND the call has passed the Delay configured for the queue in the relevant routing profile. This is constantly being evaluated while the call is in queue. So lets say the call has been in queue for 15 seconds. The Sales routing profile has a delay of 120 seconds and the Logistics routing profile has a delay of 300 seconds. Based on that, those routing profiles are not currently eligible to take the call. 
+6. Now that the call is in queue, Connect will look across all routing profiles to see which ones have the Coffee Maker Support queue in them. Since our business is all about coffee makers, and we want to make sure our customers' calls are answered, we have added the Coffee Maker Support queue to each of the routing profiles. So, at this point in the evaluation, all available agents are eligible to take this call.
 
---IMAGE PLACEHOLDER--
+![Slide 6](img/routing/06.png)
 
-7. As time progresses, and the call reaches 120 seconds in queue, the Sales routing profile, and all agents assigned to it, becomes eligible to handle the call as well because it has now passed the configured delay. 
+7. Using priorities allows us to specify how important the queues are, relative to one another, in a given routing profile. From this example, we can see that Coffee Maker Support is the number 1 priority for the Coffee Maker Support routing profile, and rightfully so. You’ll also notice that its NOT the highest priority for the Logistics routing profile. So we’ve determined that all agents should be prepared to take Coffee Maker Support calls, but its probably not the best use of the Logistics team’s time. In their case, Supplier Orders and Shipping calls take priority. If there are no calls in those queues, then they can take a Coffee Maker support call.
 
---IMAGE PLACEHOLDER--
+![Slide 7](img/routing/07.png)
 
-8. Finally, once the call hits 300 seconds, the last routing profile, Logistics, becomes eligble to take the call as well (as long as no calls exist in its other, higher priority, queues).
+8. But we also have the concept of a Delay. Delays allow us to only make certain routing profiles eligible to take a call if the call has been in that queue longer than the delay time. This is how we really cover these call volume spikes. If we look at the Sales and Logistics routing profiles, you see that they have a delay for the Coffee Maker Support queue of 120 and 300 seconds respectively. This means that until a call has been in queue longer than the delay, those routing profiles (and the agents assigned to them) are not eligible for this call. And we see that here as those routing profiles are removed from the pool of eligible agents.
 
---IMAGE PLACEHOLDER--
+![Slide 8](img/routing/08.png)
 
-9. Now, all agents assigned to all routing profiles are eligible to take the call and the first agent that comes available will get it. This happened dynamically and, more importantly we never: 
-  - Moved the call to another queue
-  - Never changed the priority of the call
-  - Never moved or reassigned agents
-  - Never moved or reassigned routing profiles
+9. But as we reach 120 seconds in queue, the Sales routing profile becomes eligible. 
 
---IMAGE PLACEHOLDER--
+![Slide 9](img/routing/09.png)
 
-In this example, by simply configuring the routing profiles to match our business needs, we expanded the pool of agents that could handle this call in its original queue by increasing the routing profiles that could be considered for routing, thereby increasing the pool of agents. The following video walks through this scenario in more detail.
+10. And further on, when we hit 300 seconds, the logistics team becomes eligible, as long as there are no Supplier Order or Shipping calls.
 
---VIDEO PLACEHOLDER--
+![Slide 10](img/routing/10.png)
+
+11. And in this example, an agent on the Sales team finally becomes available, and the call is routed to them. What’s critical to remember is that we never:
+ - Moved the call to a different queue
+ - Moved agents to different routing profiles
+ - Added queues to different routing profiles
+ - Changed the priority of the call
+
+![Slide 11](img/routing/11.png)
+
+In this example, by simply configuring the routing profiles to match our business needs, we expanded the pool of agents that could handle this call in its original queue by increasing the routing profiles that could be considered for routing, thereby increasing the pool of agents. 
