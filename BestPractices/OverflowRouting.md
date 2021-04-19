@@ -40,7 +40,7 @@ And we've built the following routing profiles:
 
 Now, lets consider what happens as calls come in. 
 
-1. A customer calls into the contact center
+1. A customer calls into the contact center. They need help with their coffee maker.
 
 ![Slide 1](img/routing/01.png)
 
@@ -52,15 +52,15 @@ Now, lets consider what happens as calls come in.
 
 ![Slide 3](img/routing/03.png)
 
-4. In this case, they need support for their coffee maker, so they are sent to the Coffee Maker Support queue.
+4. In this case, they need support for their coffee maker, so the Coffee Maker Support queue is most appropriate, and Connect places the call into that queue.
 
 ![Slide 4](img/routing/04.png)
  
-5. Now that the call is in queue, Connect will look across all routing profiles to see which ones have the Coffee Maker Support queue in them. 
+5. Once the call is in queue, Connect will try to find an agent to take this call. It does this by evaluating the routing profiles. 
 
 ![Slide 5](img/routing/05.png)
  
-6. Now that the call is in queue, Connect will look across all routing profiles to see which ones have the Coffee Maker Support queue in them. Since our business is all about coffee makers, and we want to make sure our customers' calls are answered, we have added the Coffee Maker Support queue to each of the routing profiles. So, at this point in the evaluation, all available agents are eligible to take this call.
+6. Connect will look across all routing profiles to see which ones have the Coffee Maker Support queue in them. Since our business is all about coffee makers, and we want to make sure our customers' calls are answered, we have added the Coffee Maker Support queue to each of the routing profiles. So, at this point in the evaluation, all available agents are eligible to take this call.
 
 ![Slide 6](img/routing/06.png)
 
@@ -68,7 +68,7 @@ Now, lets consider what happens as calls come in.
 
 ![Slide 7](img/routing/07.png)
 
-8. But we also have the concept of a Delay. Delays allow us to only make certain routing profiles eligible to take a call if the call has been in that queue longer than the delay time. This is how we really cover these call volume spikes. If we look at the Sales and Logistics routing profiles, you see that they have a delay for the Coffee Maker Support queue of 120 and 300 seconds respectively. This means that until a call has been in queue longer than the delay, those routing profiles (and the agents assigned to them) are not eligible for this call. And we see that here as those routing profiles are removed from the pool of eligible agents.
+8. But we also have the concept of a delay. Delays allow us to only make certain routing profiles eligible to take a call if the call has been in that queue longer than the delay time. This is how we really cover these call volume spikes. If we look at the Sales and Logistics routing profiles, you see that they have a delay for the Coffee Maker Support queue of 120 and 300 seconds respectively. This means that until a call has been in queue longer than the delay, those routing profiles (and the agents assigned to them) are not eligible for this call. And we see that here as those routing profiles are removed from the pool of eligible agents.
 
 ![Slide 8](img/routing/08.png)
 
