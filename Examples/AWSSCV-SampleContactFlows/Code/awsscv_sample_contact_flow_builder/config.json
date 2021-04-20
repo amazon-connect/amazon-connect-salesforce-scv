@@ -1,9 +1,9 @@
 {
-  "A001": {
-    "Name": "A001",
-    "Type": "CONTACT_FLOW",
+  "AWS_Sample_SCV_QueueTransfer": {
+    "Name": "AWS_Sample_SCV_QueueTransfer",
+    "Type": "QUEUE_TRANSFER",
     "Description": "Some test flow",
-    "Source": "awsscv_ddr_flow_cf.json",
+    "Source": "AWS_Sample_SCV_QueueTransfer",
     "Tags": {},
     "SubMap": {}
   },

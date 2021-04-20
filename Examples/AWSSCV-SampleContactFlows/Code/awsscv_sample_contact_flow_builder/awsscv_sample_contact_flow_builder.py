@@ -39,6 +39,7 @@ def lambda_handler(event, context):
 
             sub_map['%%CONNECT_BASIC_QUEUE_ARN%%'] = os.getenv('connect_basic_queue_arn')
             sub_map['%%INVOKE_TELEPHONY_FUNCTION_ARM%%'] = os.getenv('invoke_telephony_function_arn')
+            sub_map['%%INVOKE_TELEPHONY_FUNCTION_ARM%%'] = os.getenv('invoke_telephony_function_arn')
 
             result = create_contact_flow(
                 os.getenv('connect_instance_id'),

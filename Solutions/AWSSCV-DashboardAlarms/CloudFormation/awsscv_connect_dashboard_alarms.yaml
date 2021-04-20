@@ -10,7 +10,7 @@ Metadata:
         Parameters:
           - AWSRegion
           - AWSSCVCommonRole
-          - AWSSalesforceCommonPythonLayer
+          - AWSSCVCommonPythonLayer
           - ConnectInstanceId
           - SalesforceConfig
           - SalesforceOrgId
@@ -83,7 +83,7 @@ Parameters:
     Default: REPLACEME
     Description: ARN of the awsscv_common_role role
 
-  AWSSalesforceCommonPythonLayer:
+  AWSSCVCommonPythonLayer:
     Type: String
     Default: REPLACEME
     Description: ARN for the AWSSCV Common Python Layer.
@@ -234,7 +234,7 @@ Resources:
           - !Ref ConnectInstanceId
       Handler: awsscv_alarm_to_chatter.lambda_handler
       Role: !Ref AWSSCVCommonRole
-      Layers: [ !Ref AWSSalesforceCommonPythonLayer ]
+      Layers: [ !Ref AWSSCVCommonPythonLayer ]
       Runtime: python3.8
       Timeout: 900
 

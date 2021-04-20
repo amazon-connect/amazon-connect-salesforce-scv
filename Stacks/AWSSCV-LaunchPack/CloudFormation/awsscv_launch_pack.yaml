@@ -14,7 +14,10 @@ Metadata:
           default: "Amazon Connect"
         Parameters:
           - ConnectInstanceName
+          - ConnectInstanceId
           - ConnectCTRStreamARN
+          - ConnectBasicQueueARN
+          - InvokeTelephonyFunctionARN
 
       - Label:
           default: "Salesforce"
@@ -27,6 +30,7 @@ Metadata:
           - SalesforceDeploymentType
           - SalesforceConsumerKey
           - SalesforcePrivateKey
+          - SalesforceChatterFeedId
 
       - Label:
           default: "Voicemail Express"
@@ -37,10 +41,20 @@ Metadata:
           - SalesforceContactAttributesField
 
       - Label:
+          default: "Sample Contact Flows"
+        Parameters:
+          - InstallSampleContactFlows
+
+      - Label:
           default: "CTR Logger"
         Parameters:
           - CTRLoggerFormatEvents
           - CTRLoggerWriteTo
+
+      - Label:
+          default: "Dashboard Alarms"
+        Parameters:
+          - DashboardName
 
     ParameterLabels:
       AWSRegion:
@@ -52,9 +66,14 @@ Metadata:
 
       ConnectInstanceName:
         default: "Amazon Connect Instance Name"
+      ConnectInstanceId:
+        default: "Amazon Connect Instance Id"
       ConnectCTRStreamARN:
         default: "Amazon Connect CTR Stream ARN"
-
+      ConnectBasicQueueARN:
+        default: "Amazon Connect Basic Queue ARN"
+      InvokeTelephonyFunctionARN:
+        default: "Service Cloud Voice Invoke Telephony Function ARN"
       SalesforceOrgId:
         default: "Salesforce Org Id"
       SalesforceHost:
@@ -71,6 +90,8 @@ Metadata:
         default: "Salesforce Connected App Consumer Key"
       SalesforcePrivateKey:
         default: "Salesforce Private Key"
+      SalesforceChatterFeedId:
+        default: "Salesforce Chatter Feed Id"
 
       RecordingsExpireInDays:
         default: "Recordings Expire in Days"
@@ -80,6 +101,12 @@ Metadata:
         default: "Salesforce Voicemail Phone Field"
       SalesforceContactAttributesField:
         default: "Salesforce Voicemail Contact Attributes Field"
+
+      InstallSampleContactFlows:
+        default: "Install Sample Contact Flows"
+
+      DashboardName:
+        default: "CloudWatch Dashboard Name"
 
       CTRLoggerFormatEvents:
         default: "CTR Logger Format Events"
@@ -113,6 +140,18 @@ Parameters:
     Type: String
     Default: REPLACEME
     Description: Provide the instance name for Amazon Connect.
+  ConnectInstanceId:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the instance id for Amazon Connect.
+  ConnectBasicQueueARN:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the ARN for the Basic Queue in Amazon Connect.
+  InvokeTelephonyFunctionARN:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the ARN for the Invoke Telephony Lambda function.
   ConnectCTRStreamARN:
     Type: String
     Default: REPLACEME
@@ -151,6 +190,10 @@ Parameters:
     Default: REPLACEME
     Description: The entire contents of the encoded_key.txt file that you generated as a part of the setup process
     NoEcho: true
+  SalesforceChatterFeedId:
+    Type: String
+    Default: REPLACEME
+    Description: The Salesforce chatter feed id to which alarm notification may be sent
   SalesforceMode:
     Type: String
     Default: PROD
@@ -178,6 +221,13 @@ Parameters:
     Type: String
     Default: connect_contact_attributes__c
     Description: Custom field created in Salesforce to store the contact attributes.
+  InstallSampleContactFlows:
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: Install the sample contact flows?
   CTRLoggerFormatEvents:
     Type: String
     Default: true
@@ -192,6 +242,15 @@ Parameters:
       - console
       - s3
       - both
+  DashboardName:
+    Type: String
+    Default: REPLACEME
+    Description: CloudWatch dashboard name
+
+Conditions:
+  ShouldInstallSampleContactFlows: !Equals
+    - !Ref InstallSampleContactFlows
+    - Yes
 
 Resources:
   CommonLayersStack:
@@ -209,6 +268,7 @@ Resources:
           - '.amazonaws.com'
           - '/awsscv_common_layers.yaml'
       Parameters:
+        AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
 
   SalesforceConfigStack:
@@ -228,6 +288,7 @@ Resources:
           - '.amazonaws.com'
           - '/awsscv-ssm.yaml'
       Parameters:
+        AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
         ConnectInstanceName: !Ref ConnectInstanceName
         AWSSalesforceCommonPythonLayer:
@@ -237,7 +298,7 @@ Resources:
         sfConsumerKey: !Ref SalesforceConsumerKey
         sfUsername: !Ref SalesforceUsername
         sfOrgId: !Ref SalesforceOrgId
-        sfHost: !Ref AWSRegion
+        sfHost: !Ref SalesforceHost
         sfVersion: !Ref SalesforceVersion
         sfPrivateKey: !Ref SalesforcePrivateKey
         sfMode: !Ref SalesforceMode
@@ -260,6 +321,7 @@ Resources:
           - '.amazonaws.com'
           - '/awsscv_vmx.yaml'
       Parameters:
+        AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
         ConnectInstanceName: !Ref ConnectInstanceName
         ConnectCTRStreamARN: !Ref ConnectCTRStreamARN
@@ -285,8 +347,43 @@ Resources:
         sfVoicemailPhoneField: !Ref SalesforceVoicemailPhoneField
         sfContactAttributesField: !Ref SalesforceContactAttributesField
 
+  SampleContactFlowsStack:
+    Type: "AWS::CloudFormation::Stack"
+    Condition: ShouldInstallSampleContactFlows
+    DependsOn:
+      - SalesforceConfigStack
+    Properties:
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref AWSS3BucketPrefix
+          - 'awsscv-supporting-code-'
+          - !Ref AWSRegion
+          - '.s3-'
+          - !Ref AWSRegion
+          - '.amazonaws.com'
+          - '/awsscv_sample_contact_flows.yaml'
+      Parameters:
+        AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
+        AWSRegion: !Ref AWSRegion
+        ConnectInstanceName: !Ref ConnectInstanceName
+        ConnectInstanceId: !Ref ConnectInstanceId
+        ConnectBasicQueueARN: !Ref ConnectBasicQueueARN
+        AWSSCVCommonRoleARN:
+          Fn::GetAtt:
+            - SalesforceConfigStack
+            - Outputs.awsscvcommonrole
+        AWSSCVCommonPythonLayerARN:
+          Fn::GetAtt:
+            - CommonLayersStack
+            - Outputs.SCVCommonPythonLayerARN
+        InvokeTelephonyFunctionARN: !Ref InvokeTelephonyFunctionARN
+
   CTRLoggerStack:
     Type: "AWS::CloudFormation::Stack"
+    DependsOn:
+      - SalesforceConfigStack
     Properties:
       TemplateURL:
         !Join
@@ -300,6 +397,7 @@ Resources:
           - '.amazonaws.com'
           - '/awsscv_ctr_logger.yaml'
       Parameters:
+        AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
         AWSSCVCommonRole:
           Fn::GetAtt:
@@ -311,3 +409,36 @@ Resources:
         LambdaLoggingLevel: !Ref AWSLambdaLoggingLevel
         WriteTo: !Ref CTRLoggerWriteTo
 
+  DashboardAlarmsStack:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref AWSS3BucketPrefix
+          - 'awsscv-supporting-code-'
+          - !Ref AWSRegion
+          - '.s3-'
+          - !Ref AWSRegion
+          - '.amazonaws.com'
+          - '/awsscv_connect_dashboard_alarms.yaml'
+      Parameters:
+        AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
+        AWSRegion: !Ref AWSRegion
+        AWSSCVCommonRole:
+          Fn::GetAtt:
+            - SalesforceConfigStack
+            - Outputs.awsscvcommonrole
+        AWSSCVCommonPythonLayerARN:
+          Fn::GetAtt:
+            - CommonLayersStack
+            - Outputs.SCVCommonPythonLayerARN
+        SalesforceConfig:
+          Fn::GetAtt:
+            - SalesforceConfigStack
+            - Outputs.awsscvcommonsecrets
+        ConnectInstanceId: !Ref ConnectInstanceId
+        SalesforceOrgId: !Ref SalesforceOrgId
+        SalesforceChatterFeedId: !Ref SalesforceChatterFeedId
+        DashboardName: !Ref DashboardName

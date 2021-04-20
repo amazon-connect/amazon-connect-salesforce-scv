@@ -32,6 +32,12 @@ The repository is divided into three core sections:
 | AWSSCV-DDR-Flow | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations | [Example](Examples/AWSSCV-DataDirectedRouting-FlowRouting) |
 | AWSSCV-WarmingFunctions |  Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm. | [Example](Examples/AWSSCV-WarmingFunctions) |
 
+## Stacks
+
+| Name | Description | Links |
+| ---- | ----------- | ----- |
+| AWSSCV-LaunchPack | A single CloudFormation stack, including nested stacks, providing a combination of solutions and examples including: Voicemail Express, CTR Logger, Dashboard Alarms, and Sample Contact Flows. | [Stacks](Stacks/AWSSCV-LaunchPack) |
+
 ## Contributions
 
 Make sure the `.gitignore` per language is applied. 

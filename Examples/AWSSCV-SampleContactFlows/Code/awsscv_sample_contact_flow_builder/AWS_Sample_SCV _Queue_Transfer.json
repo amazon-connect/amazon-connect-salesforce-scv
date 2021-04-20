@@ -1,0 +1,449 @@
+{
+  "modules": [
+    {
+      "id": "90f850c6-f534-4a42-b82f-4f6ab053243a",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "6a106786-bf06-409a-91a1-301374e968e0"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "I'm sorry. We have encountered an error and cannot currently handle your call. Please try back later. We apologize for any inconvenience. Goodbye.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 550,
+          "y": 308
+        },
+        "useDynamic": false
+      }
+    },
+    {
+      "id": "6a106786-bf06-409a-91a1-301374e968e0",
+      "type": "Disconnect",
+      "branches": [],
+      "parameters": [],
+      "metadata": {
+        "position": {
+          "x": 790,
+          "y": 306
+        }
+      }
+    },
+    {
+      "id": "dee37473-7577-43f5-b7dc-d80733f1d1b0",
+      "type": "SetAttributes",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "90f850c6-f534-4a42-b82f-4f6ab053243a"
+        },
+        {
+          "condition": "Error",
+          "transition": "90f850c6-f534-4a42-b82f-4f6ab053243a"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Attribute",
+          "value": "lambda loop fail",
+          "key": "error_desc",
+          "namespace": null
+        },
+        {
+          "name": "Attribute",
+          "value": "true",
+          "key": "process_error",
+          "namespace": null
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 304,
+          "y": 309
+        }
+      }
+    },
+    {
+      "id": "ec805ed6-cf45-43ea-a418-c9641c7ff794",
+      "type": "Loop",
+      "branches": [
+        {
+          "condition": "Looping",
+          "transition": "e5d888c7-8d61-4dc9-9be6-8544262819c9"
+        },
+        {
+          "condition": "Complete",
+          "transition": "dee37473-7577-43f5-b7dc-d80733f1d1b0"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "LoopCount",
+          "value": "2"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 246,
+          "y": 33
+        },
+        "useDynamic": false
+      }
+    },
+    {
+      "id": "e5d888c7-8d61-4dc9-9be6-8544262819c9",
+      "type": "InvokeExternalResource",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "1786d38e-bc73-4772-b947-ca392841a534"
+        },
+        {
+          "condition": "Error",
+          "transition": "ec805ed6-cf45-43ea-a418-c9641c7ff794"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "FunctionArn",
+          "value": "arn:aws:lambda:us-west-2:376407789201:function:SCV08112020-InvokeTelephonyIntegrationApiFunction",
+          "namespace": null
+        },
+        {
+          "name": "TimeLimit",
+          "value": "3"
+        },
+        {
+          "name": "Parameter",
+          "key": "methodName",
+          "value": "createVoiceCall",
+          "namespace": null
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 1020,
+          "y": 534
+        },
+        "dynamicMetadata": {
+          "methodName": false
+        },
+        "useDynamic": false
+      },
+      "target": "Lambda"
+    },
+    {
+      "id": "1786d38e-bc73-4772-b947-ca392841a534",
+      "type": "SetAttributes",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "861b5e68-b2c5-4443-8035-7697f51144b0"
+        },
+        {
+          "condition": "Error",
+          "transition": "861b5e68-b2c5-4443-8035-7697f51144b0"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Attribute",
+          "value": "voiceCallId",
+          "key": "voiceCallId",
+          "namespace": "External"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 1127,
+          "y": 33
+        }
+      }
+    },
+    {
+      "id": "e93a9427-21bb-47c5-8693-1b72f866b514",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "2f8d63be-5da8-4540-81c4-8a6fa8af0706"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "Transferring you to the appropriate queue. One moment please.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 2100.171630859375,
+          "y": 31.935991287231445
+        },
+        "useDynamic": false
+      }
+    },
+    {
+      "id": "861b5e68-b2c5-4443-8035-7697f51144b0",
+      "type": "CheckHoursOfOperation",
+      "branches": [
+        {
+          "condition": "True",
+          "transition": "aa2e49ed-9349-4240-9fcd-a9fee50e71a4"
+        },
+        {
+          "condition": "False",
+          "transition": "5babd3fa-99ac-4d97-803f-e2c971784263"
+        },
+        {
+          "condition": "Error",
+          "transition": "5babd3fa-99ac-4d97-803f-e2c971784263"
+        }
+      ],
+      "parameters": [],
+      "metadata": {
+        "position": {
+          "x": 1492,
+          "y": 31
+        }
+      }
+    },
+    {
+      "id": "5babd3fa-99ac-4d97-803f-e2c971784263",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "8cf205f1-d4e9-4503-8958-c5d6cb9d5052"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "The department you are trying to reach is not currently open. Please try your call again later.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 1826,
+          "y": 428
+        },
+        "useDynamic": false
+      }
+    },
+    {
+      "id": "2f8d63be-5da8-4540-81c4-8a6fa8af0706",
+      "type": "SetRecordingBehavior",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "127a3beb-5492-433d-822d-5c5389a52a33"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "RecordingBehaviorOption",
+          "value": "Enable"
+        },
+        {
+          "name": "RecordingParticipantOption",
+          "value": "Both"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 2374,
+          "y": 32
+        }
+      }
+    },
+    {
+      "id": "aa2e49ed-9349-4240-9fcd-a9fee50e71a4",
+      "type": "CheckStaffing",
+      "branches": [
+        {
+          "condition": "True",
+          "transition": "e93a9427-21bb-47c5-8693-1b72f866b514"
+        },
+        {
+          "condition": "False",
+          "transition": "c9e05d1c-011a-41b0-b03e-57001aee2192"
+        },
+        {
+          "condition": "Error",
+          "transition": "5babd3fa-99ac-4d97-803f-e2c971784263"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Status",
+          "value": "Staffed"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 1825,
+          "y": 31
+        },
+        "useDynamic": false,
+        "queue": null
+      }
+    },
+    {
+      "id": "c9e05d1c-011a-41b0-b03e-57001aee2192",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "8cf205f1-d4e9-4503-8958-c5d6cb9d5052"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "No agents are available to take your call. Please try again at a later time. We apologize for the inconvenience.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 2102,
+          "y": 242
+        },
+        "useDynamic": false
+      }
+    },
+    {
+      "id": "127a3beb-5492-433d-822d-5c5389a52a33",
+      "type": "Transfer",
+      "branches": [
+        {
+          "condition": "AtCapacity",
+          "transition": "65d255e0-48e0-411c-b38f-393f41dfda67"
+        },
+        {
+          "condition": "Error",
+          "transition": "c9e05d1c-011a-41b0-b03e-57001aee2192"
+        }
+      ],
+      "parameters": [],
+      "metadata": {
+        "position": {
+          "x": 2677,
+          "y": 30
+        },
+        "useDynamic": false,
+        "queue": null
+      },
+      "target": "Queue"
+    },
+    {
+      "id": "65d255e0-48e0-411c-b38f-393f41dfda67",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "8cf205f1-d4e9-4503-8958-c5d6cb9d5052"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "We are experiencing a higher than normal volume of calls and cannot currently assist you in a timely manner. Please hang up and try again later. We apologize for the inconvenience.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 2952,
+          "y": 32
+        },
+        "useDynamic": false
+      }
+    },
+    {
+      "id": "8cf205f1-d4e9-4503-8958-c5d6cb9d5052",
+      "type": "PlayPrompt",
+      "branches": [
+        {
+          "condition": "Success",
+          "transition": "a09f52a9-fb12-4e33-a2c0-32e7ec838096"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "Text",
+          "value": "Goodbye.",
+          "namespace": null
+        },
+        {
+          "name": "TextToSpeechType",
+          "value": "text"
+        }
+      ],
+      "metadata": {
+        "position": {
+          "x": 2650,
+          "y": 428
+        },
+        "useDynamic": false
+      }
+    },
+    {
+      "id": "a09f52a9-fb12-4e33-a2c0-32e7ec838096",
+      "type": "Disconnect",
+      "branches": [],
+      "parameters": [],
+      "metadata": {
+        "position": {
+          "x": 2924,
+          "y": 456
+        }
+      }
+    }
+  ],
+  "version": "1",
+  "type": "queueTransfer",
+  "start": "ec805ed6-cf45-43ea-a418-c9641c7ff794",
+  "metadata": {
+    "entryPointPosition": {
+      "x": 28,
+      "y": 31
+    },
+    "snapToGrid": false,
+    "name": "AWS_Sample_SCV _Queue_Transfer",
+    "description": "Modified from: Sample_SCV_Queue_Transfer - Adds a loop around the Telephony Integration Lambda. Also provides more accurate messaging for different conditions.",
+    "type": "queueTransfer",
+    "status": "saved",
+    "hash": "05b98e93c15167a87f14e60e69465e5068cc449ce12ea72c8179a0a378089498"
+  }
+}
