@@ -3,7 +3,7 @@
     "Name": "AWS_Sample_SCV_Agent_Transfer",
     "Type": "AGENT_TRANSFER",
     "Description": "AWS_Sample_SCV_Agent_Transfer",
-    "Source": "AWS_Sample_SCV_Agent_Transfer",
+    "Source": "AWS_Sample_SCV_Agent_Transfer.json",
     "Tags": {},
     "SubMap": {}
   },
