@@ -178,7 +178,7 @@ Parameters:
     Type: String
     Default: REPLACEME
     Description: The consumer key for your connected app
-    NoEcho: true
+    NoEcho: false
   SalesforceUsername:
     Type: String
     Default: REPLACEME
@@ -203,7 +203,7 @@ Parameters:
     Type: String
     Default: REPLACEME
     Description: The entire contents of the encoded_key.txt file that you generated as a part of the setup process
-    NoEcho: true
+    NoEcho: false
   SalesforceChatterFeedId:
     Type: String
     Default: REPLACEME
@@ -391,10 +391,10 @@ Resources:
           Fn::GetAtt:
             - SalesforceConfigStack
             - Outputs.awsscvcommonrole
-          AWSSCVCommonPythonLayerARN:
-            Fn::GetAtt:
-              - CommonLayersStack
-              - Outputs.SCVCommonPythonLayerARN
+        AWSSCVCommonPythonLayerARN:
+          Fn::GetAtt:
+            - CommonLayersStack
+            - Outputs.SCVCommonPythonLayerARN
 
   CTRLoggerStack:
     Type: "AWS::CloudFormation::Stack"
@@ -446,7 +446,7 @@ Resources:
           Fn::GetAtt:
             - SalesforceConfigStack
             - Outputs.awsscvcommonrole
-        AWSSCVCommonPythonLayerARN:
+        AWSSCVCommonPythonLayer:
           Fn::GetAtt:
             - CommonLayersStack
             - Outputs.SCVCommonPythonLayerARN
@@ -458,3 +458,4 @@ Resources:
         SalesforceOrgId: !Ref SalesforceOrgId
         SalesforceChatterFeedId: !Ref SalesforceChatterFeedId
         DashboardName: !Ref DashboardName
+        ContactFlowName: ""

@@ -15,22 +15,22 @@ http = urllib3.PoolManager()
 def lambda_handler(event, context):
     logger.debug(event)
 
-    if event['RequestType'] == 'Delete':
-        cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
-
-        return {
-            'result': 'success',
-            'event': 'Delete'
-        }
-
-    task_root = os.environ['LAMBDA_TASK_ROOT']
-
-    config_source = open(task_root + '/config.json').read()
-    config_content = json.loads(config_source)
-
-    results = []
-
     try:
+        if event['RequestType'] == 'Delete':
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
+
+            return {
+                'result': 'success',
+                'event': 'Delete'
+            }
+
+        task_root = os.environ['LAMBDA_TASK_ROOT']
+
+        config_source = open(task_root + '/config.json').read()
+        config_content = json.loads(config_source)
+
+        results = []
+
         for (k, v) in config_content.items():
             file_source = open(task_root + '/' + v['Source']).read()
             flow_content = json.loads(file_source)['ContactFlow']['Content']
