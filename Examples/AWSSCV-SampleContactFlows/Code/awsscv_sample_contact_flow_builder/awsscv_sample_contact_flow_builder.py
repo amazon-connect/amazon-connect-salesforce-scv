@@ -45,7 +45,7 @@ def lambda_handler(event, context):
 
             result = create_contact_flow(
                 os.getenv('connect_instance_id'),
-                v['Name'] + '_' + timestamp,
+                v['Name'] + '_' + str(timestamp),
                 v['Type'],
                 v['Description'],
                 flow_content,
