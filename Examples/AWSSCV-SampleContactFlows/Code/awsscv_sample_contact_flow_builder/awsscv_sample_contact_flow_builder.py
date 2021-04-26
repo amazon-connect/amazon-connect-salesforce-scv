@@ -4,7 +4,7 @@ from pip._internal import main
 main(['install', 'boto3', '--target', '/tmp/'])
 sys.path.insert(0, '/tmp/')
 
-import os, json, logging, boto3, urllib3, cfnresponse, calendar, time
+import os, json, logging, boto3, urllib3, cfnresponse
 
 logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
@@ -29,8 +29,6 @@ def lambda_handler(event, context):
         config_source = open(task_root + '/config.json').read()
         config_content = json.loads(config_source)
 
-        timestamp = calendar.timegm(time.gmtime())
-
         results = []
 
         for (k, v) in config_content.items():
@@ -45,7 +43,7 @@ def lambda_handler(event, context):
 
             result = create_contact_flow(
                 os.getenv('connect_instance_id'),
-                v['Name'] + '_' + str(timestamp),
+                v['Name'],
                 v['Type'],
                 v['Description'],
                 flow_content,
