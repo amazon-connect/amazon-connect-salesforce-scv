@@ -18,6 +18,8 @@ Metadata:
           - ConnectCTRStreamARN
           - ConnectBasicQueueARN
           - InvokeTelephonyFunctionARN
+          - InvokeSalesforceRestApiFunctionARN
+          - KVSConsumerTriggerARN
 
       - Label:
           default: "Salesforce"
@@ -74,6 +76,10 @@ Metadata:
         default: "Amazon Connect Basic Queue ARN"
       InvokeTelephonyFunctionARN:
         default: "Service Cloud Voice Invoke Telephony Function ARN"
+      InvokeSalesforceRestApiFunctionARN:
+        default: "Service Cloud Voice Invoke Salesforce Rest API Function ARN"
+      KVSConsumerTriggerARN:
+        default: "Service Cloud Voice KVS Consumer Trigger ARN"
       SalesforceOrgId:
         default: "Salesforce Org Id"
       SalesforceHost:
@@ -152,6 +158,14 @@ Parameters:
     Type: String
     Default: REPLACEME
     Description: Provide the ARN for the Invoke Telephony Lambda function.
+  InvokeSalesforceRestApiFunctionARN:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the ARN for the Salesforce Invoke Salesforde Rest API Lambda function
+  KVSConsumerTriggerARN:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the ARN for the Salesforce KVS Consumer Trigger Lambda function
   ConnectCTRStreamARN:
     Type: String
     Default: REPLACEME
@@ -370,15 +384,17 @@ Resources:
         ConnectInstanceName: !Ref ConnectInstanceName
         ConnectInstanceId: !Ref ConnectInstanceId
         ConnectBasicQueueARN: !Ref ConnectBasicQueueARN
+        InvokeTelephonyFunctionARN: !Ref InvokeTelephonyFunctionARN
+        InvokeSalesforceRestApiFunctionARN: !Ref InvokeSalesforceRestApiFunctionARN
+        KVSConsumerTriggerARN: !Ref KVSConsumerTriggerARN
         AWSSCVCommonRoleARN:
           Fn::GetAtt:
             - SalesforceConfigStack
             - Outputs.awsscvcommonrole
-        AWSSCVCommonPythonLayerARN:
-          Fn::GetAtt:
-            - CommonLayersStack
-            - Outputs.SCVCommonPythonLayerARN
-        InvokeTelephonyFunctionARN: !Ref InvokeTelephonyFunctionARN
+          AWSSCVCommonPythonLayerARN:
+            Fn::GetAtt:
+              - CommonLayersStack
+              - Outputs.SCVCommonPythonLayerARN
 
   CTRLoggerStack:
     Type: "AWS::CloudFormation::Stack"

@@ -48,7 +48,7 @@ Parameters:
     KVSConsumerTriggerARN:
         Type: String
         Default: REPLACEME
-        Descriptino: ARN for the Salesforce KVS Consumer Trigger Lambda Function
+        Description: ARN for the Salesforce KVS Consumer Trigger Lambda Function
 
 Resources:
     ContactFlowBuilderPolicy:
