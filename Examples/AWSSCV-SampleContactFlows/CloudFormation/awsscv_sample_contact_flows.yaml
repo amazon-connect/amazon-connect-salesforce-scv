@@ -41,6 +41,14 @@ Parameters:
         Type: String
         Default: REPLACEME
         Description: ARN for the Salesforce Invoke Telephony API Lambda Function
+    InvokeSalesforceRestApiFunctionARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for the Salesforce Invoke Salesforde Rest API Lambda Function
+    KVSConsumerTriggerARN:
+        Type: String
+        Default: REPLACEME
+        Descriptino: ARN for the Salesforce KVS Consumer Trigger Lambda Function
 
 Resources:
     ContactFlowBuilderPolicy:
@@ -85,7 +93,8 @@ Resources:
               connect_instance_id: !Ref ConnectInstanceId
               connect_basic_queue_arn: !Ref ConnectBasicQueueARN
               invoke_telephony_function_arn: !Ref InvokeTelephonyFunctionARN
-              lambda_logging_level: INFO
+              invoke_salesforce_rest_api_function_arn: !Ref InvokeSalesforceRestApiFunctionARN
+              kvs_consumer_trigger_arn: !Ref KVSConsumerTriggerARN
           Runtime: python3.8
           Timeout: 120
 

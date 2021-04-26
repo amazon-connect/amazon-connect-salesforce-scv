@@ -3,3 +3,4 @@
 */build/*
 .aws-sam/*
 samconfig.toml
+*.sh
