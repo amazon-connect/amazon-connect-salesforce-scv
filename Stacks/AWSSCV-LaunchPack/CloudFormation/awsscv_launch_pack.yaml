@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Deploys the Voicemail Express for Salesforce and Service Cloud Voice solution. In order to deploy this solution, you need to have an Amazon Connect instance deployed and configured for both CTR streaming via Kinesis Data Streams and Live Media Streaming via Kinesis Video. Additionally, your Salesforce org either needs to have Service Cloud Voice enabled or you need to have completed the CTI Adapter for Amazon Connect Configuration. Please complete these before deploying this template.
+Description: Deploys the Launch Pack for Service Cloud Voice CloudFormation stack.  In order to deploy this solution, you need to have an Amazon Connect instance deployed and configured for both CTR streaming via Kinesis Data Streams. Additionally, your Salesforce org either needs to have Service Cloud Voice enabled or you need to have completed the CTI Adapter for Amazon Connect Configuration. Please complete these before deploying this template.
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
