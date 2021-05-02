@@ -1,7 +1,5 @@
 {
   "ContactFlow": {
-    "Arn": "arn:aws:connect:us-west-2:267080358243:instance/f4b9b842-7906-4109-a90b-631ae751a89c/contact-flow/312e374c-db4f-48fe-9311-30606bdc15cd",
-    "Id": "312e374c-db4f-48fe-9311-30606bdc15cd",
     "Name": "AWSSCVAgentWhisper",
     "Type": "AGENT_WHISPER",
     "Description": "Agent whisper that checks to see if streming has failed and alerts agent if so.",

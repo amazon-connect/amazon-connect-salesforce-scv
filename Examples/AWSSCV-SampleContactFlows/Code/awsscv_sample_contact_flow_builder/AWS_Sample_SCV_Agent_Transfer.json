@@ -1,7 +1,5 @@
 {
   "ContactFlow": {
-    "Arn": "arn:aws:connect:us-west-2:267080358243:instance/f4b9b842-7906-4109-a90b-631ae751a89c/contact-flow/7c46b965-0f46-4d0c-8db0-4fd03ec7cff9",
-    "Id": "7c46b965-0f46-4d0c-8db0-4fd03ec7cff9",
     "Name": "AWS_Sample_SCV_Agent_Transfer",
     "Type": "AGENT_TRANSFER",
     "Description": "Modified from: Sample_SCV_Agent_Transfer - Expands on the default Salesforce version by adding a loop around the Telephony Integration Lambda. Also sets the agent transfer to use personal queues instead of the direct connection method.",
