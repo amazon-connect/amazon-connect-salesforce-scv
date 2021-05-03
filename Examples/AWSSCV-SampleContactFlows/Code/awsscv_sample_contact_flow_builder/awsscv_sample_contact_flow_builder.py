@@ -4,7 +4,7 @@ from pip._internal import main
 main(['install', 'boto3', '--target', '/tmp/'])
 sys.path.insert(0, '/tmp/')
 
-import os, json, logging, boto3, urllib3, calendar, time
+import os, json, logging, boto3, urllib3, calendar, time, cfnresponse
 
 logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'DEBUG')))
