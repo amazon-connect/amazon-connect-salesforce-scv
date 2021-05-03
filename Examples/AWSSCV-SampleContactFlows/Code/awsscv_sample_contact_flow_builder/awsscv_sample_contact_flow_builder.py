@@ -104,6 +104,8 @@ def create_contact_flow(connect_instance_id, json_object, ts):
         sub_content = sub_content.replace(key, value)
 
     try:
+        logger.debug(sub_content)
+
         result = boto3.client('connect').create_contact_flow(
             InstanceId=connect_instance_id,
             Name=name + '-' + str(ts),
