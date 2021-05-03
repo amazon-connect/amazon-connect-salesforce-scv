@@ -120,4 +120,5 @@ def create_contact_flow(connect_instance_id, json_object, ts):
 
     except Exception as e:
         logger.error(e)
+        logger.error(name)
         logger.error(sub_content)
