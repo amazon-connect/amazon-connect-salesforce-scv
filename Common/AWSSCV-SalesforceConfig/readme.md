@@ -103,6 +103,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 11.	Enter the parameters as follows (most from your notepad):
  - AWSRegion: Select the region that you have deployed Amazon Connect in
  - ConnectInstanceName: Your connect instance name
+ - AWSSalesforceCommonPythonLayer: The ARN of the Common Python Layer created by deployment of the AWSSCV-CommonLayers prerequisite stack.  This value is available in the outputs of the AWSSCV-CommonLayers stack.
  - sfConsumerKey: The consumer key from your connected app
  - sfHost: The full https url to your salesforce org
  - sfOrgId: Provide your Salesforce.com Organization ID
