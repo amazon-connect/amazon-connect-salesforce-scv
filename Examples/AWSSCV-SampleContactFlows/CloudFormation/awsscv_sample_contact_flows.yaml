@@ -85,7 +85,7 @@ Resources:
                 - ''
                 - - 'awsscv_samples_'
                   - !Ref ConnectInstanceName
-          Handler: awsscv_sample_contact_flow_builder.lambda_handler
+          Handler: awsscv_samples.lambda_handler
           Role: !Ref AWSSCVCommonRoleARN
           Layers: [ !Ref AWSSCVCommonPythonLayerARN ]
           Environment:
