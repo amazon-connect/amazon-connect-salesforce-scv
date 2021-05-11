@@ -78,12 +78,12 @@ Resources:
                 - - !Ref AWSS3BucketPrefix
                   - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
-            S3Key: awsscv_sample_contact_flow_builder.zip
+            S3Key: awsscv_samples.zip
           Description: Creates contact flow from template
           FunctionName:
             !Join
                 - ''
-                - - 'awsscv_sample_contact_flow_builder_'
+                - - 'awsscv_samples_'
                   - !Ref ConnectInstanceName
           Handler: awsscv_sample_contact_flow_builder.lambda_handler
           Role: !Ref AWSSCVCommonRoleARN
