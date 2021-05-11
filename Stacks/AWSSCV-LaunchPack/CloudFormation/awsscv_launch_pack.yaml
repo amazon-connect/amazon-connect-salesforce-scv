@@ -79,13 +79,13 @@ Metadata:
       InvokeSalesforceRestApiFunctionARN:
         default: "Service Cloud Voice Invoke Salesforce Rest API Function ARN"
       KVSConsumerTriggerARN:
-        default: "Service Cloud Voice KVS Consumer Trigger ARN"
+        default: "Service Cloud Voice KVS Consumer Trigger Function ARN"
       SalesforceOrgId:
         default: "Salesforce Org Id"
       SalesforceHost:
         default: "Salesforce Host"
       SalesforceUsername:
-        default: "Salesforce Username"
+        default: "Salesforce API Username"
       SalesforceVersion:
         default: "Salesforce API Version"
       SalesforceMode:
@@ -95,7 +95,7 @@ Metadata:
       SalesforceConsumerKey:
         default: "Salesforce Connected App Consumer Key"
       SalesforcePrivateKey:
-        default: "Salesforce Private Key"
+        default: "Salesforce Connected App Private Key"
       SalesforceChatterFeedId:
         default: "Salesforce Chatter Feed Id"
 
