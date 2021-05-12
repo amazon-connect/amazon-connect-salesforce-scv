@@ -17,45 +17,45 @@ values for these parameters may be found in the setup instructions of the indivi
 
 ## Gather required parameters
 ### AWS
-* AWS Region
-* AWS S3 Bucket Prefix
-* AWS Lambda Logging Level
+* AWS Region (us-east-1, us-west-2, ap-southeast-1, ap-southeast-2, ap-northeast-1, eu-central-1, eu-west-2)
+* AWS S3 Bucket Prefix (not required, only used for development)
+* AWS Lambda Logging Level (INFO, DEBUG)
 
 ### Amazon Connect
-* Amazon Connect Instance Name
-* Amazon Connect Instance Id
-* Amazon Connect CTR Stream ARN
-* Amazon Connect Basic Queue ARN
-* Service Cloud Voice Invoke Telephony Function ARN
-* Service Cloud Voice Invoke Salesforce Rest API Function ARN
-* Service Cloud Voice KVS Consumer Trigger Function ARN
+* Amazon Connect Instance Name (Amazon Connect)
+* Amazon Connect Instance Id (Amazon Connect)
+* Amazon Connect CTR Stream ARN (Amazon Kinesis Data Stream)
+* Amazon Connect Basic Queue ARN (Amazon Connect)
+* Service Cloud Voice Invoke Telephony Function ARN (AWS Lambda)
+* Service Cloud Voice Invoke Salesforce Rest API Function ARN (AWS Lambda)
+* Service Cloud Voice KVS Consumer Trigger Function ARN (AWS Lambda)
 
 ### Salesforce
-* Salesforce Org Id
-* Salesforce Host
-* Salesforce API Username
-* Salesforce API Version
-* Salesforce Mode
-* Salesforce Deployment Type
-* Salesforce Connected App Consumer Key
-* Salesforce Connected App Private Key
-* Salesforce Chatter Feed Id
+* Salesforce Org Id (Salesforce Setup - Company Information)
+* Salesforce Host (Salesforce Setup - My Domain)
+* Salesforce API Username (Salesforce Setup - Users)
+* Salesforce API Version (Salesforce Setup - Apex)
+* Salesforce Mode (PROD, DEV, SANDBOX)
+* Salesforce Deployment Type (CTI, SCV)
+* Salesforce Connected App Consumer Key (Salesforce Setup - Connect Apps)
+* Salesforce Connected App Private Key (Base64 encoded private key)
+* Salesforce Chatter Feed Id (Salesforce - Chatter)
 
 ### Voicemail Express
 - Recordings Expire in Days
-- Salesforce Voicemail Link Field
-- Salesforce Voicemail Phone Field
-- Salesforce Voicemail Contact Attributes Field
+- Salesforce Voicemail Link Field (Salesforce Setup - Case Object)
+- Salesforce Voicemail Phone Field (Salesforce Setup - Case Object)
+- Salesforce Voicemail Contact Attributes Field (Salesforce Setup - Case Object)
 
 ### Sample Contact Flows
-* Install Sample Contact Flows
+* Install Sample Contact Flows (true, false)
 
 ### CTR Logger
-* CTR Logger Format Events
-* CTR Logger Write Events To
+* CTR Logger Format Events (true, false)
+* CTR Logger Write Events To (console, S3, both)
 
 ### Dashboard Alarms
-* Cloudwatch Dashboard Name
+* Cloudwatch Dashboard Name (User entered value)
 
 
 # Delploy the Cloudformation Template
