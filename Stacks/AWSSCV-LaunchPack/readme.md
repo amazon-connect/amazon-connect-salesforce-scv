@@ -12,3 +12,5 @@ Included in the Launch Pack are:
 * [AWSSCV-SampleContactFlows](../../Examples/AWSSCV-SampleContactFlows/readme.md)
 * [AWSSCV-CTRLogger](../../Solutions/AWSSCV-CTRLogger/readme.md)
 * [AWSSCV-DashboardAlarms](../../Solutions/AWSSCV-DashboardAlarms/readme.md)
+
+Please follow the [Installation Instructions](Docs/launchpack_installation_instructions.md) to get going.

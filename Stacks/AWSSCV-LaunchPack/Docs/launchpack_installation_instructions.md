@@ -2,6 +2,7 @@
 
 
 ## Install and Setup Prerequisites
+Make sure to complete all prerequisites before continuing.
 * [Prerequisites](launchpack_prerequisites.md)
 
 A number of parameters are required to install the AWS SCV Launch Pack.  Specific instructions on obtaining appropriate
