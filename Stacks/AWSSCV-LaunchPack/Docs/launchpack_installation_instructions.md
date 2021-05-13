@@ -62,7 +62,7 @@ Gather the parameters listed below before starting the CloudFormation stack depl
 
 # Delploy the Cloudformation Template
 The next step is to deploy the CloudFormation template. This template builds all of the AWS resources required to make Voicemail Express work.
-1. Right-click/control-click to download the [Voicemail Express CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/Solutions/AWSSCV-VoicemailExpress/CloudFormation/awsscv_vmx.yaml) and save it to your computer
+1. Right-click/control-click to download the [Launch Pack CloudFormation template](../CloudFormation/awsscv_launch_pack.yaml) and save it to your computer
 2. Log into the [AWS console](https://console.aws.amazon.com/console/home)
 3. Navigate to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home)
 4. Choose **Create stack**
