@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda functions required to enable the Data-Directed Routing - Flow Routing examples.
+Parameters:
+    AWSS3BucketPrefix:
+      Type: String
+      Default: ''
+      Description: Not required and only used for development purposes.
+    AWSRegion:
+        Type: String
+        Default: us-east-1
+        AllowedValues:
+          - us-east-1
+          - us-west-2
+          - ap-southeast-1
+          - ap-southeast-2
+          - ap-northeast-1
+          - eu-central-1
+          - eu-west-2
+        Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+    ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+    ConnectInstanceId:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance ID for Amazon Connect.
+    ConnectBasicQueueARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of your default queue in Amazon Connect
+    AWSSCVCommonRoleARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the awsscv_common_role role
+    AWSSCVCommonPythonLayerARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN of the common python layer
+    InvokeTelephonyFunctionARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for the Salesforce Invoke Telephony API Lambda Function
+    InvokeSalesforceRestApiFunctionARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for the Salesforce Invoke Salesforde Rest API Lambda Function
+    KVSConsumerTriggerARN:
+        Type: String
+        Default: REPLACEME
+        Description: ARN for the Salesforce KVS Consumer Trigger Lambda Function
+
+Resources:
+    ContactFlowBuilderPolicy:
+        Type: AWS::IAM::ManagedPolicy
+        Properties:
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'connect:CreateContactFlow'
+                Resource:
+                  - '*'
+          ManagedPolicyName: awsscv_contact_flow_build
+          Roles:
+            - awsscv_common_role
+
+    ContactFlowBuilder:
+        Type: AWS::Lambda::Function
+        DependsOn:
+          - ContactFlowBuilderPolicy
+        Properties:
+          Code:
+            S3Bucket:
+              !Join
+                - ''
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
+                  - !Ref AWSRegion
+            S3Key: awsscv_samples.zip
+          Description: Creates contact flow from template
+          FunctionName:
+            !Join
+                - ''
+                - - 'awsscv_samples_'
+                  - !Ref ConnectInstanceName
+          Handler: awsscv_samples.lambda_handler
+          Role: !Ref AWSSCVCommonRoleARN
+          Layers: [ !Ref AWSSCVCommonPythonLayerARN ]
+          Environment:
+            Variables:
+              connect_instance_id: !Ref ConnectInstanceId
+              connect_basic_queue_arn: !Ref ConnectBasicQueueARN
+              invoke_telephony_function_arn: !Ref InvokeTelephonyFunctionARN
+              invoke_salesforce_rest_api_function_arn: !Ref InvokeSalesforceRestApiFunctionARN
+              kvs_consumer_trigger_arn: !Ref KVSConsumerTriggerARN
+          Runtime: python3.8
+          Timeout: 120
+
+    ContactFlowBuild:
+      Type: 'Custom::ConnectContactFlow'
+      Version: '1.0'
+      DependsOn:
+        - ContactFlowBuilder
+      Properties:
+        ServiceToken: !GetAtt ContactFlowBuilder.Arn
+        InvokeTelephonyFunctionARN: !Ref InvokeTelephonyFunctionARN
+        ConnectBasicQueueARN: !Ref ConnectBasicQueueARN

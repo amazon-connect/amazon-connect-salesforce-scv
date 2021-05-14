@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys the AWS Lambda functions required to enable logging of Amazon Connect Contact Trace Records to CloudWatch, S3, or both.
 Parameters:
+  AWSS3BucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
   AWSRegion:
     Type: String
     Default: us-east-1
@@ -89,7 +93,8 @@ Resources:
         S3Bucket:
           !Join
           - ''
-          - - 'awsscv-supporting-code-'
+          - - !Ref AWSS3BucketPrefix
+            - 'awsscv-supporting-code-'
             - !Ref AWSRegion
         S3Key: awsscv_ctr_logger.zip
       Description: Lambda function to log CTR data

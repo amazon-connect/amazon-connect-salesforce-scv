@@ -1,7 +1,5 @@
 # AWSSCV Dashboard Alarms
 
-### Note: Salesforce is in the process of enabling EventBridge and SNS for Service Cloud Voice created accounts. Please validate service availability before proceeding with this configuration.
-
 AWSSCV Dashboard Alarms provides a set of Cloudwatch alarms allowing administrators to receive notifications of alarms for various Amazon Connect metrics.
 
 ![Dashboard Alarms Architecture](Docs/Architecture.png)

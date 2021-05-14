@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys the AWS Lambda function required to process the Salesforce response for Extension Routing.
 Parameters:
+    AWSS3BucketPrefix:
+      Type: String
+      Default: ''
+      Description: Not required and only used for development purposes.
     AWSRegion:
         Type: String
         Default: us-east-1
@@ -34,7 +38,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_process_extension.zip
           Description: Processes Salesforce REST API responce to get agent id

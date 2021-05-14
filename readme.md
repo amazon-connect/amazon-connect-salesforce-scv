@@ -38,7 +38,6 @@ The repository is divided into three core sections:
 | ---- | ----------- | ----- |
 Overflow Routing|Describes best practices for dealing with spikes in call volumes. Specifically describes overflow routing scenarios to keep data clean and reduce administrative overhead.|[Document](BestPractices/OverflowRouting.md)|
 
-
 ## Contributions
 
 Make sure the `.gitignore` per language is applied. 

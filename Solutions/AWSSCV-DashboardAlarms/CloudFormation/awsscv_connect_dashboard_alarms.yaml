@@ -10,7 +10,7 @@ Metadata:
         Parameters:
           - AWSRegion
           - AWSSCVCommonRole
-          - AWSSalesforceCommonPythonLayer
+          - AWSSCVCommonPythonLayer
           - ConnectInstanceId
           - SalesforceConfig
           - SalesforceOrgId
@@ -61,6 +61,10 @@ Metadata:
           - ContactFlowFatalErrorsThreshold
 
 Parameters:
+  AWSS3BucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
   AWSRegion:
     Type: String
     Default: us-east-1
@@ -79,7 +83,7 @@ Parameters:
     Default: REPLACEME
     Description: ARN of the awsscv_common_role role
 
-  AWSSalesforceCommonPythonLayer:
+  AWSSCVCommonPythonLayer:
     Type: String
     Default: REPLACEME
     Description: ARN for the AWSSCV Common Python Layer.
@@ -212,7 +216,8 @@ Resources:
         S3Bucket:
           !Join
           - ''
-          - - 'scvdev-awsscv-supporting-code-'
+          - - !Ref AWSS3BucketPrefix
+            - 'awsscv-supporting-code-'
             - !Ref AWSRegion
         S3Key: awsscv_alarm_to_chatter.zip
       Description: Writes alarm to Salesforce Chatter feed
@@ -229,7 +234,7 @@ Resources:
           - !Ref ConnectInstanceId
       Handler: awsscv_alarm_to_chatter.lambda_handler
       Role: !Ref AWSSCVCommonRole
-      Layers: [ !Ref AWSSalesforceCommonPythonLayer ]
+      Layers: [ !Ref AWSSCVCommonPythonLayer ]
       Runtime: python3.8
       Timeout: 900
 
@@ -240,7 +245,8 @@ Resources:
         S3Bucket:
           !Join
           - ''
-          - - 'scvdev-awsscv-supporting-code-'
+          - - !Ref AWSS3BucketPrefix
+            - 'awsscv-supporting-code-'
             - !Ref AWSRegion
         S3Key: awsscv_alarm_to_log.zip
       Description: Writes alarm to CloudWatch logs
