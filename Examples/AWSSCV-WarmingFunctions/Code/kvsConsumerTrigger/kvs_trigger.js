@@ -10,6 +10,7 @@ const lambda = new AWS.Lambda();
 
 exports.handler = (event, context, callback) => {
     console.log("SCV - kvs_trigger.handler: function invoked");
+    let result = {};
     
     // BEGIN AWS modification for EventBridge
     let eventSource = event.source || 'undefined';

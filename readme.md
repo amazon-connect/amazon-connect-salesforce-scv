@@ -6,6 +6,7 @@ The repository is divided into three core sections:
 - Common Resources: Provide underlying resources required for some of the solutions to work. Examples include a common authentication setup for these solutions, AWS Lambda depenedency layers, etc
 - Solutions: larger solutions designed to address specific requirements that customers may have. Examples include cross-account Lambda access or Voicemail for Amazon Connect
 - Use Case Examples: small, simple examples to address basic configuration questions. Examples inclde dial-by-extension configurations and follow-me routing.
+- AWS Best Practices for Service Cloud Voice: documents written by AWS solutions architects that demonstrate best practice design for specific Service Cloud Voice use cases.
 
 ## Common Resources
 
@@ -32,11 +33,10 @@ The repository is divided into three core sections:
 | AWSSCV-DDR-Flow | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations | [Example](Examples/AWSSCV-DataDirectedRouting-FlowRouting) |
 | AWSSCV-WarmingFunctions |  Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm. | [Example](Examples/AWSSCV-WarmingFunctions) |
 
-## Stacks
-
+## AWS Best Practices for Service Cloud Voice
 | Name | Description | Links |
 | ---- | ----------- | ----- |
-| AWSSCV-LaunchPack | A single CloudFormation stack, including nested stacks, providing a combination of solutions and examples including: Voicemail Express, CTR Logger, Dashboard Alarms, and Sample Contact Flows. | [Stacks](Stacks/AWSSCV-LaunchPack) |
+Overflow Routing|Describes best practices for dealing with spikes in call volumes. Specifically describes overflow routing scenarios to keep data clean and reduce administrative overhead.|[Document](BestPractices/OverflowRouting.md)|
 
 ## Contributions
 
