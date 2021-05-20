@@ -8,12 +8,12 @@ Make sure to complete all prerequisites before continuing.
 A number of parameters are required to install the AWS SCV Launch Pack.  Specific instructions on obtaining appropriate
 values for these parameters may be found in the setup instructions of the individual projects below:
 
-* [AWSSCV-CommonLayers](../../Common/AWSSCV-CommonLayers/readme.md)
-* [AWSSCV-SalesforceConfig](../../Common/AWSSCV-SalesforceConfig/readme.md)
-* [AWSSCV-VoicemailExpress](../../Solutions/AWSSCV-VoicemailExpress/readme.md)
-* [AWSSCV-SampleContactFlows](../../Examples/AWSSCV-SampleContactFlows/readme.md)
-* [AWSSCV-CTRLogger](../../Solutions/AWSSCV-CTRLogger/readme.md)
-* [AWSSCV-DashboardAlarms](../../Solutions/AWSSCV-DashboardAlarms/readme.md)
+* [AWSSCV-CommonLayers](../../../Common/AWSSCV-CommonLayers/readme.md)
+* [AWSSCV-SalesforceConfig](../../../Common/AWSSCV-SalesforceConfig/readme.md)
+* [AWSSCV-VoicemailExpress](../../../Solutions/AWSSCV-VoicemailExpress/readme.md)
+* [AWSSCV-SampleContactFlows](../../../Examples/AWSSCV-SampleContactFlows/readme.md)
+* [AWSSCV-CTRLogger](../../Solutions/../AWSSCV-CTRLogger/readme.md)
+* [AWSSCV-DashboardAlarms](../../../Solutions/AWSSCV-DashboardAlarms/readme.md)
 
 ## Gather required parameters
 Gather the parameters listed below before starting the CloudFormation stack deployment.  The system from which to obtain the parameter is called out next to the parameter name.
