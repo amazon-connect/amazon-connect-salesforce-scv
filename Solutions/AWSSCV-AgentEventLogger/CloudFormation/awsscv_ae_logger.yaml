@@ -1,0 +1,129 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the AWS Lambda functions required to enable logging of Amazon Connect Agent Event Records to CloudWatch, S3, or both.
+Parameters:
+  AWSS3BucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - eu-central-1
+      - eu-west-2
+    Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+
+  AWSSCVCommonRole:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the awsscv_common_role role
+
+  ConnectInstanceName:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the instance name for Amazon Connect.
+
+  AgentEventKinesisStream:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the Kinesis stream used for agent events
+
+  Format:
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: Pretty print agent event output
+
+  LambdaLoggingLevel:
+    Type: String
+    Default: INFO
+    AllowedValues:
+      - DEBUG
+      - INFO
+
+  WriteTo:
+    Type: String
+    Default: both
+    AllowedValues:
+      - console
+      - s3
+      - both
+
+Resources:
+  awsscvaeloggerbucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName:
+        !Join
+        - ''
+        - - 'awsscv-ae-logger-'
+          - !Ref ConnectInstanceName
+
+  awsscvaeloggers3policy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+      - awsscvaeloggerbucket
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+            Resource:
+              - !GetAtt awsscvaeloggerbucket.Arn
+      ManagedPolicyName: awsscv_ae_logger_s3_access
+      Roles:
+        - awsscv_common_role
+
+  awsscvaeloggerlambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - !Ref AWSS3BucketPrefix
+            - 'awsscv-supporting-code-'
+            - !Ref AWSRegion
+        S3Key: awsscv_ae_logger.zip
+      Description: Lambda function to log agent event data
+      Environment:
+        Variables:
+          format:
+            Ref: Format
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          s3Bucket:
+            Ref: awsscvaeloggerbucket
+          writeTo:
+            Ref: WriteTo
+      FunctionName:
+        !Join
+        - ''
+        - - 'awsscv_ae_logger_'
+          - !Ref ConnectInstanceName
+      Handler: awsscv_ae_logger.lambda_handler
+      Role: !Ref AWSSCVCommonRole
+      Runtime: python3.8
+      Timeout: 8
+
+  awsscvaeloggertrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 100
+      Enabled: true
+      EventSourceArn: !Ref AgentEventKinesisStream
+      FunctionName: !GetAtt awsscvaeloggerlambda.Arn
+      MaximumBatchingWindowInSeconds: 0
+      StartingPosition: LATEST
