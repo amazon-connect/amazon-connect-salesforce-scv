@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Configures an AWS Secrets Manager store for your Salesforce org information and access credentials. Also creates the common role and secrets access policy.
 Parameters:
+    AWSS3BucketPrefix:
+      Type: String
+      Default: ''
+      Description: Not required and only used for development purposes.
     AWSRegion:
         Type: String
         Default: us-east-1
@@ -126,7 +130,8 @@ Resources:
           S3Bucket:
             !Join
             - ''
-            - - 'awsscv-supporting-code-'
+            - - !Ref AWSS3BucketPrefix
+              - 'awsscv-supporting-code-'
               - !Ref AWSRegion
           S3Key: awsscv_salesforce_validator.zip
         Description: Validates Salesforce connectivity and authentication via SOQL query.
@@ -144,3 +149,16 @@ Resources:
         Layers: [ !Ref AWSSalesforceCommonPythonLayer ]
         Runtime: python3.8
         Timeout: 900
+
+Outputs:
+  scvsalesforcevalidator:
+    Description: Execute this Lambda function to validate the Salesforce configuration.
+    Value: !GetAtt scvsalesforcevalidator.Arn
+  awsscvcommonrole:
+    Description: Provides foundational access to Kinesis, KVS, CloudWatch Logs, and the Salesforce secrets
+    Value: !GetAtt awsscvcommonrole.Arn
+  awsscvcommonsecrets:
+    Description: Required credentials to access Salesforce
+    Value: !Ref awsscvcommonsecrets
+
+

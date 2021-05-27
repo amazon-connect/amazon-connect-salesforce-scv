@@ -4,8 +4,9 @@ Establishes a Self-Signed SSL Certificate, Salesforce Connected App, a Salesforc
 # Setup
 Follow the following steps to prepare your Salesforce Org before running the CloudFormation template. As you proceed through these instructions, it is recommended that you use a text editor to save important information along the way. Each item you need to save will be specifically called out. Much of this process is based on the [Create Your Connected App](https://trailhead.salesforce.com/en/content/learn/modules/sfdx_travis_ci/sfdx_travis_ci_connected_app) Trailhead, but the instructions here should be used in place of those from the Trailhead.
 
-## Prerequisite
-You will need OpenSSL to generate certificates. An easy way to checlk if you already have OpenSSL is to open a command line/terminal window and type `which ssl`. You should see a response similar to `/usr/bin/openssl`. If you do not, you will need to install OpenSSL before continuing.
+## Prerequisites
+1. Complete the [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers/readme.md) Setup
+2. You will need OpenSSL to generate certificates. An easy way to check if you already have OpenSSL is to open a command line/terminal window and type `which ssl`. You should see a response similar to `/usr/bin/openssl`. If you do not, you will need to install OpenSSL before continuing.
 
 ## Create a self-signed SSL certificate and private key
 1. Create a certificates folder on your computer to store the files that will be created.
@@ -103,6 +104,7 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 11.	Enter the parameters as follows (most from your notepad):
  - AWSRegion: Select the region that you have deployed Amazon Connect in
  - ConnectInstanceName: Your connect instance name
+ - AWSSalesforceCommonPythonLayer: The ARN of the Common Python Layer created by deployment of the AWSSCV-CommonLayers prerequisite stack. This value is available in the outputs of the AWSSCV-CommonLayers stack.
  - sfConsumerKey: The consumer key from your connected app
  - sfHost: The full https url to your salesforce org
  - sfOrgId: Provide your Salesforce.com Organization ID
@@ -114,3 +116,28 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 14.	Scroll to the bottom and select Next
 15.	Scroll to the bottom and select Create Stack
 16.	After a minute or two, the stack should complete.
+
+## Post Install Validation
+Once the Salesforce Config CloudFormation stack is complete, the Salesforce integration should be validated.
+
+1. While in the Stack details, select **Resources**
+2. Find the Lambda function with the Logical ID **scvsalesforcevalidator**
+3. **Select the link** in the Physical ID column to open that resource in a new tab and switch to that tab.
+4. Select the **Test** button
+5. Provide an **Event name**
+6. You may keep the default test payload
+7. Select the **Create** button
+8. Select the **Test** button
+
+If the test is successful, results will be displayed indicating success.
+
+If the test is not successful, results will be displayed indicating a failure.  You may set a logging level to further debug your configuration.
+1. In the **Environment variables** section, select the **Edit** button
+2. Select the **Add environment variable** button
+3. Enter **lambda_logging_level** in the **Key** field
+4. Enter **DEBUG** in the **Value** field
+5. Select the **Save** button
+6. Select the **Test** button
+
+Additional details will be displayed in the **Log output** section of the **Execution result** panel.
+

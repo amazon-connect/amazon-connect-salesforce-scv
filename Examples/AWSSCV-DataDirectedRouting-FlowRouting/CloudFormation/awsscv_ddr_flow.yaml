@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys the AWS Lambda functions required to enable the Data-Directed Routing - Flow Routing examples.
 Parameters:
+    AWSS3BucketPrefix:
+      Type: String
+      Default: ''
+      Description: Not required and only used for development purposes.
     AWSRegion:
         Type: String
         Default: us-east-1
@@ -74,7 +78,8 @@ Resources:
            S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
            S3Key: awsscv_ddr_flow.zip
           Description: Uses Salesforce REST API to invoke a flow and receive a response.
@@ -105,7 +110,8 @@ Resources:
            S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
            S3Key: awsscv_ddr_flow_target_processor.zip
           Description: Processes the targets in a DDR Flow setup
@@ -130,7 +136,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_contact_flow_builder.zip
           Description: Creates contact flow from template

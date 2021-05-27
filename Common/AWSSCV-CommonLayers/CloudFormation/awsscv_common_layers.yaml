@@ -1,6 +1,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Establishes supporting layers for Service Cloud Voice tools, examples, and add-ons from AWS.
 Parameters:
+  AWSS3BucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
   AWSRegion:
     Type: String
     Default: us-east-1
@@ -23,7 +27,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_python_common.zip
           Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
@@ -34,15 +39,17 @@ Resources:
         Properties:
           CompatibleRuntimes:
             - nodejs12.x
+            - nodejs14.x
           Content:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_nodejs_common.zip
           Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
-          LayerName: aws_common_node
+          LayerName: awsscv_common_node
           LicenseInfo: https://aws.amazon.com/apache-2-0
 Outputs:
   SCVCommonPythonLayerARN:

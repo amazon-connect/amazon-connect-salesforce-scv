@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys the Voicemail Express for Salesforce and Service Cloud Voice solution. In order to deploy this solution, you need to have an Amazon Connect instance deployed and configured for both CTR streaming via Kinesis Data Streams and Live Media Streaming via Kinesis Video. Additionally, your Salesforce org either needs to have Service Cloud Voice enabled or you need to have completed the CTI Adapter for Amazon Connect Configuration. Please complete these before deploying this template.
 Parameters:
+    AWSS3BucketPrefix:
+      Type: String
+      Default: ''
+      Description: Not required and only used for development purposes.
     AWSRegion:
         Type: String
         Default: us-east-1
@@ -157,7 +161,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_vmx_presigner.zip
           Description: Generates the presigned URL that allows access to the voicemail recording in S3
@@ -187,7 +192,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_vmx_kvs_to_s3.zip
           Description: Extracts the voicemail from the KVS stream and writes it to S3 with tag data
@@ -217,7 +223,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_vmx_transcriber.zip
           Description: Transcribes the voicemail to text and stores the transcription in S3
@@ -246,7 +253,8 @@ Resources:
             S3Bucket:
               !Join
                 - ''
-                - - 'awsscv-supporting-code-'
+                - - !Ref AWSS3BucketPrefix
+                  - 'awsscv-supporting-code-'
                   - !Ref AWSRegion
             S3Key: awsscv_vmx_packager.zip
           Description: Packages the voicemail and creates a case in Salesforce.
