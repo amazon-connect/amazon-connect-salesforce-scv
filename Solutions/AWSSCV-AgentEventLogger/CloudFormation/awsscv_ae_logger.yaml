@@ -34,6 +34,14 @@ Parameters:
     Default: REPLACEME
     Description: ARN of the Kinesis stream used for agent events
 
+  DetailedLogging:
+    Type: String
+    Default: false
+    AllowedValues:
+      - true
+      - false
+    Description: Use detailed logging rather than just state changes.
+
   Format:
     Type: String
     Default: true
