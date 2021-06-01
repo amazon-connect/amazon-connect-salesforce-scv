@@ -1,6 +1,6 @@
 
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Deploys the AWS Lambda functions required to enable logging of Amazon Connect Agent Event Records to CloudWatch, S3, or both.
+Description: Deploys the AWS Lambda functions required to enable logging of Amazon Connect Agent Event Records to CloudWatch.
 Parameters:
   AWSS3BucketPrefix:
     Type: String
@@ -49,43 +49,7 @@ Parameters:
       - DEBUG
       - INFO
 
-  WriteTo:
-    Type: String
-    Default: both
-    AllowedValues:
-      - console
-      - s3
-      - both
-
 Resources:
-  awsscvaeloggerbucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName:
-        !Join
-        - ''
-        - - 'awsscv-ae-logger-'
-          - !Ref ConnectInstanceName
-
-  awsscvaeloggers3policy:
-    Type: AWS::IAM::ManagedPolicy
-    DependsOn:
-      - awsscvaeloggerbucket
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - 's3:GetObject'
-              - 's3:PutObject'
-            Resource:
-              - !GetAtt awsscvaeloggerbucket.Arn
-      ManagedPolicyName: awsscv_ae_logger_s3_access
-      Roles:
-        - awsscv_common_role
-
   awsscvaeloggerlambda:
     Type: AWS::Lambda::Function
     Properties:
@@ -104,10 +68,6 @@ Resources:
             Ref: Format
           lambda_logging_level:
             Ref: LambdaLoggingLevel
-          s3Bucket:
-            Ref: awsscvaeloggerbucket
-          writeTo:
-            Ref: WriteTo
       FunctionName:
         !Join
         - ''

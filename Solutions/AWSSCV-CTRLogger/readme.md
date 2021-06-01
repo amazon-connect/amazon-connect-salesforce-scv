@@ -21,7 +21,7 @@ For these deployments, the following AWS Lambda function is provided:
 5.	Select **Create Stack**, and choose **With new resources (standard)**
 6.	In the Specify Template section, choose **Upload a template file**
 7.	Select **Choose file**
-8.	Navigate to the folder where you saved a**wsscv_follow_me_routing.yaml**
+8.	Navigate to the folder where you saved **awsscv_follow_me_routing.yaml**
 9.	Select **Next**
 10.	In the Stack Name field, enter `AWSSCV-CTRLogger`
 11.	**Enter the parameters** as follows (most from your notepad):
