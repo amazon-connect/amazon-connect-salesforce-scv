@@ -9,8 +9,9 @@ For these deployments, the following AWS Lambda function is provided:
 - awsscv_ctr_logger_%InstanceName% (awsscv-ctr-logger.py): Provides ability to receive CTR events from Kinesis, store those events in S3, and/or log those events to CloudWatch.
 
 ## Prerequisites for all deployments
-1. [AWSSCV Salesforce Config](amazon-connect-salesforce-scv/Common/AWSSCV-SalesforceConfig) deployed
-2. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
+1. [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers) deployed
+2. [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig) deployed
+3. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
 ## Deplyoment instructions
 ### Deploy the CloudFormation template
@@ -29,7 +30,7 @@ For these deployments, the following AWS Lambda function is provided:
 - AWSSCVCommonRole: ARN of the awsscv_common_role role
 - ConnectInstanceName: Provide the instance name for Amazon Connect.
 - CTRKinesisStream: ARN of the CTR Kinesis stream
-- Format: Pretty print (true) the CTR output
+- Format: Pretty print the CTR output (true)
 - LambdaLoggingLevel: INFO or DEBUG
 - WriteTo: Where to send the CTR data (s3, console, or both)
 12.	Select **Next**

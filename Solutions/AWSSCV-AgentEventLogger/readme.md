@@ -9,8 +9,9 @@ For these deployments, the following AWS Lambda function is provided:
 - awsscv_ae_logger_%InstanceName% (awsscv-ae-logger.py): Provides ability to receive agent events from Kinesis, store those events in S3, and/or log those events to CloudWatch.
 
 ## Prerequisites for all deployments
-1. [AWSSCV Salesforce Config](amazon-connect-salesforce-scv/Common/AWSSCV-SalesforceConfig) deployed
-2. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
+1. [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers) deployed
+2. [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig) deployed
+3. Access to the [AWS Console](https://console.aws.amazon.com/console/home)
 
 ## Deplyoment instructions
 ### Deploy the CloudFormation template
@@ -29,9 +30,9 @@ For these deployments, the following AWS Lambda function is provided:
 - AWSSCVCommonRole: ARN of the awsscv_common_role role
 - ConnectInstanceName: Provide the instance name for Amazon Connect.
 - AgentEventKinesisStream: ARN of the agent event Kinesis stream
-- Format: Pretty print (true) the agent event output
+- DetailedLogging: Log all agent events (true) rather than just state changes.
+- Format: Pretty print the agent event output (true)
 - LambdaLoggingLevel: INFO or DEBUG
-- WriteTo: Where to send the agent event data (s3, console, or both)
 12.	Select **Next**
 13.	In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select **Next**

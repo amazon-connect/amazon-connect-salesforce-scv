@@ -40,7 +40,7 @@ Parameters:
     AllowedValues:
       - true
       - false
-    Description: Use detailed logging rather than just state changes.
+    Description: Log all agent events (true) rather than just state changes.
 
   Format:
     Type: String
@@ -48,7 +48,7 @@ Parameters:
     AllowedValues:
       - true
       - false
-    Description: Pretty print agent event output
+    Description: Pretty print agent event output (true)
 
   LambdaLoggingLevel:
     Type: String
