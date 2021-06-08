@@ -21,7 +21,7 @@ def lambda_handler(event, context):
         try:
             currentAgentStatusARN = payload['CurrentAgentSnapshot']['AgentStatus']['ARN']
         except Error as e:
-            currentAgentStatusARNM = '1'
+            currentAgentStatusARN = '1'
 
         if (detailed_logging == 'true'):
             log_to_console(payload)
