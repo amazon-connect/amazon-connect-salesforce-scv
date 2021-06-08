@@ -15,12 +15,12 @@ def lambda_handler(event, context):
 
         try:
             previousAgentStatusARN = payload['PreviousAgentSnapshot']['AgentStatus']['ARN']
-        except Error as e:
+        except Exception as e:
             previousAgentStatusARN = '0'
 
         try:
             currentAgentStatusARN = payload['CurrentAgentSnapshot']['AgentStatus']['ARN']
-        except Error as e:
+        except Exception as e:
             currentAgentStatusARN = '1'
 
         if (detailed_logging == 'true'):
