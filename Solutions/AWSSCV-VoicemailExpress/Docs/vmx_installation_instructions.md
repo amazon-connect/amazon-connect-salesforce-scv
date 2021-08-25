@@ -12,7 +12,7 @@ The Voicemail Express solutions Uses AWS CloudFormation to deploy most of the so
 - ARN for the Amazon Kiesis data stream used for streaming your CTRs from the [Amazon Kinesis Data streams console](https://console.aws.amazon.com/kinesis/home)
 - ARN for the Salesforce Config Secrets from the [AWS Secrets Manager console](https://console.aws.amazon.com/secretsmanager/home)
 - Amazon Connect Instance Alias from the [Amazon Connect console](https://console.aws.amazon.com/connect/home)
-- The field names for the two fields that you created in the prerequisites
+- The field names for the three fields that you created in the prerequisites
 
 Once you have the required information, you are ready to continue with installation. 
 
