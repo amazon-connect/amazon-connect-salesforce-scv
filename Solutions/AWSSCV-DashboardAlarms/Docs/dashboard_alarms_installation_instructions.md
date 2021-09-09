@@ -15,14 +15,14 @@ The Dashboard Alarms solution Uses AWS CloudFormation to deploy the solution. In
 Once you have the required information, you are ready to continue with installation.
 
 ## Delploy the Cloudformation Template
-The next step is to deploy the CloudFormation template. This template builds all of the AWS resources required to make Voicemail Express work.
-1. Right-click/control-click to download the [Voicemail Express CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/Solutions/AWSSCV-DashboardAlarms/CloudFormation/awsscv_connect_dashboard_alarms.yaml) and save it to your computer. 
+The next step is to deploy the CloudFormation template. This template builds all of the AWS resources required to make the Dashboard Alarms work.
+1. Right-click/control-click to download the [Dashboard Alarms CloudFormation template](https://raw.githubusercontent.com/amazon-connect/amazon-connect-salesforce-scv/master/Solutions/AWSSCV-DashboardAlarms/CloudFormation/awsscv_connect_dashboard_alarms.yaml) and save it to your computer. 
 2. Log into the [AWS console](https://console.aws.amazon.com/console/home)
 3. Navigate to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home)
 4. Choose **Create stack**
 5. In the **Specify template** section, select **Upload a Template file**
 6. Select **Choose file**
-7. Navigate to the **awsscv_vmx.yaml** file that you downloaded previously and choose **Open**
+7. Navigate to the **awsscv_connect_dashboard_alarms.yaml** file that you downloaded previously and choose **Open**
 8. Wait a moment for the S3 URL to update, then select **Next**
 9. Provide a name for the stack, such as `AWSSCV-DashboardAlarms`
 10. **Complete the parameters** using the information that you have gathered.
