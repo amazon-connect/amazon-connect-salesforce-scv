@@ -198,6 +198,7 @@ Parameters:
       - 'v49.0'
       - 'v50.0'
       - 'v51.0'
+      - 'v52.0'
     Description: The current API version number
   SalesforcePrivateKey:
     Type: String
