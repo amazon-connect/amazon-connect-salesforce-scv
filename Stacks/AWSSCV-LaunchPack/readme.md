@@ -1,10 +1,9 @@
-# AWS Launch Pack for Service Cloud Voice
+# Starter Kit
+The the Starter Kit for Service Cloud Voice provides a set of commonly installed solutions and examples via a single CloudFormation template deployment.
 
-The Launch Pack for Service Cloud Voice provides a set of commonly installed solutions and examples via a single CloudFormation template deployment.
+Deployment of the Starter Kit handles all of the required dependencies and the order of installation.
 
-Deployment of the Launch Pack handles all of the required dependencies and the order of installation.
-
-Included in the Launch Pack are:
+Included in the Starter Kit launch pack are:
 
 * [AWSSCV-CommonLayers](../../Common/AWSSCV-CommonLayers/readme.md)
 * [AWSSCV-SalesforceConfig](../../Common/AWSSCV-SalesforceConfig/readme.md)
