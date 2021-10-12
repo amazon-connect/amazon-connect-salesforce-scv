@@ -198,6 +198,7 @@ Parameters:
       - 'v49.0'
       - 'v50.0'
       - 'v51.0'
+      - 'v52.0'
     Description: The current API version number
   SalesforcePrivateKey:
     Type: String
@@ -280,7 +281,7 @@ Resources:
           - '.s3-'
           - !Ref AWSRegion
           - '.amazonaws.com'
-          - '/awsscv_common_layers.yaml'
+          - '/LaunchPackYAML/awsscv_common_layers.yaml'
       Parameters:
         AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
@@ -300,7 +301,7 @@ Resources:
           - '.s3-'
           - !Ref AWSRegion
           - '.amazonaws.com'
-          - '/awsscv-ssm.yaml'
+          - '/LaunchPackYAML/awsscv-ssm.yaml'
       Parameters:
         AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
@@ -333,7 +334,7 @@ Resources:
           - '.s3-'
           - !Ref AWSRegion
           - '.amazonaws.com'
-          - '/awsscv_vmx.yaml'
+          - '/LaunchPackYAML/awsscv_vmx.yaml'
       Parameters:
         AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
@@ -377,7 +378,7 @@ Resources:
           - '.s3-'
           - !Ref AWSRegion
           - '.amazonaws.com'
-          - '/awsscv_sample_contact_flows.yaml'
+          - '/LaunchPackYAML/awsscv_sample_contact_flows.yaml'
       Parameters:
         AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
@@ -411,7 +412,7 @@ Resources:
           - '.s3-'
           - !Ref AWSRegion
           - '.amazonaws.com'
-          - '/awsscv_ctr_logger.yaml'
+          - '/LaunchPackYAML/awsscv_ctr_logger.yaml'
       Parameters:
         AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion
@@ -438,7 +439,7 @@ Resources:
           - '.s3-'
           - !Ref AWSRegion
           - '.amazonaws.com'
-          - '/awsscv_connect_dashboard_alarms.yaml'
+          - '/LaunchPackYAML/awsscv_connect_dashboard_alarms.yaml'
       Parameters:
         AWSS3BucketPrefix: !Ref AWSS3BucketPrefix
         AWSRegion: !Ref AWSRegion

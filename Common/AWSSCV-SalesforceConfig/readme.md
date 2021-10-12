@@ -63,11 +63,11 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 1. In the Quick Find field, type `users` then select Users from the results 
 2. Select New User
 3. Set the required fields as:
- a. Last Name: awsutil
- b. Alias: awsutil
- c. Email: provide a valid email address
- d. Username: awsutil@<yoursalesforcedomain>.com
- e. Nickname: awsutil
+  * Last Name: awsutil
+  * Alias: awsutil
+  * Email: provide a valid email address
+  * Username: awsutil@%yoursalesforcedomain%.com
+  * Nickname: awsutil
 4. On the right-hand side, set **User License** to **Salesforce**
 5. Set the **Profile** to **System Administrator**
 6. Choose Save
