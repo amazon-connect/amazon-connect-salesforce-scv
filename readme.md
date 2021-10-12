@@ -1,6 +1,6 @@
 # Amazon Connect Campground for Service Cloud Voice
 
-This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments. 
+This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements and deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments. 
 
 The repository is divided into five sections:
 - Common Resources: Provide underlying resources required for some of the solutions to work. Examples include a common authentication setup for these solutions, AWS Lambda depenedency layers, etc
