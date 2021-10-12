@@ -1,6 +1,6 @@
 # Amazon Connect Campground for Service Cloud Voice
 
-This repository contains resources, examples, and projects to help Service Cloud Voice customers address some common requirements as they deploy Service Cloud Voice. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments. 
+This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments. 
 
 The repository is divided into five sections:
 - Common Resources: Provide underlying resources required for some of the solutions to work. Examples include a common authentication setup for these solutions, AWS Lambda depenedency layers, etc
@@ -14,7 +14,7 @@ The repository is divided into five sections:
 | Name | Description |
 | ---- | ----------- |
 | [AWSSCV-CommonLayers](Common/AWSSCV-CommonLayers) | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce |
-| [AWSSCV-SalesforceConfig](Common/AWSSCV-SalesforceConfig) | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository. 
+| [AWSSCV-SalesforceConfig](Common/AWSSCV-SalesforceConfig) | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository.
 
 ## Solutions
 
@@ -49,8 +49,7 @@ The repository is divided into five sections:
 
 ## Contributions
 
-Make sure the `.gitignore` per language is applied. 
+Make sure the `.gitignore` per language is applied.
 
 ## Status
 ![Status](https://codebuild.us-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiVlBLcm9mQlRQV01ZbDRES1FwM3JRNVlJYzB0MlNYYzN1V25weU9CSUN1ckxHQWFTbitsRFo2RHUzR3FDblJjZjR5ZnJhY2F6VHBYSEtVaXcwcVNKVXM0PSIsIml2UGFyYW1ldGVyU3BlYyI6IklPR2ExNWp1MnN6T1pYZ3MiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
-
