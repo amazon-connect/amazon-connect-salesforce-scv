@@ -9,10 +9,9 @@ With Voicemail Express, customers can have the option to leave a voicemail for a
 3. Presigned URL that provides access to the voicemail from Salesforce without the need for authentication into AWS.
 4. Voicemail is packed for delivery, including the transcription, presigned URL, and contact data. It is then delivered via the chosen mechanism.
 
-Voicemails in this solution are configured for a lifecycle of up to 7 days. After 7 days, the recordings are lifecycled and the presigned URL is no longer valid. During deployment, you have the option to reduce this lifecycle window, if desired. Additionally, you have the option to keep, archive, or delete voicemail recordings. However recordings are lifecycled, the data (with transcript) will reside in the selected delivery system. 
+Voicemails in this solution are configured for a lifecycle of up to 7 days. After 7 days, the recordings are lifecycled and the presigned URL is no longer valid. During deployment, you have the option to reduce this lifecycle window, if desired. Additionally, you have the option to keep, archive, or delete voicemail recordings. However recordings are lifecycled, the data (with transcript) will reside in the selected delivery system.
 
 To deploy Voicemail express, you will need to complete the following:
-1. Complete the [AWSSCV Common Layers](../../Common/AWSSCV-CommonLayers/readme.md) Setup
-2. Complete the [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig/readme.md) setup
-3. Complete the [Voicemail Express Prerequisites](Docs/vmx_prerequistes.md)
-4. Complete the [Voicemail Express Installation](Docs/vmx_installation_instructions.md)
+1. For customers that are deploying Salesforce delivery modes, complete the [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig/readme.md) setup
+2. Complete the [Voicemail Express Prerequisites](Docs/vmx_prerequistes.md)
+3. Complete the [Voicemail Express Installation](Docs/vmx_installation_instructions.md)
