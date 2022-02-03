@@ -127,13 +127,8 @@ Resources:
         - awsscvcommonrole
       Properties:
         Code:
-          S3Bucket:
-            !Join
-            - ''
-            - - !Ref AWSS3BucketPrefix
-              - 'awsscv-supporting-code-'
-              - !Ref AWSRegion
-          S3Key: awsscv_salesforce_validator.zip
+          S3Bucket: scvtestcode
+          S3Key: awsscv_callback_processor.py.zip
         Description: Validates Salesforce connectivity and authentication via SOQL query.
         Environment:
           Variables:

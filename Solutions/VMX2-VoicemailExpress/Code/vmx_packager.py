@@ -1,3 +1,4 @@
+# Version: 2022.02.02
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -14,26 +15,33 @@
  *  IN THE SOFTWARE.                                                                                                  *
  **********************************************************************************************************************
 """
-# Version: 2021.12.14
 
 # Import the necessary modules for this flow to work
 import json
 import os
 import logging
 import boto3
-from awsscv.sf import Salesforce
 import phonenumbers
+
+# Import the VMX Model Types
+import sub_connect_task
+import sub_ses_email
+import sub_salesforce_case
+import sub_salesforce_other
+import sub_other
 
 logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'DEBUG')))
+connect_client = boto3.client('connect')
 
 def lambda_handler(event, context):
     logger.debug(event)
-    connect_client = boto3.client('connect')
     loop_counter = 0
 
     # Process the records in the event
     for record in event['Records']:
+        # Establish writer data
+        writer_payload = {}
 
         # Increment loop counter
         loop_counter = loop_counter+1
@@ -51,7 +59,7 @@ def lambda_handler(event, context):
             logger.error('Record {0} Result: Failed to extract keys'.format(loop_counter))
             continue
 
-        # Invoke presigner Lambda to generate presigned URL for recording and the formatted version for SCV
+        # Invoke presigner Lambda to generate presigned URL for recording
         try:
             client = boto3.client('lambda')
 
@@ -67,7 +75,6 @@ def lambda_handler(event, context):
             )
             response_from_presigner = json.load(lambda_response['Payload'])
             raw_url = response_from_presigner['presigned_url']
-            sf_formatted_url = '<a href="{0}" rel="noopener noreferrer" target="_blank">Play Voicemail</a>'.format(response_from_presigner['presigned_url'])
 
         except Exception as e:
             logger.error(e)
@@ -108,28 +115,28 @@ def lambda_handler(event, context):
             logger.error('Record 0 Result: Failed to retrieve transcript'.format(loop_counter))
             continue
 
-        # Determine if this was a queue or agent directed voicemail and grab the name for the entity. Set vars accordingly
-        connect_client = boto3.client('connect')
+        # Set some key vars
+        queue_arn = loaded_tags['vm_queue_arn']
+        arn_substring = queue_arn.split('instance/')[1]
+        instance_id = arn_substring.split('/queue')[0]
+        queue_id = arn_substring.split('queue/')[1]
+        writer_payload.update({'instance_id':instance_id,'contact_id':contact_id,'queue_id':queue_id,'loop_counter':loop_counter})
 
-        if loaded_tags['vm_queue_type'] == 'agent':
-            vm_prefix = 'Direct'
+        # Determine queue type and set additional vars
+        if queue_id.startswith('agent'):
             try:
-                queue_arn = loaded_tags['vm_queue_arn']
-                split_1 = queue_arn.split('instance/')[1]
-                instance_id = split_1.split('/queue')[0]
-                agent_id = split_1.split('agent/')[1]
-
+                writer_payload.update({'entity_type':'agent'})
+                # Set the Agent ID
+                agent_id = arn_substring.split('agent/')[1]
+                # Grab agent info
                 get_agent = connect_client.describe_user(
                     UserId = agent_id,
                     InstanceId = instance_id
                 )
                 logger.debug(get_agent['User']['IdentityInfo'])
                 entity_name = get_agent['User']['IdentityInfo']['FirstName']+' '+get_agent['User']['IdentityInfo']['LastName']
-                full_agent_id = get_agent['User']['Username']
-                sf_agent_id = full_agent_id.split('@')[0]
-                target_email = full_agent_id
-                if '@' not in target_email:
-                    logger.error('Agent does not have an email associated')
+                entity_id = get_agent['User']['Username']
+                entity_description = 'Amazon Connect Agent'
 
             except Exception as e:
                 logger.error(e)
@@ -137,176 +144,112 @@ def lambda_handler(event, context):
                 entity_name = 'UNKNOWN'
 
         else:
-            vm_prefix = 'Queue'
-
-            queue_arn = loaded_tags['vm_queue_arn']
-            split_1 = queue_arn.split('instance/')[1]
-            instance_id = split_1.split('/queue')[0]
-            queue_id = split_1.split('queue/')[1]
-
+            writer_payload.update({'entity_type':'queue'})
+            # Grab Queue info
             get_queue_details = connect_client.describe_queue(
                 InstanceId=instance_id,
                 QueueId=queue_id
             )
 
-            # Determine email address for queue if present, or set default.
             try:
-                target_email = get_queue_details['Queue']['Description'].split('QVM::')[1]
-            except:
-                target_email = os.environ['default_email']
-
-            try:
-                entity_name = loaded_tags['vm_queue_name']
+                entity_name = get_queue_details['Queue']['Name']
+                entity_id = get_queue_details['Queue']['QueueArn']
+                entity_description = get_queue_details['Queue']['Description']
             except Exception as e:
                 logger.error(e)
                 logger.error('Record {0} Result: Failed to extract queue name'.format(loop_counter))
                 entity_name = 'UNKNOWN'
 
-        # Build the human readable phone number for the subject
-        try:
-            incoming_phone = '+' + loaded_tags['vm_from']
-            parsed_phone = phonenumbers.parse(incoming_phone, None)
-            international_phone = phonenumbers.format_number(parsed_phone, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-
-        except Exception as e:
-            logger.error(e)
-            international_phone = '+' + loaded_tags['vm_from']
-
         # Get the existing contact attributes from the call and append the standard vars for voicemail to the attributes
         try:
-            queue_arn = loaded_tags['vm_queue_arn']
-            split_1 = queue_arn.split('instance/')[1]
-            instance_id = split_1.split('/queue')[0]
             contact_attributes = connect_client.get_contact_attributes(
                 InstanceId = instance_id,
                 InitialContactId = contact_id
             )
             json_attributes = contact_attributes['Attributes']
-            json_attributes.update({'entity_name':entity_name,'transcript_contents':transcript_contents,'customer_phone':international_phone,'presigned_url':raw_url})
+            json_attributes.update({'entity_name':entity_name,'entity_id':entity_id,'entity_description':entity_description,'transcript_contents':transcript_contents,'callback_number':json_attributes['vm_from'],'presigned_url':raw_url})
+            writer_payload.update({'json_attributes':json_attributes})
             contact_attributes = json.dumps(contact_attributes['Attributes'])
 
         except Exception as e:
             logger.error(e)
             logger.error('Record {0} Result: Failed to extract attributes'.format(loop_counter))
             contact_attributes = 'UNKNOWN'
-        ##### BEGIN MOD FOR UNIVERSAL USE #####
 
-        # set the mode
-        vmx_mode = json_attributes['vmx_mode']
+        logger.debug(writer_payload)
 
-        ## SCV Mode
-        if vmx_mode == 'SCV':
+        # Determing VMX mode
+        if 'vm_mode' in writer_payload['json_attributes']:
+            if writer_payload['json_attributes']['vm_mode']:
+                vm_mode = writer_payload['json_attributes']['vm_mode']
+        else:
+            vm_mode = os.environ['default_vm_mode']
 
-            logger.info('Beginning Voicemail to Salesforce Case')
-            # Perform the salesforce login
+        logger.debug('VM Mode set to {0}.'.format(vm_mode))
+
+        # Execute the correct VMX mode
+        if vm_mode == 'task':
+
             try:
-                sf = Salesforce()
+                write_vm = sub_connect_task.vm_to_connect_task(writer_payload)
 
             except Exception as e:
                 logger.error(e)
-                logger.error('Record {0} Result: Failed to authenticate with Salesforce'.format(loop_counter))
+                logger.error('Failed to activate task function')
                 continue
 
-            # Create a case in Salesforce
+        elif vm_mode == 'email':
+
             try:
-                if loaded_tags['vm_queue_type'] == 'agent':
-                    data = {
-                        'Subject': vm_prefix + ' voicemail for: ' + entity_name + ', from : ' + international_phone,
-                        'Description': 'Voicemail transcript: ' + transcript_contents,
-                        'Status': 'New',
-                        'Priority': loaded_tags['vm_priority'],
-                        'Origin': 'Phone',
-                        'OwnerId': sf_agent_id,
-                        os.environ['sf_case_vm_attributes']: contact_attributes,
-                        os.environ['sf_case_vm_phone_field']: international_phone,
-                        os.environ['sf_case_vm_field']: sf_formatted_url
-                    }
-
-                else:
-                    data = {
-                        'Subject': vm_prefix + ' voicemail for: ' + entity_name + ', from : ' + international_phone,
-                        'Description': 'Voicemail transcript: ' + transcript_contents,
-                        'Status': 'New',
-                        'Priority': loaded_tags['vm_priority'],
-                        'Origin': 'Phone',
-                        os.environ['sf_case_vm_attributes']: contact_attributes,
-                        os.environ['sf_case_vm_phone_field']: international_phone,
-                        os.environ['sf_case_vm_field']: sf_formatted_url
-                    }
-                logger.debug(data)
-
-                response = sf.create(sobject='Case', data=data)
-
-                logger.info('Record {0} Result: Case created [{1}]'.format(loop_counter, response))
-                sf_case = response
+                write_vm = sub_ses_email.vm_to_ses_email(writer_payload)
 
             except Exception as e:
                 logger.error(e)
-                logger.error('Record {0} Result: Failed to create case'.format(loop_counter))
+                logger.error('Failed to activate email function')
                 continue
 
-        # EMAIL Mode
-        elif vmx_mode == 'EMAIL':
-
-            logger.info('Beginning Voicemail to Email')
-            ses_client = boto3.client('sesv2')
-            # Extract the data to pass and the email attributes to use from the contact data
-            template_data = json.dumps(json_attributes)
-            email_template = json_attributes['email_template']
-            email_from = json_attributes['email_from']
-
+        elif vm_mode == 'sfcase':
+            # Set case Here
             try:
-                send_email = ses_client.send_email(
-                    FromEmailAddress=email_from,
-                    Destination={
-                        'ToAddresses': [
-                            target_email,
-                        ],
-                    },
-                    Content={
-                        'Template': {
-                            'TemplateName': email_template,
-                            'TemplateData': template_data
-                        }
-                    }
-                )
-                continue
+                write_vm = sub_salesforce_case.vm_to_sfcase(writer_payload)
 
             except Exception as e:
                 logger.error(e)
-                logger.error('Record {0} Failed to send email.'.format(loop_counter))
+                logger.error('Failed to activate email function')
                 continue
 
-
-        elif 'vmx_mode == 'TASK':
-
-            logger.info('Beginning Voicemail to Task')
+        elif vm_mode == 'sfother':
+            # Set Task Here
             try:
-                create_task = connect_client.start_task_contact(
-                    InstanceId=instance_id,
-                    PreviousContactId=contact_id,
-                    ContactFlowId=json_attributes['task_flow'],
-                    Attributes=json_attributes,
-                    Name='Voicemail',
-                    References={
-                        'Click link below to play voicemail': {
-                            'Value': raw_url,
-                            'Type': 'URL'
-                        }
-                    },
-                    Description=transcript_contents
-                )
-                continue
+                write_vm = sub_salesforce_other.vm_to_sfother(writer_payload)
 
             except Exception as e:
                 logger.error(e)
-                logger.error('Record {0} Failed to create task.'.format(loop_counter))
+                logger.error('Failed to activate email function')
+                continue
+
+        elif vm_mode == 'other':
+            # Set other Here
+            try:
+                write_vm = sub_other.vm_to_other(writer_payload)
+
+            except Exception as e:
+                logger.error(e)
+                logger.error('Failed to activate email function')
                 continue
 
         else:
-
-            logger.error('INVALID CONFIGURATION')
+            logger.error('Invalid mode selection')
             continue
+
+        if write_vm == 'success':
+            logger.info('Record {0} VM successfully written'.format(loop_counter))
+
+        else:
+            logger.info('Record {0} VM failed to write'.format(loop_counter))
+            continue
+
+        # End Voicemail Writer
 
         # Delete the transcription
         try:
@@ -320,12 +263,7 @@ def lambda_handler(event, context):
 
         # Clear the vm_flag for this contact
         try:
-            # Grab instance ID
-            queue_arn = loaded_tags['vm_queue_arn']
-            split_1 = queue_arn.split('instance/')[1]
-            instance_id = split_1.split('/queue')[0]
 
-            # Do the update
             update_flag = connect_client.update_contact_attributes(
                 InitialContactId=contact_id,
                 InstanceId=instance_id,

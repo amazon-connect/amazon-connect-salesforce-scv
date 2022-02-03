@@ -1,3 +1,4 @@
+// Version: 2022.02.02
 /*
  **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -14,7 +15,6 @@
  *  IN THE SOFTWARE.                                                                                                  *
  **********************************************************************************************************************
  */
-// Version: 2021.12.14
 // Establish constants and globals
 const {Decoder} = require('ebml');
 const AWS = require('aws-sdk');
@@ -76,7 +76,7 @@ exports.handler = async (event) => {
             var vmrecord = JSON.parse(payload);
             // Uncomment the following line for debugging
             // console.log(vmrecord)
-            // Grab ContactID
+            // Grab ContactID & Instance ARN
             var currentContactID = vmrecord.ContactId;
         } catch(e) {
             console.log('FAIL: Record extraction failed');
@@ -121,7 +121,7 @@ exports.handler = async (event) => {
             var attr_data = vmrecord.Attributes;
             var attr_tag_container = '';
             Object.keys(attr_data).forEach(function (key) {
-                if (key.startsWith('vm_')) {
+                if (key.startsWith('vm_lang')||key.startsWith('vm_queue_arn')){
                     attr_tag_container = attr_tag_container + ('' + key + '=' + attr_data[key] + '&');
                 };
             });

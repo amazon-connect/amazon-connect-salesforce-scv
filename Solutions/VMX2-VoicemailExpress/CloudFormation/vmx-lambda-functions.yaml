@@ -1,0 +1,428 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Deploys and configures the triggers for the Vociemail Express solution.
+
+Parameters:
+  EXPTemplateVersion:
+    Type: String
+  AWSRegion:
+    Type: String
+  ConnectInstanceAlias:
+    Type: String
+  EnableVMToConnectTask:
+    Type: String
+  EnableVMToEmail:
+    Type: String
+  EnableVMToSalesforceCase:
+    Type: String
+  EnableVMToSalesforceCustomObject:
+    Type: String
+  EXPDevBucketPrefix:
+    Type: String
+  LambdaLoggingLevel:
+    Type: String
+  RecordingsExpireInXDays:
+    Type: String
+  SalesforceConfigSSMARN:
+    Type: String
+  SalesforceCustomObject:
+    Type: String
+  SalesforceVoicemailLinkField:
+    Type: String
+  SalesforceCallbackPhoneField:
+    Type: String
+  SalesforceContactAttributesField:
+    Type: String
+  SalesforceTranscriptsField:
+    Type: String
+  VMEmailDefaultAgentTemplate:
+    Type: String
+  VMEmailDefaultQueueTemplate:
+    Type: String
+  VMDefaultMode:
+    Type: String
+  VMToEmailDefaultFrom:
+    Type: String
+  VMToEmailDefaultTo:
+    Type: String
+  VMXDefaultTaskFlow:
+    Type: String
+  VMXSecrets:
+    Type: String
+  VMXCoreRoleArn:
+    Type: String
+  VMXCoreRole:
+    Type: String
+  VMXS3RecordingsBucket:
+    Type: String
+  VMXS3TranscriptsBucket:
+    Type: String
+
+Mappings:
+  VMModes:
+    AmazonConnectTask:
+      mode: task
+    AmazonSimpleEmailService:
+      mode: email
+    SalesforceCase:
+      mode: sfcase
+    SalesforceCustom:
+      mode: sfother
+    Other:
+      mode: other
+
+Conditions:
+  SalesforceEnabled: !Or [!Equals [!Ref EnableVMToSalesforceCase, yes], !Equals [!Ref EnableVMToSalesforceCustomObject, yes] ]
+  SalesforceOtherEnabled: !Equals [!Ref EnableVMToSalesforceCustomObject, yes]
+  ConnectTasksEnabled: !Equals [!Ref EnableVMToConnectTask, yes]
+  OtherEnabled: !Equals [!Ref EnableVMToConnectTask, yes]
+  AWSEmailEnabled: !Equals [!Ref EnableVMToEmail, yes]
+
+Resources:
+  VMXPythonLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.8
+        - python3.9
+      Content:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'vmx/'
+            - !Ref EXPTemplateVersion
+            - /zip/vmx_common_python.zip
+      Description: Provides dependencies code and functions for Python Lambda functions
+      LayerName:
+        !Join
+            - ''
+            - - 'VMXPythonLayer'
+              - !Ref ConnectInstanceAlias
+      LicenseInfo: https://aws.amazon.com/apache-2-0
+
+  VMXNodeLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - nodejs12.x
+        - nodejs14.x
+      Content:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'vmx/'
+            - !Ref EXPTemplateVersion
+            - /zip/vmx_common_node.zip
+      Description: Provides dependencies code and functions for node.js Lambda functions
+      LayerName:
+        !Join
+            - ''
+            - - 'VMXNodeLayer-'
+              - !Ref ConnectInstanceAlias
+      LicenseInfo: https://aws.amazon.com/apache-2-0
+
+  VMXPresigner:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'vmx/'
+            - !Ref EXPTemplateVersion
+            - /zip/vmx_presigner.py.zip
+      Description: Generates the presigned URL that provides authenticated access to the voicemail recording in S3
+      Environment:
+        Variables:
+          aws_region:
+            Ref: AWSRegion
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          s3_obj_lifecycle:
+            Ref: RecordingsExpireInXDays
+          secrets_key_id:
+            Ref: VMXSecrets
+          package_version:
+            Ref: EXPTemplateVersion
+      FunctionName:
+        !Join
+            - ''
+            - - 'VMXPresigner-'
+              - !Ref ConnectInstanceAlias
+      Handler: vmx_presigner.lambda_handler
+      Role: !Ref VMXCoreRoleArn
+      Runtime: python3.9
+      Timeout: 30
+
+  VMXPackager:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - VMXPythonLayer
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'vmx/'
+            - !Ref EXPTemplateVersion
+            - /zip/vmx_packager.py.zip
+      Description: Packages the voicemail and creates a task in Amazon Connect.
+      Environment:
+        Variables:
+          s3_recordings_bucket:
+            Ref: VMXS3RecordingsBucket
+          s3_transcripts_bucket:
+            Ref: VMXS3TranscriptsBucket
+          presigner_function_arn:
+            Ref: VMXPresigner
+          default_task_flow:
+            !If [ConnectTasksEnabled, !Ref VMXDefaultTaskFlow, 'AWS::NoValue']
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          package_version:
+            Ref: EXPTemplateVersion
+          sf_vm_custom_object:
+            !If [SalesforceOtherEnabled, !Ref SalesforceCustomObject, 'AWS::NoValue']
+          sf_config_sm_arn:
+            !If [SalesforceEnabled, !Ref SalesforceConfigSSMARN, 'AWS::NoValue']
+          sf_vm_field:
+            !If [SalesforceEnabled, !Ref SalesforceVoicemailLinkField, 'AWS::NoValue']
+          sf_vm_phone_field:
+            !If [SalesforceEnabled, !Ref SalesforceCallbackPhoneField, 'AWS::NoValue']
+          sf_vm_attributes:
+            !If [SalesforceEnabled, !Ref SalesforceContactAttributesField, 'AWS::NoValue']
+          sf_vm_transcript:
+            !If [SalesforceOtherEnabled, !Ref SalesforceTranscriptsField, 'AWS::NoValue']
+          default_email_from:
+            !If [AWSEmailEnabled, !Ref VMToEmailDefaultFrom, 'AWS::NoValue']
+          default_email_target:
+            !If [AWSEmailEnabled, !Ref VMToEmailDefaultTo, 'AWS::NoValue']
+          default_vm_mode:
+            !FindInMap [VMModes, !Ref "VMDefaultMode", mode]
+          default_agent_email_template:
+            !If [AWSEmailEnabled, !Ref VMEmailDefaultAgentTemplate, 'AWS::NoValue']
+          default_queue_email_template:
+            !If [AWSEmailEnabled, !Ref VMEmailDefaultQueueTemplate, 'AWS::NoValue']
+      FunctionName:
+        !Join
+            - ''
+            - - 'VMXPackager-'
+              - !Ref ConnectInstanceAlias
+      Handler: vmx_packager.lambda_handler
+      Role: !Ref VMXCoreRoleArn
+      Layers: [!Ref VMXPythonLayer]
+      Runtime: python3.9
+      Timeout: 900
+
+  VMXTranscriber:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'vmx/'
+            - !Ref EXPTemplateVersion
+            - /zip/vmx_transcriber.py.zip
+      Description: Transcribes the voicemail to text and stores the transcription in S3
+      Environment:
+        Variables:
+          aws_region:
+            Ref: AWSRegion
+          s3_transcripts_bucket:
+            !Join
+              - ''
+              - - 'vmxtranscripts-'
+                - !Ref ConnectInstanceAlias
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          package_version:
+            Ref: EXPTemplateVersion
+      FunctionName:
+        !Join
+            - ''
+            - - 'VMXTranscriber-'
+              - !Ref ConnectInstanceAlias
+      Handler: vmx_transcriber.lambda_handler
+      Role: !Ref VMXCoreRoleArn
+      Runtime: python3.9
+      Timeout: 900
+
+  VMXKVStoS3:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - VMXNodeLayer
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'vmx/'
+            - !Ref EXPTemplateVersion
+            - /zip/vmx_kvs_to_s3.js.zip
+      Description: Extracts the voicemail from the KVS stream and writes it to S3 with tag data
+      Environment:
+        Variables:
+          aws_region:
+            Ref: AWSRegion
+          s3_recordings_bucket:
+            Ref: VMXS3RecordingsBucket
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          package_version:
+            Ref: EXPTemplateVersion
+      FunctionName:
+        !Join
+            - ''
+            - - 'VMXKVStoS3-'
+              - !Ref ConnectInstanceAlias
+      Handler: vmx_kvs_to_s3.handler
+      Role: !Ref VMXCoreRoleArn
+      Layers: [!Ref VMXNodeLayer]
+      Runtime: nodejs14.x
+      Timeout: 900
+
+  VMXNotificationBuilder:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'vmx/'
+            - !Ref EXPTemplateVersion
+            - /zip/vmx_notification_builder.py.zip
+      Description: Configures the bucket notifications for the VM solution
+      Environment:
+        Variables:
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          package_version:
+            Ref: EXPTemplateVersion
+      FunctionName:
+        !Join
+            - ''
+            - - 'VMXNotificationBuilder-'
+              - !Ref ConnectInstanceAlias
+      Handler: vmx_notification_builder.lambda_handler
+      Role: !Ref VMXCoreRoleArn
+      Runtime: python3.9
+      Timeout: 30
+
+  VMXAddOnPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+        - VMXPresigner
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'lambda:InvokeFunction'
+            Resource:
+              - !GetAtt VMXPresigner.Arn
+          - Effect: Allow
+            Action:
+              - 'transcribe:StartTranscriptionJob'
+              - 'connect:DescribeUser'
+              - 'connect:UpdateContactAttributes'
+              - 'connect:GetContactAttributes'
+              - 'connect:DescribeQueue'
+              - 'connect:StartTaskContact'
+            Resource:
+              - '*'
+          - Effect: Allow
+            Action:
+              - 'secretsmanager:GetSecretValue'
+              - 'secretsmanager:DescribeSecret'
+              - 'secretsmanager:ListSecretVersionIds'
+            Resource:
+              - !Ref VMXSecrets
+      ManagedPolicyName:
+        !Join
+          - ''
+          - - 'VMXCorePolicy-'
+            - !Ref ConnectInstanceAlias
+      Roles:
+        - !Ref VMXCoreRole
+
+  VMXSFPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+        - VMXAddOnPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'secretsmanager:GetSecretValue'
+              - 'secretsmanager:DescribeSecret'
+              - 'secretsmanager:ListSecretVersionIds'
+              - 'secretsmanager:UpdateSecret'
+            Resource:
+              - !Ref SalesforceConfigSSMARN
+      ManagedPolicyName:
+        !Join
+          - ''
+          - - 'VMXSFPolicy-'
+            - !Ref ConnectInstanceAlias
+      Roles:
+        - !Ref VMXCoreRole
+
+Outputs:
+  VMXNotificationBuilderArn:
+    Description: ARN of the Notification Builder function
+    Value: !GetAtt VMXNotificationBuilder.Arn
+  VMXPackagerArn:
+    Description: ARN of the Packager function
+    Value: !GetAtt VMXPackager.Arn
+  VMXTranscriberArn:
+    Description: ARN of the Transcriber function
+    Value: !GetAtt VMXTranscriber.Arn
+  VMXKVStoS3:
+    Description: Name of the KVS to S3 function
+    Value: !Ref VMXKVStoS3
