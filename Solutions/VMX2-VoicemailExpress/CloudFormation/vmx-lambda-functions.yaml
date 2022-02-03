@@ -367,6 +367,7 @@ Resources:
           - Effect: Allow
             Action:
               - 'transcribe:StartTranscriptionJob'
+              - 'transcribe:DeleteTranscriptionJob'
               - 'connect:DescribeUser'
               - 'connect:UpdateContactAttributes'
               - 'connect:GetContactAttributes'

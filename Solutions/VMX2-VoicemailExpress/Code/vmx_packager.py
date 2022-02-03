@@ -251,15 +251,17 @@ def lambda_handler(event, context):
 
         # End Voicemail Writer
 
-        # Delete the transcription
+        # Do some cleanup
+        # Delete the transcription job
         try:
-            transcript_delete = transcript_object.delete()
+            transcribe_client = boto3.client('transcribe')
+            transcribe_client.delete_transcription_job(
+                TranscriptionJobName=contact_id
+            )
 
         except Exception as e:
             logger.error(e)
-            logger.error('Record {0} Failed to delete transcript'.format(loop_counter))
-
-        logger.debug('Record {0} Result: Success!'.format(loop_counter))
+            logger.error('Record {0} Failed to delete transcription job'.format(loop_counter))
 
         # Clear the vm_flag for this contact
         try:
