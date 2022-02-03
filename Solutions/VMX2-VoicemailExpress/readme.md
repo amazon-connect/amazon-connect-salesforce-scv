@@ -7,7 +7,7 @@ With Voicemail Express, customers can have the option to leave a voicemail for a
 1. Voicemail stored in S3 as a .wav file
 2. Transcription of the voicemail
 3. Presigned URL that provides access to the voicemail from Salesforce without the need for authentication into AWS.
-4. Voicemail is packed for delivery, including the transcription, presigned URL, and contact data. It is then delivered via the chosen mechanism.
+4. Voicemail is packaged for delivery, including the transcription, presigned URL, and contact data. It is then delivered via the chosen mechanism.
 
 Voicemails in this solution are configured for a lifecycle of up to 7 days. After 7 days, the recordings are lifecycled and the presigned URL is no longer valid. During deployment, you have the option to reduce this lifecycle window, if desired. Additionally, you have the option to keep, archive, or delete voicemail recordings. However recordings are lifecycled, the data (with transcript) will reside in the selected delivery system.
 
