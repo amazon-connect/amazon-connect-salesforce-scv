@@ -135,6 +135,7 @@ Parameters:
       - ap-northeast-1
       - eu-central-1
       - eu-west-2
+      - ca-central-1
     Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice.
   AWSLambdaLoggingLevel:
     Type: String

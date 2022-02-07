@@ -17,6 +17,7 @@ Parameters:
           - ap-northeast-1
           - eu-central-1
           - eu-west-2
+          - ca-central-1
         Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
     SalesforceOrgId:
         Type: String
