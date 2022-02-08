@@ -1,4 +1,34 @@
 
+Skip to content
+Pull requests
+Issues
+Marketplace
+Explore
+@dougjaso
+amazon-connect /
+amazon-connect-salesforce-scv
+Public
+
+Code
+Issues 2
+Pull requests 1
+Discussions
+Actions
+Projects
+Wiki
+Security
+Insights
+
+    Settings
+
+amazon-connect-salesforce-scv/Common/AWSSCV-SalesforceConfig/CloudFormation/awsscv-ssm.yaml
+@SteveEarl-AWS
+SteveEarl-AWS CF template updates / doc updates
+Latest commit 74731e5 on Mar 28, 2021
+History
+1 contributor
+164 lines (159 sloc) 5.68 KB
+
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Configures an AWS Secrets Manager store for your Salesforce org information and access credentials. Also creates the common role and secrets access policy.
 Parameters:
@@ -127,8 +157,13 @@ Resources:
         - awsscvcommonrole
       Properties:
         Code:
-          S3Bucket: scvtestcode
-          S3Key: awsscv_callback_processor.py.zip
+          S3Bucket:
+            !Join
+            - ''
+            - - !Ref AWSS3BucketPrefix
+              - 'awsscv-supporting-code-'
+              - !Ref AWSRegion
+          S3Key: awsscv_salesforce_validator.zip
         Description: Validates Salesforce connectivity and authentication via SOQL query.
         Environment:
           Variables:
@@ -157,3 +192,18 @@ Outputs:
     Value: !Ref awsscvcommonsecrets
 
 
+    © 2022 GitHub, Inc.
+
+    Terms
+    Privacy
+    Security
+    Status
+    Docs
+    Contact GitHub
+    Pricing
+    API
+    Training
+    Blog
+    About
+
+Loading complete
