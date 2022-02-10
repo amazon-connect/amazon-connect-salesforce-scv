@@ -257,7 +257,7 @@ Mappings:
       mode: email
     SalesforceCase:
       mode: sfcase
-    SalesforceCustom:
+    SalesforceOther:
       mode: sfother
     Other:
       mode: other
@@ -352,7 +352,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     DependsOn:
       - VMXCoreStack
-      - VMXSESSetupStack
+      - VMXContactFlowStack
     Properties:
       Parameters:
         EXPTemplateVersion: !Ref EXPTemplateVersion
@@ -375,17 +375,26 @@ Resources:
         VMToEmailDefaultFrom: !Ref VMToEmailDefaultFrom
         VMToEmailDefaultTo: !Ref VMToEmailDefaultTo
         VMEmailDefaultAgentTemplate:
-          Fn::GetAtt:
-            - VMXSESSetupStack
-            - Outputs.VMEmailDefaultAgentTemplate
+          !If
+            - AWSEmailEnabled
+            - Fn::GetAtt:
+              - VMXSESSetupStack
+              - Outputs.VMEmailDefaultAgentTemplate
+            - 'AWS::NoValue'
         VMEmailDefaultQueueTemplate:
-          Fn::GetAtt:
-            - VMXSESSetupStack
-            - Outputs.VMEmailDefaultQueueTemplate
+          !If
+            - AWSEmailEnabled
+            - Fn::GetAtt:
+              - VMXSESSetupStack
+              - Outputs.VMEmailDefaultQueueTemplate
+            - 'AWS::NoValue'
         VMXDefaultTaskFlow:
-          Fn::GetAtt:
-            - VMXContactFlowStack
-            - Outputs.VMXExampleTaskFlowID
+          !If
+            - ConnectTasksEnabled
+            - Fn::GetAtt:
+              - VMXContactFlowStack
+              - Outputs.VMXExampleTaskFlowID
+            - 'AWS::NoValue'
         VMXSecrets:
           Fn::GetAtt:
             - VMXCoreStack
