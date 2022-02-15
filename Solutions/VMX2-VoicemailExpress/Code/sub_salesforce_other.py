@@ -60,24 +60,24 @@ def vm_to_sfother(writer_payload):
 
             data = {
                 'Name': 'Direct voicemail for: ' + writer_payload['json_attributes']['entity_name'],
-                os.environ['sf_vmtranscript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
+                os.environ['sf_vm_transcript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
                 'OwnerId': sf_agent_id,
-                os.environ['sf_vmphone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vmattributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vmfield']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
+                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
             }
 
         else:
             data = {
                 'Name': 'Queue voicemail for: ' + writer_payload['json_attributes']['entity_name'],
-                os.environ['sf_vmtranscript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
-                os.environ['sf_vmphone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vmattributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vmfield']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_transcript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
+                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
+                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
             }
         logger.debug(data)
 
-        do_create = sf.create(sobject=os.environ['sf_vmcustom_object'], data=data)
+        do_create = sf.create(sobject=os.environ['sf_vm_custom_object'], data=data)
 
         logger.info('Record {0} Result: Salesforce custom voicemail created [{1}]'.format(writer_payload['loop_counter'], do_create))
         return 'success'

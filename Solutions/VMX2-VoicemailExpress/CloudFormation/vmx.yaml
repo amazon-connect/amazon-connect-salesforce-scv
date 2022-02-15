@@ -5,7 +5,7 @@ Description: Deploys the Voicemail Express solution for Amazon Connect.
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
-      -
+      - 
         Label:
           default: "1. Base Configuration"
         Parameters:

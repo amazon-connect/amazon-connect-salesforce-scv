@@ -65,9 +65,9 @@ def vm_to_sfcase(writer_payload):
                 'Origin': 'Phone',
                 'Priority': writer_payload['json_attributes']['vm_priority'],
                 'OwnerId': sf_agent_id,
-                os.environ['sf_vmphone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vmattributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vmfield']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
+                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
             }
 
         else:
@@ -77,9 +77,9 @@ def vm_to_sfcase(writer_payload):
                 'Status': 'New',
                 'Origin': 'Phone',
                 'Priority': writer_payload['json_attributes']['vm_priority'],
-                os.environ['sf_vmphone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vmattributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vmfield']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
+                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
             }
         logger.debug(data)
 
