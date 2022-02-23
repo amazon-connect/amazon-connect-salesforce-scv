@@ -5,7 +5,7 @@ Description: Deploys the Voicemail Express solution for Amazon Connect.
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
-      - 
+      -
         Label:
           default: "1. Base Configuration"
         Parameters:
@@ -106,6 +106,7 @@ Parameters:
     AllowedValues:
       - us-east-1
       - us-west-2
+      - af-south-1
       - ap-southeast-1
       - ap-southeast-2
       - ap-northeast-1
@@ -168,7 +169,7 @@ Parameters:
     Description: When recordings expire, do you want to delete the recording, keep it, or move it to Glacier?
   EXPTemplateVersion:
     Type: String
-    Default: 2022.02.02
+    Default: 2022.02.20
     Description: Template version. DO NOT CHANGE.
   LambdaLoggingLevel:
     Type: String
