@@ -1,7 +1,7 @@
 # Voicemail Express V2
 Voicemail Express is designed to provide basic voicemail functionality to Amazon Connect Customers. It has been designed to work in a variety of customer deployment models, including Service Cloud Voice. Voicemail express provides delivery of voicemail via a variety of mechanism and also offers customization patterns for other delivery models. This version natively supports voicemail delivery via Amazon Connect Task, e-mail delivery via Amazon Simple Email Service, Salesforce Case, Salesforce custom objects, or a custom delivery mode of your own design. It has also been redesigned to support different modes on a call-by-call basis.
 
-![Voicemail Express Architecture](Docs/vmx2.png)
+![Voicemail Express Architecture](Docs/Img/vmx2.png)
 
 With Voicemail Express, customers can have the option to leave a voicemail for an agent or queue. Once the voicemail is recorded, a series of processes take place that ultimately result in:
 1. Voicemail stored in S3 as a .wav file
