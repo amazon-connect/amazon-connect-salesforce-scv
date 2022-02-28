@@ -31,7 +31,7 @@ The next step is to deploy the CloudFormation template. This template builds all
 8.  Wait a moment for the S3 URL to update, then select **Next**
 9.  Provide a name for the stack, such as `VMX-MyInstanceName`
 10. **Complete the parameters** using the information that you have gathered.
-  - **NOTE:** Section 1 is required for all deployments. Sections 2 & 3 are used for specific deployment models. You only need to complete the
+  - **NOTE:** Section 1 is required for all deployments. Sections 2 & 3 are used for specific deployment models. You only need to complete the sections that apply to your selected deployment modes.
 11. Once the parameters are complete, choose **Next**
   - **NOTE:** In Service Cloud Voice bundle deployments, it is normal to see a warning on the next page, Configure stack options
 12.	Scroll to the bottom and select **Next**
