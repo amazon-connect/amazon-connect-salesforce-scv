@@ -29,16 +29,16 @@ Voicemails are captured in the Amazon Connect contact flow, processed post-call,
 
 ## Required Contact Attributes (All Modes)
 In order for the voicemail system to work, contacts must have certain contact attributes set. Regardless of mode, the following attributes are used:
-- **vm_flag (Required)**: (0,1) this attribute flags the call as requiring processing by the voicemail solution. All new voicemails should have this value set to `1`. When the packager function completes, it will update the value to `0`. If this value is set to anything other than `1` or is missing altogether, the voicemail system will ignore the CTR and voicemail processing WILL NOT HAPPEN.
-Example: 'vm_flag':'1'
-- **vm_from (Reqiured)**: (customer phone in E.164 format) this attribute indicates the phone number of the customer. You can set this using the System attribute of `Customer number` ($.CustomerEndpoint.Address) or set this to a phone number provided by the customer. It should always be in E.164 format.
-Example: 'vm_from':'+15555551212'
-- **vm_queue_arn (Required)**: (ARN) the Amazon Resource Number of the queue that this voicemail should belong to. In most cases, it makes most practical sense to first set the appropriate queue as the working queue, then to set this attribute using the System attribute of `Queue ARN` ($.Queue.ARN). This is critical as the Lambda functions use the queue ARN to determine the target queue, instance ID, queue mode (agent vs queue), etc.
-Example: 'vm_queue_arn':'arn:aws:connect:us-east-1:YOURACCOUNTNUMBER:instance/YOURINSTANCEID/queue/YOURQUEUEID'
-- **vm_lang (Required)**: (Language code) the language code that Transcribe should use when transcribing the call. The list of supported languages and their language codes can be found in the [Amazon Transcribe Developer Guide](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html).
-Example: 'vm_lang':'en-US'
-- **vm_mode (Optional)**: (email|task|sfcase|sfother|other) which delivery mode should be used for this voicemail. If nothing is provided, the voicemail will be delivered via the default mode selected during implementation. 
-Example: 'vm_mode':'task'
+-  **vm_flag (Required)**: (0,1) this attribute flags the call as requiring processing by the voicemail solution. All new voicemails should have this value set to `1`. When the packager function completes, it will update the value to `0`. If this value is set to anything other than `1` or is missing altogether, the voicemail system will ignore the CTR and voicemail processing WILL NOT HAPPEN.
+    -  Example: 'vm_flag':'1'
+-  **vm_from (Reqiured)**: (customer phone in E.164 format) this attribute indicates the phone number of the customer. You can set this using the System attribute of `Customer number` ($.CustomerEndpoint.Address) or set this to a phone number provided by the customer. It should always be in E.164 format.
+    -  Example: 'vm_from':'+15555551212'
+-  **vm_queue_arn (Required)**: (ARN) the Amazon Resource Number of the queue that this voicemail should belong to. In most cases, it makes most practical sense to first set the appropriate queue as the working queue, then to set this attribute using the System attribute of `Queue ARN` ($.Queue.ARN). This is critical as the Lambda functions use the queue ARN to determine the target queue, instance ID, queue mode (agent vs queue), etc.
+    -  Example: 'vm_queue_arn':'arn:aws:connect:us-east-1:YOURACCOUNTNUMBER:instance/YOURINSTANCEID/queue/YOURQUEUEID'
+-  **vm_lang (Required)**: (Language code) the language code that Transcribe should use when transcribing the call. The list of supported languages and their language codes can be found in the [Amazon Transcribe Developer Guide](https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html).
+    -  Example: 'vm_lang':'en-US'
+-  **vm_mode (Optional)**: (email|task|sfcase|sfother|other) which delivery mode should be used for this voicemail. If nothing is provided, the voicemail will be delivered via the default mode selected during implementation.
+    -  Example: 'vm_mode':'task'
 
 There are additional contact attributes for each delivery mode. For details, please refer to the documentation page for the appropriate delivery mode.
 
