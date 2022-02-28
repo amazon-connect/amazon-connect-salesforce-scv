@@ -31,12 +31,13 @@ The next step is to deploy the CloudFormation template. This template builds all
 8.  Wait a moment for the S3 URL to update, then select **Next**
 9.  Provide a name for the stack, such as `VMX-MyInstanceName`
 10. **Complete the parameters** using the information that you have gathered.
+  - **NOTE:** Section 1 is required for all deployments. Sections 2 & 3 are used for specific deployment models. You only need to complete the
 11. Once the parameters are complete, choose **Next**
-  - **NOTE:** In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
+  - **NOTE:** In Service Cloud Voice bundle deployments, it is normal to see a warning on the next page, Configure stack options
 12.	Scroll to the bottom and select **Next**
 13.	Scroll to the bottom, select the boxes to **acknowledge that IAM resources will be created**
 14. Select **Create Stack**
-15. The deployemnt will take 8 - 10 minutes. During this time, multiple nested stacks will be deployed. Once the main stack shows **CREATE_COMPLETE**, you are ready to proceed.
+15. The deployment will take 5-10 minutes. During this time, multiple nested stacks will be deployed. Once the main stack shows **CREATE_COMPLETE**, you are ready to proceed.
 
 ## Assign a test number
 1.  Login to the Amazon Connect administration interface
@@ -53,7 +54,14 @@ Now that the solution has been deployed, you are ready to test.
 3.  At the next menu, **press 1** to leave a voicemail for an agent or **press 2** to leave a voicemail for a queue
 4.  When you hear the tone, **record your voicemail**. Hang up at any time after recording a message.
 5.  Once you have completed the recording, **wait approximately 2 minutes**.
-6.  For Amazon Connect Tasks, log the apropriate agent in and put them into the available state. The Task should arrive shortly. For email, the email should be delivered to the box provided. For Salesforce models, log into Salesforce and navigate the new cases or custom object records to see the voicemail.
+6.  For Amazon Connect Tasks, log the appropriate agent in and put them into the available state. The Task should arrive shortly. For email, the email should be delivered to the box provided. For Salesforce models, log into Salesforce and navigate the new cases or custom object records to see the voicemail.
 
-  
 **Voicemail Validation is complete!**
+
+Once Voicemail Express has been deployed and tested successfully, you can learn more about the different modes by referencing the following documents:
+1. [High-level overview of the Voicemail Express solution](Docs/vmx_core.md)
+2. [Delivering Voicemails as Amazon Connect Tasks](Docs/vmx_tasks.md)
+3. [Delivering Voicemails via Amazon Simple Email Service](Docs/vmx_email.md)
+4. [Delivering Voicemails as Salesforce Cases](Docs/vmx_sfcase.md)
+5. [Delivering Voicemails as Salesforce Custom Objects](Docs/vmx_sfcustom.md)
+6. [Creating your own custom delivery mode for Voicemails](Docs/vmx_custom.md)

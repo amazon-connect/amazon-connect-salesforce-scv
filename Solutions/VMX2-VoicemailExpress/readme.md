@@ -1,7 +1,7 @@
 # Voicemail Express V2
 Voicemail Express is designed to provide basic voicemail functionality to Amazon Connect Customers. It has been designed to work in a variety of customer deployment models, including Service Cloud Voice. Voicemail express provides delivery of voicemail via a variety of mechanism and also offers customization patterns for other delivery models. This version natively supports voicemail delivery via Amazon Connect Task, e-mail delivery via Amazon Simple Email Service, Salesforce Case, Salesforce custom objects, or a custom delivery mode of your own design. It has also been redesigned to support different modes on a call-by-call basis.
 
-![Voicemail Express Architecture](Docs/Architecture.png)
+![Voicemail Express Architecture](Docs/vmx2.png)
 
 With Voicemail Express, customers can have the option to leave a voicemail for an agent or queue. Once the voicemail is recorded, a series of processes take place that ultimately result in:
 1. Voicemail stored in S3 as a .wav file
@@ -11,7 +11,17 @@ With Voicemail Express, customers can have the option to leave a voicemail for a
 
 Voicemails in this solution are configured for a lifecycle of up to 7 days. After 7 days, the recordings are lifecycled and the presigned URL is no longer valid. During deployment, you have the option to reduce this lifecycle window, if desired. Additionally, you have the option to keep, archive, or delete voicemail recordings. However recordings are lifecycled, the data (with transcript) will reside in the selected delivery system.
 
-To deploy Voicemail express, you will need to complete the following:
+To deploy Voicemail Express, you will need to complete the following:
 1. For customers that are deploying Salesforce delivery modes, complete the [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig/readme.md) setup
 2. Complete the [Voicemail Express Prerequisites](Docs/vmx_prerequistes.md)
 3. Complete the [Voicemail Express Installation](Docs/vmx_installation_instructions.md)
+
+Once Voicemail Express has been deployed, you can learn more about the different modes by referencing the following documents:
+1. [High-level overview of the Voicemail Express solution](Docs/vmx_core.md)
+2. [Delivering Voicemails as Amazon Connect Tasks](Docs/vmx_tasks.md)
+3. [Delivering Voicemails via Amazon Simple Email Service](Docs/vmx_email.md)
+4. [Delivering Voicemails as Salesforce Cases](Docs/vmx_sfcase.md)
+5. [Delivering Voicemails as Salesforce Custom Objects](Docs/vmx_sfcustom.md)
+6. [Creating your own custom delivery mode for Voicemails](Docs/vmx_custom.md)
+
+Finally, some basic troubleshooting steps can be found on the [Troubleshooting Common Voicemail Issues](Docs/vmx_troubleshooting.md) page.
