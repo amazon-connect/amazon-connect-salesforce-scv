@@ -9,23 +9,23 @@ Voicemails are captured in the Amazon Connect contact flow, processed post-call,
 4.  Customer completes the message and ends the call
 5.  A contact trace record (CTR) is emitted for the contact via Amazon Kinesis Data Stream
 6.  That CTR triggers the VMXKVStoS3 AWS Lambda function. This function:
-  1.  Identifies that the contact is a voicemail
-  2.  Retrieves some key data about the contact
-  3.  Extracts the voicemail recording from the KVS stream
-  4.  Writes the voicemail recording to an Amazon Simple Storage Service (S3) bucket, using the extracted data as metadata
+  -  Identifies that the contact is a voicemail
+  -  Retrieves some key data about the contact
+  -  Extracts the voicemail recording from the KVS stream
+  -  Writes the voicemail recording to an Amazon Simple Storage Service (S3) bucket, using the extracted data as metadata
 7. The creation of the recording object in S3 triggers the next Lambda function, VMXTranscriber. This function:
-  1.  Retrieves the recording file from S3
-  2.  Uses the metadata to create a new transcription job
-  3.  The transcription job writes the completed transcription to a different S3 bucket
+  -  Retrieves the recording file from S3
+  -  Uses the metadata to create a new transcription job
+  -  The transcription job writes the completed transcription to a different S3 bucket
 8.  The creation of the transcription object in S3 triggers the next Lambda function, VMXPackager. This function:
-  1.  Retrieves the transcript file from S3
-  2.  Uses the data in the transcript file identify the contact and find the recording
-  3.  Retrieves the metadata from the recording file
-  4.  Invokes the VMXPresigner function to generate a presigned URL for the recording
-  5.  Determines queue/agent information, deliver mode, destination, etc
-  6.  Invokes the appropriate function for the delivery mode
-  7.  Once delivery is successful, it deletes the existing transcription job
-  8. Finally, the contact attributes are updated to remove the voicemail flag so future instances of this CTR do not generate new voicemails.
+  -  Retrieves the transcript file from S3
+  -  Uses the data in the transcript file identify the contact and find the recording
+  -  Retrieves the metadata from the recording file
+  -  Invokes the VMXPresigner function to generate a presigned URL for the recording
+  -  Determines queue/agent information, deliver mode, destination, etc
+  -  Invokes the appropriate function for the delivery mode
+  -  Once delivery is successful, it deletes the existing transcription job
+  - Finally, the contact attributes are updated to remove the voicemail flag so future instances of this CTR do not generate new voicemails.
 
 ## Required Contact Attributes (All Modes)
 In order for the voicemail system to work, contacts must have certain contact attributes set. Regardless of mode, the following attributes are used:
@@ -51,5 +51,3 @@ By default, the max voicemail length is 1 minute. If you want to increase or dec
   1.  The caller will suddenly switch from leaving a voicemail to hearing a whisper flow (if configured), then connect to an agent. They may not understand what is happening and hang up.
   2.  If the call connects while the customer was leaving the voicemail, the CTR still likely contains the vm_flag setting to 1. This means that the voicemail system will still do the voicemail process and, most likely, will transcribe the entire conversation from the customer's perspective. To correct this,  part of the customer or agent whisper should be to check for the presence of the flag and, if it exists, set it to 0.
   3.  If you are going to use KVS for realtime transcription in service cloud voice, and you initialize this during the agent whisper flow, you would need to also stop streaming and restart so that you have both sides of the conversation.
-
-  
