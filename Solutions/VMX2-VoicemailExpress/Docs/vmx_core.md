@@ -9,10 +9,10 @@ Voicemails are captured in the Amazon Connect contact flow, processed post-call,
 4.  Customer completes the message and ends the call
 5.  A contact trace record (CTR) is emitted for the contact via Amazon Kinesis Data Stream
 6.  That CTR triggers the VMXKVStoS3 AWS Lambda function. This function:
-    -  Identifies that the contact is a voicemail
-    -  Retrieves some key data about the contact
-    -  Extracts the voicemail recording from the KVS stream
-    -  Writes the voicemail recording to an Amazon Simple Storage Service (S3) bucket, using the extracted data as metadata
+  -  Identifies that the contact is a voicemail
+  -  Retrieves some key data about the contact
+  -  Extracts the voicemail recording from the KVS stream
+  -  Writes the voicemail recording to an Amazon Simple Storage Service (S3) bucket, using the extracted data as metadata
 7. The creation of the recording object in S3 triggers the next Lambda function, VMXTranscriber. This function:
     -  Retrieves the recording file from S3
     -  Uses the metadata to create a new transcription job
