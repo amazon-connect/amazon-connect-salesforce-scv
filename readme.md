@@ -1,7 +1,7 @@
 # Amazon Connect Campground for Service Cloud Voice
 
 This repository contains resources, examples, and projects to help Service Cloud Voice customers address some common requirements as they deploy Service Cloud Voice. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments.
-The repository is divided into five sections: test-2
+The repository is divided into five sections:
 
 - Common Resources: Provide underlying resources required for some of the solutions to work. Examples include a common authentication setup for these solutions, AWS Lambda depenedency layers, etc
 - Solutions: larger solutions designed to address specific requirements that customers may have. These solutions are designed for operational use. Examples include Cross-Account SMS or Voicemail Express.
