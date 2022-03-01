@@ -3,8 +3,8 @@ Before deploying the Voicemail Express solutions, you will need to complete a fe
 - FOR SALESFORCE DELIVERY MODES ONLY: Complete the [AWSSCV Salesforce Config](../../../Common/AWSSCV-SalesforceConfig) setup
 
 **Note:** You will need to save information to a notepad during the entire setup process.
-- [Prerequisites for Salesforce Delivery Modes](https://github.com/dougjaso/amazon-connect-salesforce-scv/blob/master/Solutions/VMX2-VoicemailExpress/Docs/vmx_prerequistes.md#salesforce-delivery-modes-only-additional-requirements-for-salesforce-delivery-modes)
-- [Prerequisites for AWS Delivery Modes](https://github.com/dougjaso/amazon-connect-salesforce-scv/blob/master/Solutions/VMX2-VoicemailExpress/Docs/vmx_prerequistes.md#aws-delivery-modes-only-additional-requirements-aws-delivery-modes)
+- [Prerequisites for Salesforce Delivery Modes](#salesforce-delivery-modes-only-additional-requirements-for-salesforce-delivery-modes)
+- [Prerequisites for AWS Delivery Modes](#aws-delivery-modes-only-additional-requirements-aws-delivery-modes)
 
 ## **Salesforce Delivery Modes Only:** Additional Requirements for Salesforce Delivery Modes
 There are two primary Salesforce delivery modes: Case and Custom. For cases, we are creating a new case and including the data related to voicemail in that case. Once the case is created, your Salesforce case routing rules take effect and cases are assigned based on those rules. For custom delivery, we will write the voicemail data to a custom object that you provide, for example a "voicemail" custom object. The steps below will walk through the configuration in both. We will start with custom objects to configure the requirements there, then move to elements that relate to both cases and custom objects.
