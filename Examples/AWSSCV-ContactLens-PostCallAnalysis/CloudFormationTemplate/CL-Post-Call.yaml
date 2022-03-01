@@ -1,0 +1,243 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Deploys the AWS Lambda functions required to insert Contact Lens post call analysis into Salesforce Voice Call Object
+
+Parameters:
+
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - eu-central-1
+      - eu-west-2
+    Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+
+  ContactLensS3Bucket:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the S3 bucket where Contact Lens post call analysis is stored (same as Call Recording bucket)
+
+  TelephonyIntegrationLambda:
+    Type: String
+    Default: REPLACEME
+    Description: ARN of the out-of-the-box Telephony Integration Lambda
+
+  LambdaLoggingLevel:
+    Type: String
+    Default: INFO
+    AllowedValues:
+      - DEBUG
+      - INFO
+
+Resources:
+
+  awsscvclpostcalllambda:
+    Type: AWS::Lambda::Function
+    DependsOn: awsscvclpostcallrole
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - 'scv-contact-lens-post-call-'
+            - !Ref AWSRegion
+        S3Key: Post_Call_Categorization_CL.zip
+      Description: Lambda function to extract Contact Lens information and insert into Salesforce Voice Call Object
+      Environment:
+        Variables:
+          ARN_InvokeTelephonyIntegrationApiFunction:
+            Ref: TelephonyIntegrationLambda
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+      FunctionName:
+        !Join
+        - ''
+        - - !Ref AWS::StackName
+          - !Ref ContactLensS3Bucket
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt awsscvclpostcallrole.Arn
+      Runtime: python3.9
+      Timeout: 8
+
+
+  awsscvclpostcalls3policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Provides read access to Contact Lens S3 bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:GetBucketNotification'
+            Resource: !Sub 'arn:aws:s3:::${ContactLensS3Bucket}/*'
+
+
+  awsscvclpostcalllambdainvokepolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Provides read access to Contact Lens invoke Telephony Intergation Lambda function
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'lambda:InvokeFunction'
+            Resource:
+              - !Ref TelephonyIntegrationLambda
+
+  awsscvclpostcallrole:
+      Type: AWS::IAM::Role
+      DependsOn:
+        - awsscvclpostcalllambdainvokepolicy
+        - awsscvclpostcalls3policy
+      Properties:
+        RoleName: !Join ["-", ["awsscv_cl_post_call_role", !Ref AWS::StackName]]
+        Description: Provides access to Contact Lens S3 and Telephony Invoke Lambda
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - !Ref awsscvclpostcalls3policy
+          - !Ref awsscvclpostcalllambdainvokepolicy
+
+  LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt awsscvclpostcalllambda.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Sub 'arn:aws:s3:::${ContactLensS3Bucket}'
+
+  LambdaIAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:GetBucketNotification'
+                  - 's3:PutBucketNotification'
+                Resource: !Sub 'arn:aws:s3:::${ContactLensS3Bucket}'
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+
+  CustomResourceLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaIAMRole.Arn
+      Code:
+        ZipFile: |
+
+          from __future__ import print_function
+          import json
+          import boto3
+          import cfnresponse
+
+          SUCCESS = "SUCCESS"
+          FAILED = "FAILED"
+
+          print('Loading function')
+          s3 = boto3.resource('s3')
+
+          def lambda_handler(event, context):
+              print("Received event: " + json.dumps(event, indent=2))
+              responseData={}
+              try:
+                  if event['RequestType'] == 'Delete':
+                      print("Request Type:",event['RequestType'])
+                      Bucket=event['ResourceProperties']['Bucket']
+                      delete_notification(Bucket)
+                      print("Sending response to custom resource after Delete")
+                  elif event['RequestType'] == 'Create' or event['RequestType'] == 'Update':
+                      print("Request Type:",event['RequestType'])
+                      LambdaArn=event['ResourceProperties']['LambdaArn']
+                      Bucket=event['ResourceProperties']['Bucket']
+                      add_notification(LambdaArn, Bucket)
+                      responseData={'Bucket':Bucket}
+                      print("Sending response to custom resource")
+                  responseStatus = 'SUCCESS'
+              except Exception as e:
+                  print('Failed to process:', e)
+                  responseStatus = 'FAILED'
+                  responseData = {'Failure': 'error occured'}
+              cfnresponse.send(event, context, responseStatus, responseData)
+
+          def add_notification(LambdaArn, Bucket):
+              bucket_notification = s3.BucketNotification(Bucket)
+              response = bucket_notification.put(
+                NotificationConfiguration={
+                        'LambdaFunctionConfigurations': [
+                            {
+                                'LambdaFunctionArn': LambdaArn,
+                                'Events': [
+                                   's3:ObjectCreated:Put'
+                                ],
+                                'Filter': {
+                                    'Key': {
+                                        'FilterRules': [
+                                            {
+                                                'Name': 'prefix',
+                                                'Value': 'Analysis/Voice'
+                                            },
+                                            {
+                                                 'Name': 'suffix',
+                                                  'Value': '.json'
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                        ]
+                    }
+              )
+              print("Put request completed....")
+
+          def delete_notification(Bucket):
+              bucket_notification = s3.BucketNotification(Bucket)
+              response = bucket_notification.put(
+                  NotificationConfiguration={}
+              )
+              print("Delete request completed....")
+      Runtime: python3.6
+      Timeout: 50
+
+  LambdaTrigger:
+      Type: 'Custom::LambdaTrigger'
+      DependsOn: LambdaInvokePermission
+      Properties:
+        ServiceToken: !GetAtt CustomResourceLambdaFunction.Arn
+        LambdaArn: !GetAtt awsscvclpostcalllambda.Arn
+        Bucket: !Ref ContactLensS3Bucket
