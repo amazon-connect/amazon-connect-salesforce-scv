@@ -1,6 +1,9 @@
 # Delivering Voicemails as Email via Amazon Simple Email Service (SES)
 Email delivery is fairly straightforward from an AWS perspective. Once you have [validated the email domain/addresses](vmx_prerequistes.md#setup-steps-for-email-delivery), and configured queue emails appropriately, there is little else to manage. The main effort here would be on creating additional email templates, where required.
 
+## Routing Emails to Agent Email Addresses
+In order to directly route to agent email addresses, you must be using SAML for authentication and the agent's ID must be their email address. This is currently the only option for direct to agent voicemail via email. If you have not configured Connect in this manner, you can only use the queue option.
+
 ## Additional Contact Attributes Specific to Email
 There are three additional contact attribute that applies to this delivery model:
 -  **email_from (Optional)**: (email address) email address to send the voicemail FROM. If this is not provided, the default FROM address configured during implementation will be used.
