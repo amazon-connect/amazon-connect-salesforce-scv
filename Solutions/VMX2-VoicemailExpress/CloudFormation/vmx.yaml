@@ -169,7 +169,7 @@ Parameters:
     Description: When recordings expire, do you want to delete the recording, keep it, or move it to Glacier?
   EXPTemplateVersion:
     Type: String
-    Default: 2022.02.20
+    Default: 2022.03.01
     Description: Template version. DO NOT CHANGE.
   LambdaLoggingLevel:
     Type: String
