@@ -73,7 +73,7 @@ Metadata:
       EXPTemplateVersion:
         default: "(TEST USE ONLY) What is version you wish to deploy?"
       LambdaLoggingLevel:
-        default: "For the included AWS Lambda functionS, what should the default logging level be set to?"
+        default: "For the included AWS Lambda functions, what should the default logging level be set to?"
       RecordingsExpireInXDays:
         default: "How long should the voicemail audio be available via URL? Maximum is 7 days."
       SalesforceCustomObject:
