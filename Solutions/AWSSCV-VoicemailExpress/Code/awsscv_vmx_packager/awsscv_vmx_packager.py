@@ -126,10 +126,11 @@ def lambda_handler(event, context):
                 logger.debug(get_agent['User']['IdentityInfo'])
                 entity_name = get_agent['User']['IdentityInfo']['FirstName']+' '+get_agent['User']['IdentityInfo']['LastName']
                 full_agent_id = get_agent['User']['Username']
-                sf_agent_id = full_agent_id.split('@')[0]
-                target_email = full_agent_id
-                if '@' not in target_email:
-                    logger.error('Agent does not have an email associated')
+
+                if full_agent_id.count('@') == 1:
+                    sf_agent_id = full_agent_id.split('@')[0]
+                else:
+                    sf_agent_id = full_agent_id.split('@')[1]
 
             except Exception as e:
                 logger.error(e)
