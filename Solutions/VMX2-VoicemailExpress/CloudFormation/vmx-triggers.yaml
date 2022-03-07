@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Deploys and configures the triggers for the Vociemail Express solution.
+
+Parameters:
+  EXPTemplateVersion:
+    Type: String
+  ConnectCTRStreamARN:
+    Type: String
+  VMXNotificationBuilderArn:
+    Type: String
+  VMXS3RecordingsBucket:
+    Type: String
+  VMXS3TranscriptsBucket:
+    Type: String
+  VMXS3RecordingsBucketArn:
+    Type: String
+  VMXPackagerArn:
+    Type: String
+  VMXS3TranscriptsBucketArn:
+    Type: String
+  VMXTranscriberArn:
+    Type: String
+  VMXKVStoS3:
+    Type: String
+
+Resources:
+  RecordingsBucketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref VMXTranscriberArn
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Ref VMXS3RecordingsBucketArn
+
+  TranscriptsBucketPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref VMXPackagerArn
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Ref VMXS3TranscriptsBucketArn
+
+  CTRStreamMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 10
+      Enabled: true
+      EventSourceArn: !Ref ConnectCTRStreamARN
+      FunctionName: !Ref VMXKVStoS3
+      StartingPosition: LATEST
+
+  CreateTranscriptTrigger:
+    Type: 'Custom::TranscriptTrigger'
+    DependsOn:
+      - RecordingsBucketPermission
+    Properties:
+      ServiceToken: !Ref VMXNotificationBuilderArn
+      lambda_arn: !Ref VMXTranscriberArn
+      bucket_name: !Ref VMXS3RecordingsBucket
+      object_suffix: .wav
+
+  CreatePackagerTrigger:
+    Type: 'Custom::PackagerTrigger'
+    DependsOn:
+      - TranscriptsBucketPermission
+    Properties:
+      ServiceToken: !Ref VMXNotificationBuilderArn
+      lambda_arn: !Ref VMXPackagerArn
+      bucket_name: !Ref VMXS3TranscriptsBucket
+      object_suffix: .json

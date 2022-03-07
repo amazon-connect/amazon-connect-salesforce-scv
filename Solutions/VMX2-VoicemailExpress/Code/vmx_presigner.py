@@ -1,3 +1,4 @@
+# Version: 2022.03.07
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -14,7 +15,6 @@
  *  IN THE SOFTWARE.                                                                                                  *
  **********************************************************************************************************************
 """
-# Version: 2021.12.14
 
 import json
 import boto3
@@ -29,7 +29,7 @@ logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 def lambda_handler(event, context):
     logger.debug(event)
 
-    # Establsih an empty response
+    # Establish an empty response
     response = {}
     # Set the default result to success
     response.update({'result':'success'})
@@ -57,8 +57,8 @@ def lambda_handler(event, context):
 
         client = boto3.client(
             's3',
-            aws_access_key_id = use_keys['AWSSCV_vmx_iam_key_id'],
-            aws_secret_access_key = use_keys['AWSSCV_vmx_iam_key_secret'],
+            aws_access_key_id = use_keys['vmx_iam_key_id'],
+            aws_secret_access_key = use_keys['vmx_iam_key_secret'],
             config=my_config
         )
 

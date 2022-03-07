@@ -1,3 +1,4 @@
+# Version: 2022.03.07
 """
 **********************************************************************************************************************
  *  Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -14,7 +15,6 @@
  *  IN THE SOFTWARE.                                                                                                  *
  **********************************************************************************************************************
 """
-
 import json
 import boto3
 import os
@@ -26,7 +26,7 @@ logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 def lambda_handler(event, context):
     logger.debug(event)
 
-    # Establish an empty response and loop counter
+    # Establish a loop counter
     loop_counter = 0
 
     # Process the incoming S3 event
