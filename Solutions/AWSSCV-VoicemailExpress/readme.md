@@ -1,3 +1,6 @@
+## NOTE: New Version of Voicemail Express ##
+A new version of Voicemail Express has been released with significant changes. We have left this version in place as a reference for users that have deployed it, however all new implementations should use the new [Voicemail Express V2 Solution](../VMX2-VoicemailExpress/readme.md).
+
 # Voicemail Express
 Voicemail Express is designed to provide basic voicemail capability to Service Cloud Voice customers. With the service resrictions of the Service Cloud Voice provisioned AWS account, the typical voicemail solution for Amazon Connect is not an option. As an alternative, Voicemail Express was designed to provide similar functionality relying on events in various AWS Services and on objects in Salesforce.
 

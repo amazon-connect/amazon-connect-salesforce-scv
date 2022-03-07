@@ -111,6 +111,10 @@ Resources:
           - Effect: Allow
             Action:
               - 'ses:SendTemplatedEmail'
+              - 'ses:GetEmailTemplate'
+              - 'ses:UpdateEmailTemplate'
+              - 'ses:CreateEmailTemplate'
+              - 'ses:DeleteEmailTemplate'
             Resource: '*'
       ManagedPolicyName:
         !Join
