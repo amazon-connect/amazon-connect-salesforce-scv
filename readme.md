@@ -1,6 +1,6 @@
 # Amazon Connect Campground for Service Cloud Voice
 
-This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements and deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments. 
+This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements and deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments.
 
 The repository is divided into five sections:
 - Common Resources: Provide underlying resources required for some of the solutions to work. Examples include a common authentication setup for these solutions, AWS Lambda depenedency layers, etc
@@ -20,7 +20,8 @@ The repository is divided into five sections:
 
 | Name | Description |
 | ---- | ----------- |
-| [AWSSCV-Voicemail Express](Solutions/AWSSCV-VoicemailExpress) | Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
+| [VMX2 - Voicemail Express](Solutions/VMX2-VoicemailExpress) | Provides a basic voicemail capability to Amazon Connect with multiple delivery models. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
+| [AWSSCV-Voicemail Express](Solutions/AWSSCV-VoicemailExpress) | **DEPRECATED - Use VMX2** Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
 | [AWSSCV-CTRLogger](Solutions/AWSSCV-CTRLogger) | Configures a Lambda function to log Amazon Connect contact trace records to CloudWatch, S3, or both |
 | [AWSSCV-AgentEventLogger](Solutions/AWSSCV-AgentEventLogger) | Configures a Lambda function to log agent event records to CloudWatch |
 | [AWSSCV-DashboardAlarms](Solutions/AWSSCV-DashboardAlarms) | Configures a dashboard and set of Cloudwatch alarms allowing administrators to receive notifications for various Amazon Connect metrics. |
