@@ -64,6 +64,20 @@ There are two primary Salesforce delivery modes: Case and Custom. For cases, we 
 12.	On the step 4 page, select Save
 13.	When the page reloads, scroll to the new field you created and **copy the field name (not the label) to your notepad**. It should end in __c
 
+### Create a custom field for the voicemail playback link
+1.	Log in into your Salesforce org and go to Setup
+2.	In the Quick Find field type `Object`
+3.	Select Object Manager from the results
+4.	Find and select your custom object
+5.	Choose Fields & Relationships
+6.	Select New
+7.	Choose Text Area (Rich), then select Next
+8.	Set a value for field label, such as `Voicemail Recording`
+9.	Select Next
+10.	On the Step 3 page, select Next
+11.	On the step 4 page, select Save
+12.	When the page reloads, scroll to the new field you created and **copy the field name (not the label) to your notepad**. It should end in __c
+
 ## **AWS Delivery Modes Only:** Additional Requirements AWS Delivery Modes
 There are two primary AWS delivery modes: Amazon Connect Task and Email Delivery via Amazon Simple Email Service (SES). There are a few steps required to prepare for either delivery mode.
 
