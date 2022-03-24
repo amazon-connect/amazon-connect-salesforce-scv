@@ -90,22 +90,23 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 ## Store Salesforce Settings in AWS Secrets Manager
 To ensure that your Salesforce credentials are secure, the Lambdas require that the credentials are stored in AWS Secrets Manager. AWS Secrets Manager is a highly secure service that helps you store and retrieve secrets.
 
-1.	Right-click/control-click to download the [CloudFormation template](../Common/AWSSCV-SalesforceConfig/CloudFormation/awsscv_sc.yaml).
-2.  In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
-3.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
-4.	Navigate to the CloudFormation console
-5.	Select **Create Stack**, and choose **With new resources (standard)**
-6.	In the Specify Template section, choose **Upload a template file**
-7.	Select **Choose file**
-8.	Navigate to the awsscv-sc.yaml you downloaded previously and choose **Open**
-9.	Wait a moment for the S3 URL to update, then select **Next**
-10.	In the Stack Name field, enter `AWSSCV-SalesforceConfig`
-11.	**Complete the parameters** using the information that you have gathered.
-12.	Once the parameters are complete, choose **Next**
+1.	Right-click/control-click and open the [CloudFormation template](../Common/AWSSCV-SalesforceConfig/CloudFormation/awsscv_sc.yaml) in a new window/tab.
+2.  Right-click/control-click the **Raw** button and save the link as awsscv_cs.yaml.
+3.  In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
+4.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
+5.	Navigate to the CloudFormation console
+6.	Select **Create Stack**, and choose **With new resources (standard)**
+7.	In the Specify Template section, choose **Upload a template file**
+8.	Select **Choose file**
+9.	Navigate to the awsscv-sc.yaml you downloaded previously and choose **Open**
+10.	Wait a moment for the S3 URL to update, then select **Next**
+11.	In the Stack Name field, enter `AWSSCV-SalesforceConfig`
+12.	**Complete the parameters** using the information that you have gathered.
+13.	Once the parameters are complete, choose **Next**
     *  NOTE: In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
-13.	Scroll to the bottom and select **Next**
-14.	Scroll to the bottom and select **Create Stack**
-15.	After a minute or two, the stack should complete.
+14.	Scroll to the bottom and select **Next**
+15.	Scroll to the bottom and select **Create Stack**
+16.	After a minute or two, the stack should complete.
 
 ## Post Install Validation
 Once the Salesforce Config CloudFormation stack is complete, the Salesforce integration should be validated.
