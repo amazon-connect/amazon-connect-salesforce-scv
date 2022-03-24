@@ -21,6 +21,10 @@ Parameters:
     Type: String
   LambdaLoggingLevel:
     Type: String
+  NodeLayerARN:
+    Type: String
+  PythonLayerARN:
+    Type: String
   RecordingsExpireInXDays:
     Type: String
   SalesforceConfigSSMARN:
@@ -73,6 +77,7 @@ Mappings:
 
 Conditions:
   SalesforceEnabled: !Or [!Equals [!Ref EnableVMToSalesforceCase, yes], !Equals [!Ref EnableVMToSalesforceCustomObject, yes] ]
+  SalesforceNotEnabled: !And [!Equals [!Ref EnableVMToSalesforceCase, no], !Equals [!Ref EnableVMToSalesforceCustomObject, no] ]
   SalesforceOtherEnabled: !Equals [!Ref EnableVMToSalesforceCustomObject, yes]
   ConnectTasksEnabled: !Equals [!Ref EnableVMToConnectTask, yes]
   OtherEnabled: !Equals [!Ref EnableVMToConnectTask, yes]
@@ -81,6 +86,7 @@ Conditions:
 Resources:
   VMXPythonLayer:
     Type: AWS::Lambda::LayerVersion
+    Condition: SalesforceNotEnabled
     Properties:
       CompatibleRuntimes:
         - python3.8
@@ -95,19 +101,19 @@ Resources:
         S3Key:
           !Join
           - ''
-          - - 'vmx/'
+          - - 'sf_layers/'
             - !Ref EXPTemplateVersion
-            - /zip/vmx_common_python.zip
-      Description: Provides dependencies code and functions for Python Lambda functions
-      LayerName:
-        !Join
-            - ''
-            - - 'VMXPythonLayer'
-              - !Ref ConnectInstanceAlias
+            - /zip/awsscv_common_python.zip
+      Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
+      LayerName: !Join
+        - ''
+        - - 'common_python_layer_'
+          - !Ref ConnectInstanceAlias
       LicenseInfo: https://aws.amazon.com/apache-2-0
 
   VMXNodeLayer:
     Type: AWS::Lambda::LayerVersion
+    Condition: SalesforceNotEnabled
     Properties:
       CompatibleRuntimes:
         - nodejs12.x
@@ -122,15 +128,14 @@ Resources:
         S3Key:
           !Join
           - ''
-          - - 'vmx/'
+          - - 'sf_layers/'
             - !Ref EXPTemplateVersion
-            - /zip/vmx_common_node.zip
-      Description: Provides dependencies code and functions for node.js Lambda functions
-      LayerName:
-        !Join
-            - ''
-            - - 'VMXNodeLayer-'
-              - !Ref ConnectInstanceAlias
+            - /zip/awsscv_common_node.zip
+      Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
+      LayerName: !Join
+        - ''
+        - - 'common_node_layer_'
+          - !Ref ConnectInstanceAlias
       LicenseInfo: https://aws.amazon.com/apache-2-0
 
   VMXPresigner:
@@ -174,8 +179,6 @@ Resources:
 
   VMXPackager:
     Type: AWS::Lambda::Function
-    DependsOn:
-      - VMXPythonLayer
     Properties:
       Code:
         S3Bucket:
@@ -234,7 +237,7 @@ Resources:
               - !Ref ConnectInstanceAlias
       Handler: vmx_packager.lambda_handler
       Role: !Ref VMXCoreRoleArn
-      Layers: [!Ref VMXPythonLayer]
+      Layers: !If [SalesforceNotEnabled, [!Ref VMXPythonLayer], [!Ref PythonLayerARN]]
       Runtime: python3.9
       Timeout: 900
 
@@ -280,8 +283,6 @@ Resources:
 
   VMXKVStoS3:
     Type: AWS::Lambda::Function
-    DependsOn:
-      - VMXNodeLayer
     Properties:
       Code:
         S3Bucket:
@@ -314,7 +315,7 @@ Resources:
               - !Ref ConnectInstanceAlias
       Handler: vmx_kvs_to_s3.handler
       Role: !Ref VMXCoreRoleArn
-      Layers: [!Ref VMXNodeLayer]
+      Layers: !If [SalesforceNotEnabled, [!Ref VMXNodeLayer], [!Ref NodeLayerARN]]
       Runtime: nodejs14.x
       Timeout: 900
 
