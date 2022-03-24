@@ -90,7 +90,7 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 ## Store Salesforce Settings in AWS Secrets Manager
 To ensure that your Salesforce credentials are secure, the Lambdas require that the credentials are stored in AWS Secrets Manager. AWS Secrets Manager is a highly secure service that helps you store and retrieve secrets.
 
-1.	Right-click/control-click and open the [CloudFormation template](/CloudFormation/awsscv_sc.yaml) in a new window/tab.
+1.	Right-click/control-click and open the [CloudFormation template](CloudFormation/awsscv_sc.yaml) in a new window/tab.
 2.  Right-click/control-click the **Raw** button and save the link as awsscv_cs.yaml.
 3.  In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 4.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
