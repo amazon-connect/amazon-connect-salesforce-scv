@@ -9,16 +9,16 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 
 ## Create a self-signed SSL certificate and private key
 1. Create a certificates folder on your computer to store the files that will be created.
-1. Open a command line/terminal window and navigate to your newly created folder
-1. Generate an RSA private key by entering `openssl genrsa -des3 -passout pass:SomePassword -out server.pass.key 2048`
+2. Open a command line/terminal window and navigate to your newly created folder
+3. Generate an RSA private key by entering `openssl genrsa -des3 -passout pass:SomePassword -out server.pass.key 2048`
  - NOTE: Make sure to replace **SomePassword** with a password of your choosing
-1. Now use the private key to generate a key file by entering `openssl rsa -passin pass:SomePassword -in server.pass.key -out server.key`
+4. Now use the private key to generate a key file by entering `openssl rsa -passin pass:SomePassword -in server.pass.key -out server.key`
  - NOTE: Make sure to replace **SomePassword** with the password that you provided above
-1. Delete the server.pass.key file by entering `rm server.pass.key`
-1. Next, you will request the certificate. Once you enter the following command, you will be asked to provide additional information. Please keep track of what you have provided. To request the certificate, enter `openssl req -new -key server.key -out server.csr`
-1. Now, you need to generate the SSL certificate. Enter `openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt`
-1. Fianlly, you need to encode the private key for storage by entering `base64 server.key > encoded_key.txt`
-1. Your folder should now have four files:
+5. Delete the server.pass.key file by entering `rm server.pass.key`
+6. Next, you will request the certificate. Once you enter the following command, you will be asked to provide additional information. Please keep track of what you have provided. To request the certificate, enter `openssl req -new -key server.key -out server.csr`
+7. Now, you need to generate the SSL certificate. Enter `openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt`
+8. Fianlly, you need to encode the private key for storage by entering `base64 server.key > encoded_key.txt`
+9. Your folder should now have four files:
  - server.crt <- This is your certificate
  - server.csr <- This is the certificate request
  - server.key <- This is the private key
