@@ -38,6 +38,8 @@ Metadata:
           default: "3a. Voicemail Express Salesforce-specific Settings"
         Parameters:
           - SalesforceConfigSSMARN
+          - NodeLayerARN
+          - PythonLayerARN
           - SalesforceCustomObject
           - SalesforceContactAttributesField
           - SalesforceVoicemailLinkField
@@ -74,6 +76,10 @@ Metadata:
         default: "(TEST USE ONLY) What is version you wish to deploy?"
       LambdaLoggingLevel:
         default: "For the included AWS Lambda functions, what should the default logging level be set to?"
+      NodeLayerARN:
+        default: "What is the ARN of the common_node_layer deployed by the Salesforce Config setup?"
+      PythonLayerARN:
+        default: "What is the ARN of the common_python_layer deployed by the Salesforce Config setup?"
       RecordingsExpireInXDays:
         default: "How long should the voicemail audio be available via URL? Maximum is 7 days."
       SalesforceCustomObject:
