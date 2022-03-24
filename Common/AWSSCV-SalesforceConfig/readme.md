@@ -103,10 +103,11 @@ To ensure that your Salesforce credentials are secure, the Lambdas require that 
 11.	In the Stack Name field, enter `AWSSCV-SalesforceConfig`
 12.	**Complete the parameters** using the information that you have gathered.
 13.	Once the parameters are complete, choose **Next**
-    *  NOTE: In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
+    *  NOTE: In Service Cloud Voice bundle deployments, it is normal to see a warning on the next page, Configure stack options
 14.	Scroll to the bottom and select **Next**
-15.	Scroll to the bottom and select **Create Stack**
-16.	After a minute or two, the stack should complete.
+15. Scroll to the bottom, select the boxes to **acknowledge that IAM resources will be created**.
+16.	Scroll to the bottom and select **Create Stack**
+17.	After a minute or two, the stack should complete.
 
 ## Post Install Validation
 Once the Salesforce Config CloudFormation stack is complete, the Salesforce integration should be validated.
@@ -116,8 +117,8 @@ Once the Salesforce Config CloudFormation stack is complete, the Salesforce inte
 3. **Select the link** in the Physical ID column to open that resource in a new tab and switch to that tab.
 4. Select the **Test** button
 5. Provide an **Event name**
-6. You may keep the default test payload
-7. Select the **Create** button
+6. You may keep the default test payload, and leave all other options as their defaults.
+7. Select the **Save** button
 8. Select the **Test** button
 
 If the test is successful, results will be displayed indicating success.
