@@ -1,0 +1,304 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Performs the base configuration for integrations from the Service Cloud Voice repository developed by AWS.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "1. AWS Config"
+        Parameters:
+          - AWSRegion
+          - ConnectInstanceAlias
+          - LambdaLoggingLevel
+      -
+        Label:
+          default: "3. Salesforce Config"
+        Parameters:
+          - sfHost
+          - sfOrgId
+          - sfMode
+          - sfVersion
+          - sfUsername
+          - sfConsumerKey
+          - sfPrivateKey
+      -
+        Label:
+          default: "3. Advanced Settings (Experimental)"
+        Parameters:
+          - EXPDevBucketPrefix
+          - EXPTemplateVersion
+    ParameterLabels:
+      AWSRegion:
+        default: "Which AWS region is your Amazon Connect Instance deployed to?"
+      EXPDevBucketPrefix:
+        default: "(TEST USE ONLY) What is the name of the bucket that holds your custom code?"
+      EXPTemplateVersion:
+        default: "(TEST USE ONLY) What is version you wish to deploy?"
+      ConnectInstanceAlias:
+        default: "What is your Amazon Connect instance alias?"
+      LambdaLoggingLevel:
+        default: "For the included AWS Lambda functions, what should the default logging level be set to?"
+      sfHost:
+        default: "What is your Salesforce org Current My Domain URL?"
+      sfOrgId:
+        default: "What is your Salesforce Orgainization ID?"
+      sfMode:
+        default: "Which type of Salesforce org is this? Dev, Prod, or Sandbox?"
+      sfVersion:
+        default: "What is the Salesforce.com API version that your org is currently on?"
+      sfUsername:
+        default: "What is the user name that you created in the prerequisite instructions?"
+      sfConsumerKey:
+        default: "What is the Consumer Key for the Connected App that you created?"
+      sfPrivateKey:
+        default: "What is the base64 encoded private key that you created?"
+
+Parameters:
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - af-south-1
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - ap-northeast-2
+      - ca-central-1
+      - eu-central-1
+      - eu-west-2
+    Description: MAKE SURE that you have your AWS console currently set to this region. Must be a region that supports Service Cloud Voice.
+  ConnectInstanceAlias:
+    Type: String
+    Default: Looks like - myinstancealias
+    Description: This can be found in the Amazon Connect console > Instances > Instance alias
+  LambdaLoggingLevel:
+    Type: String
+    Default: ERROR
+    AllowedValues:
+      - CRITICAL
+      - ERROR
+      - WARNING
+      - INFO
+      - DEBUG
+    Description: Default is Error. This can be changed later. Details on logging levels can be found at https://docs.python.org/3/howto/logging.html
+  sfConsumerKey:
+    Type: String
+    Default: REPLACEME
+    Description: This can be found in Salesforce Setup > App Manager, Find AWS_Utility and select View, then select the Copy button under Consumer Key.
+    NoEcho: true
+  sfUsername:
+    Type: String
+    Default: Looks like - awsutil@amazon.com
+    Description: This should be awsutil@%yoursalesforcedomain%.com where %yoursalesforcedomain% is your Salesforce domain
+  sfOrgId:
+    Type: String
+    Default: Looks like - 00D1a23456BCaE
+    Description: This can be found in Salesforce Setup > Company Information > Organization Detail > Salesforce.com Organization ID.
+  sfHost:
+    Type: String
+    Default: Looks like - https://myorg.my.salesforce.com
+    Description: This can be found in Salesforce Setup > My Domain > My Domain Details.
+  sfVersion:
+    Type: String
+    Default: v53.0
+    Description: The current API version number, formatted as follows - v53.0. This can be found in Salesforce Setup > Apex Classes > New > Version Settings > Version
+  sfPrivateKey:
+    Type: String
+    Default: REPLACEME
+    Description: The entire text contents of self-signed private key (base 64 encoded) that you created and saved as encoded_key.txt
+    NoEcho: true
+  sfMode:
+    Type: String
+    Default: PROD
+    AllowedValues:
+      - PROD
+      - DEV
+      - SANDBOX
+    Description: Select the appropriate org type.
+  EXPDevBucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+  EXPTemplateVersion:
+    Type: String
+    Default: 2022.03.23
+    Description: Template version. DO NOT CHANGE.
+
+Resources:
+    AWSSCVCommonSecrets:
+        Type: AWS::SecretsManager::Secret
+        Properties:
+          Name:
+            !Join
+                - ''
+                - - 'awsscv_salesforce_config_'
+                  - !Ref ConnectInstanceAlias
+          Description: Required credentials to access Salesforce
+          SecretString: !Sub
+            - '{"OAuthToken":"${OT}","ConsumerKey":"${CK}","Username":"${UN}","OrgId":"${OI}","Host":"${SH}","PrivateKey":"${PK}","Version":"${VR}", "Mode":"${MD}"}'
+            - OT: PLACEHOLDER
+              CK: !Ref sfConsumerKey
+              UN: !Ref sfUsername
+              OI: !Ref sfOrgId
+              SH: !Ref sfHost
+              PK: !Ref sfPrivateKey
+              VR: !Ref sfVersion
+              MD: !Ref sfMode
+
+    AWSSCVCommonSecretspolicy:
+        Type: AWS::IAM::ManagedPolicy
+        DependsOn:
+            - AWSSCVCommonSecrets
+        Properties:
+          Description: Provides access to the Salesforce secrets
+          ManagedPolicyName: !Join
+            - ''
+            - - 'awsscv_common_secrets_policy_'
+              - !Ref ConnectInstanceAlias
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'secretsmanager:GetSecretValue'
+                  - 'secretsmanager:DescribeSecret'
+                  - 'secretsmanager:ListSecretVersionIds'
+                  - 'secretsmanager:UpdateSecret'
+                  - 'secretsmanager:PutSecretValue'
+                Resource:
+                  - !Ref AWSSCVCommonSecrets
+
+    AWSSCVCommonRole:
+        Type: AWS::IAM::Role
+        DependsOn:
+            - AWSSCVCommonSecretspolicy
+        Properties:
+          RoleName: !Join
+            - ''
+            - - 'awsscv_common_role_'
+              - !Ref ConnectInstanceAlias
+          Description: Provides foundational access to Kinesis, KVS, CloudWatch Logs, and the Salesforce secrets
+          AssumeRolePolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Principal:
+                  Service:
+                  - lambda.amazonaws.com
+                Action:
+                  - sts:AssumeRole
+          ManagedPolicyArns:
+            - arn:aws:iam::aws:policy/AmazonKinesisReadOnlyAccess
+            - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+            - arn:aws:iam::aws:policy/AmazonKinesisVideoStreamsReadOnlyAccess
+            - !Ref AWSSCVCommonSecretspolicy
+
+    SCVCommonPythonLayer:
+        Type: AWS::Lambda::LayerVersion
+        Properties:
+          CompatibleRuntimes:
+            - python3.8
+            - python3.9
+          Content:
+            S3Bucket:
+              !Join
+                - ''
+                - - !Ref EXPDevBucketPrefix
+                  - 'connectbd-sc-'
+                  - !Ref AWSRegion
+            S3Key:
+              !Join
+              - ''
+              - - 'sf_layers/'
+                - !Ref EXPTemplateVersion
+                - /zip/awsscv_common_python.zip
+          Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
+          LayerName: !Join
+            - ''
+            - - 'common_python_layer_'
+              - !Ref ConnectInstanceAlias
+          LicenseInfo: https://aws.amazon.com/apache-2-0
+
+    SCVCommonNodeLayer:
+        Type: AWS::Lambda::LayerVersion
+        Properties:
+          CompatibleRuntimes:
+            - nodejs12.x
+            - nodejs14.x
+          Content:
+            S3Bucket:
+              !Join
+                - ''
+                - - !Ref EXPDevBucketPrefix
+                  - 'connectbd-sc-'
+                  - !Ref AWSRegion
+            S3Key:
+              !Join
+              - ''
+              - - 'sf_layers/'
+                - !Ref EXPTemplateVersion
+                - /zip/awsscv_common_node.zip
+          Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
+          LayerName: !Join
+            - ''
+            - - 'common_node_layer_'
+              - !Ref ConnectInstanceAlias
+          LicenseInfo: https://aws.amazon.com/apache-2-0
+
+    SCVSalesforceValidator:
+      Type: AWS::Lambda::Function
+      DependsOn:
+        - AWSSCVCommonRole
+        - SCVCommonPythonLayer
+      Properties:
+        Code:
+          S3Bucket:
+            !Join
+              - ''
+              - - !Ref EXPDevBucketPrefix
+                - 'connectbd-sc-'
+                - !Ref AWSRegion
+          S3Key:
+            !Join
+            - ''
+            - - 'sf_config/'
+              - !Ref EXPTemplateVersion
+              - /zip/awsscv_salesforce_validator.py.zip
+        Description: Validates Salesforce connectivity and authentication via SOQL query.
+        Environment:
+          Variables:
+            sf_config_sm_arn:
+              Ref: AWSSCVCommonSecrets
+            lambda_logging_level:
+              Ref: LambdaLoggingLevel
+        FunctionName:
+          !Join
+          - ''
+          - - 'AWSSCV_Salesforce_Validator_'
+            - !Ref ConnectInstanceAlias
+        Handler: awsscv_salesforce_validator.lambda_handler
+        Role: !GetAtt AWSSCVCommonRole.Arn
+        Layers: [ !Ref SCVCommonPythonLayer ]
+        Runtime: python3.9
+        Timeout: 900
+
+Outputs:
+  SCVCommonPythonLayerARN:
+    Description: ARN for the Python common layer
+    Value: !Ref SCVCommonPythonLayer
+  SCVCommonNodeLayerARN:
+    Description: ARN for the node.js common layer
+    Value: !Ref SCVCommonNodeLayer
+  SCVSalesforceValidator:
+    Description: Execute this Lambda function to validate the Salesforce configuration.
+    Value: !GetAtt SCVSalesforceValidator.Arn
+  AWSSCVCommonRole:
+    Description: Provides foundational access to Kinesis, KVS, CloudWatch Logs, and the Salesforce secrets
+    Value: !GetAtt AWSSCVCommonRole.Arn
+  AWSSCVCommonSecrets:
+    Description: Required credentials to access Salesforce
+    Value: !Ref AWSSCVCommonSecrets

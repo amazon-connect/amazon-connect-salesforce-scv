@@ -37,7 +37,14 @@ def lambda_handler(event, context):
     response = {'isHoliday':'0'}
 
     # Get Current Date and time in a good format
-    timezone_offset =int(event['Details']['ContactData']['Attributes']['tz'])
+    if 'tz' in event['Details']['ContactData']['Attributes']:
+        if event['Details']['ContactData']['Attributes']:
+            timezone_offset = int(event['Details']['ContactData']['Attributes']['tz'])
+            logger.debug('TZ Offset found in event: ' + str(timezone_offset))
+    else:
+        timezone_offset =int(os.getenv('tz_offset'))
+        logger.debug('Default offset used: ' + str(timezone_offset))
+
     tzinfo = timezone(timedelta(hours=timezone_offset))
 
     now = datetime.now(tzinfo)

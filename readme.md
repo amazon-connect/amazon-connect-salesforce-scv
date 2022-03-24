@@ -13,7 +13,6 @@ The repository is divided into five sections:
 
 | Name | Description |
 | ---- | ----------- |
-| [AWSSCV-CommonLayers](Common/AWSSCV-CommonLayers) | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce |
 | [AWSSCV-SalesforceConfig](Common/AWSSCV-SalesforceConfig) | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository.
 
 ## Solutions
@@ -21,7 +20,6 @@ The repository is divided into five sections:
 | Name | Description |
 | ---- | ----------- |
 | [VMX2 - Voicemail Express](Solutions/VMX2-VoicemailExpress) | Provides a basic voicemail capability to Amazon Connect with multiple delivery models. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
-| [AWSSCV-Voicemail Express](Solutions/AWSSCV-VoicemailExpress) | **DEPRECATED - Use VMX2** Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
 | [AWSSCV-CTRLogger](Solutions/AWSSCV-CTRLogger) | Configures a Lambda function to log Amazon Connect contact trace records to CloudWatch, S3, or both |
 | [AWSSCV-AgentEventLogger](Solutions/AWSSCV-AgentEventLogger) | Configures a Lambda function to log agent event records to CloudWatch |
 | [AWSSCV-DashboardAlarms](Solutions/AWSSCV-DashboardAlarms) | Configures a dashboard and set of Cloudwatch alarms allowing administrators to receive notifications for various Amazon Connect metrics. |
@@ -46,7 +44,11 @@ The repository is divided into five sections:
 | ---- | ----------- |
 | [Overflow Routing](BestPractices/OverflowRouting.md) |Describes best practices for dealing with spikes in call volumes. Specifically describes overflow routing scenarios to keep data clean and reduce administrative overhead.|
 
-
+## Archive - Deprecated Solutions
+| Name | Description |
+| ---- | ----------- |
+| [AWSSCV-Voicemail Express](Archive/AWSSCV-VoicemailExpress) | **DEPRECATED - Use VMX2** Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
+| [AWSSCV-CommonLayers](Archive/AWSSCV-CommonLayers) | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce |
 
 ## Contributions
 

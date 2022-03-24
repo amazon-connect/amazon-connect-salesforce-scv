@@ -1,0 +1,213 @@
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Deploys the resources required to use Salesforce as a holiday calendar for Amazon Connect.
+Parameters:
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - af-south-1
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - ap-northeast-2
+      - ca-central-1
+      - eu-central-1
+      - eu-west-2
+    Description: All resources for this template must reside in the same region. Validate which region your Amazon Connect instance is deployed in and select the corresponding region from the drop-down list. You should run this template from this region as well.
+  AWSSalesforceCommonPythonLayer:
+      Type: String
+      Default: REPLACEME
+      Description: ARN for the AWSSCV Common Python Layer.
+  ConnectInstanceAlias:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the instance alias for your Amazon Connect instance. Please use lowercase letters ONLY.
+  ConnectInstanceARN:
+    Type: String
+    Default: Looks like - arn:aws:connect:REGION:ACCOUNT:instance/REPLACEME
+    Description: Provide the instance ARN for your Amazon Connect istance.
+  EXPDevBucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+  EXPTemplateVersion:
+    Type: String
+    Default: 2022.03.23
+    Description: Template version. DO NOT CHANGE.
+  LambdaWarmingInterval:
+    Type: String
+    Default: 3
+    AllowedValues:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    Description: Warming interval in minutes.
+  LambdaLoggingLevel:
+    Type: String
+    Default: ERROR
+    AllowedValues:
+      - CRITICAL
+      - ERROR
+      - WARNING
+      - INFO
+      - DEBUG
+    Description: Default is Error. This can be changed later. Details on logging levels can be found at https://docs.python.org/3/howto/logging.html
+  SalesforceConfigSSMARN:
+    Type: String
+    Default: Looks like - arn:aws:secretsmanager:REGION:ACCOUNT:secret:REPLACEME
+    Description: The Salesforce config AWS Secrets Manager entry was created whren you deployed the Salesforce Config template.
+  TZOffset:
+    Type: String
+    Default: -8
+    Description: The default timezone offset value (in hours) for the holiday calendar. Can be overridden from Contact Flows by setting the contact attribute tz to the desired value. This should be the number value only. Partials are allowed. For example, California(PST) would be -8, Adelaide would be +9.5
+
+Resources:
+  LambdaAssociationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        !Join
+          - ''
+          - - 'LambdaAssociationRole-'
+            - !Ref ConnectInstanceAlias
+      Description: Provides foundational Lambda execution
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  LambdaAssociationPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+        - LambdaAssociationRole
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'connect:AssociateLambdaFunction'
+              - 'connect:DisassociateLambdaFunction'
+            Resource:
+              - '*'
+      ManagedPolicyName:
+        !Join
+          - ''
+          - - 'LambdaAssociationPolicy-'
+            - !Ref ConnectInstanceAlias
+      Roles:
+        - !Ref LambdaAssociationRole
+
+  SFCalendarLambda:
+    Type: AWS::Lambda::Function
+    DependsOn:
+        - LambdaAssociationRole
+        - LambdaAssociationPolicy
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'sfcal/'
+            - !Ref EXPTemplateVersion
+            - /zip/holiday_calendar.py.zip
+      Description: Queries the holiday object in Salesforce to determine if center is open.
+      Environment:
+        Variables:
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          package_version:
+            Ref: EXPTemplateVersion
+          sf_config_sm_arn:
+            Ref: SalesforceConfigSSMARN
+          tz_offset:
+            Ref: TZOffset
+      FunctionName:
+        !Join
+            - ''
+            - - 'SFCalendar-'
+              - !Ref ConnectInstanceAlias
+      Handler: holiday_calendar.lambda_handler
+      Role: !GetAtt LambdaAssociationRole.Arn
+      Layers: [!Ref AWSSalesforceCommonPythonLayer]
+      Runtime: python3.9
+      Timeout: 900
+
+  ConnectAssociationBuilder:
+    Type: AWS::Lambda::Function
+    DependsOn:
+        - SFCalendarLambda
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+            - ''
+            - - !Ref EXPDevBucketPrefix
+              - 'connectbd-sc-'
+              - !Ref AWSRegion
+        S3Key:
+          !Join
+          - ''
+          - - 'sfcal/'
+            - !Ref EXPTemplateVersion
+            - /zip/associate_lambda.py.zip
+      Description: Associates the new Lambda function with Amazon Connect
+      Environment:
+        Variables:
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+          package_version:
+            Ref: EXPTemplateVersion
+      FunctionName:
+        !Join
+            - ''
+            - - 'SFCalendarAssociation-'
+              - !Ref ConnectInstanceAlias
+      Handler: associate_lambda.lambda_handler
+      Role: !GetAtt LambdaAssociationRole.Arn
+      Runtime: python3.9
+      Timeout: 900
+
+  SFCalendarWarmer:
+    Type: AWS::Events::Rule
+    DependsOn: SFCalendarLambda
+    Properties:
+      Description: Keeps calendar Lambda function warm to provide fast response times
+      Name: sf_calendar_warmer
+      ScheduleExpression:
+        !Join
+          - ''
+          - - 'rate('
+            - !Ref LambdaWarmingInterval
+            - ' minutes)'
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt SFCalendarLambda.Arn
+          Id: AWSLambdaTarget
+
+  CreateLambdaAssociation:
+    Type: 'Custom::LambdaAssociation'
+    DependsOn:
+      - ConnectAssociationBuilder
+    Properties:
+      ServiceToken: !GetAtt ConnectAssociationBuilder.Arn
+      lambda_arn: !GetAtt SFCalendarLambda.Arn
+      instance_id: !Select [1, !Split ["instance/", !Ref ConnectInstanceARN]]
