@@ -41,6 +41,7 @@ connect_client = boto3.client('connect')
 
 def lambda_handler(event, context):
 
+    print(event)
     logger.debug(event)
 
     # Create response container
@@ -54,14 +55,17 @@ def lambda_handler(event, context):
         try:
             lambda_function = event['ResourceProperties']['lambda_arn']
             instance_id = event['ResourceProperties']['instance_id']
-            disassociate_function(lambda_function,instance_id)
+            disassociate_function(lambda_function, instance_id)
             cf_send(event, context, 'SUCCESS', {})
             response.update({'event':'CF Delete'})
             return response
 
         except Exception as e:
-            raise Exception
+            logger.error(e)
             cf_send(event, context, 'FAILED', {})
+            response.update({'template_setup':'failed'})
+            response.update({'result':'fail'})
+            return response
 
     # Setup the association data
     try:
@@ -96,8 +100,8 @@ def lambda_handler(event, context):
 
 def add_association(association):
     response = connect_client.associate_lambda_function(
-        InstanceId= instance_id,
-        FunctionArn = lambda_function
+        InstanceId= association['instance_id'],
+        FunctionArn = association['lambda_arn']
     )
 
 def disassociate_function(lambda_function,instance_id):

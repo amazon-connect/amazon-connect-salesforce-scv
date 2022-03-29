@@ -88,33 +88,10 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
-  LambdaAssociationPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    DependsOn:
-        - LambdaAssociationRole
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - 'connect:AssociateLambdaFunction'
-              - 'connect:DisassociateLambdaFunction'
-            Resource:
-              - '*'
-      ManagedPolicyName:
-        !Join
-          - ''
-          - - 'LambdaAssociationPolicy-'
-            - !Ref ConnectInstanceAlias
-      Roles:
-        - !Ref LambdaAssociationRole
-
   SFCalendarLambda:
     Type: AWS::Lambda::Function
     DependsOn:
         - LambdaAssociationRole
-        - LambdaAssociationPolicy
     Properties:
       Code:
         S3Bucket:
@@ -203,6 +180,43 @@ Resources:
         - Arn: !GetAtt SFCalendarLambda.Arn
           Id: AWSLambdaTarget
 
+  LambdaAssociationPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn:
+        - LambdaAssociationRole
+        - SFCalendarLambda
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'connect:AssociateLambdaFunction'
+              - 'connect:DisassociateLambdaFunction'
+            Resource:
+              - !Ref ConnectInstanceARN
+          - Effect: Allow
+            Action:
+              - 'lambda:AddPermission'
+              - 'lambda:RemovePermission'
+            Resource:
+              - !GetAtt SFCalendarLambda.Arn
+          - Effect: Allow
+            Action:
+              - 'secretsmanager:GetSecretValue'
+              - 'secretsmanager:DescribeSecret'
+              - 'secretsmanager:ListSecretVersionIds'
+              - 'secretsmanager:UpdateSecret'
+            Resource:
+              - !Ref SalesforceConfigSSMARN
+      ManagedPolicyName:
+        !Join
+          - ''
+          - - 'LambdaAssociationPolicy-'
+            - !Ref ConnectInstanceAlias
+      Roles:
+        - !Ref LambdaAssociationRole
+
   CreateLambdaAssociation:
     Type: 'Custom::LambdaAssociation'
     DependsOn:
@@ -211,3 +225,13 @@ Resources:
       ServiceToken: !GetAtt ConnectAssociationBuilder.Arn
       lambda_arn: !GetAtt SFCalendarLambda.Arn
       instance_id: !Select [1, !Split ["instance/", !Ref ConnectInstanceARN]]
+
+  EventBridgeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - SFCalendarWarmer
+    Properties:
+      FunctionName: !GetAtt SFCalendarLambda.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt SFCalendarWarmer.Arn
