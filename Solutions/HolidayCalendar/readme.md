@@ -18,5 +18,5 @@ This solution functions as follows (relevant Salesforce fields in parenthesis):
 Additionally, this deployment configures an Amazon EventBridge rule to execute the function every 3 minutes, keeping it warm and ensuring that it returns a response quickly.
 
 To deploy the Holiday Calendar, you will need to complete the following:
-1. Complete the [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig/readme.md) setup
+1. Complete the [AWSSCV Salesforce Config](../../Common/AWSSCV-SalesforceConfig/readme.md) setup, if necessary.
 2. Complete the [Salesforce Holiday Calendar Installation](Docs/installation_instructions.md)
