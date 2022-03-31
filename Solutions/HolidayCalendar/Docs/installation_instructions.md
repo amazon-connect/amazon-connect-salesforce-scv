@@ -14,7 +14,7 @@ Once you have the required information, you are ready to continue with installat
 
 ## Deploy the CloudFormation Template
 The next step is to deploy the CloudFormation template. This template builds and configures all of the AWS resources required to make the Salesforce Holiday Calendar integration work.
-1.	Right-click/control-click and open the [CloudFormation template](CloudFormation/sfhc.yaml) in a new window/tab.
+1.	Right-click/control-click and open the [CloudFormation template](../CloudFormation/sfhc.yaml) in a new window/tab.
 2.  Right-click/control-click the **Raw** button and save the link as sfhc.yaml.
 3.  Log into the [AWS console](https://console.aws.amazon.com/console/home)
 4.  Navigate to the [AWS CloudFormation console](https://console.aws.amazon.com/cloudformation/home)
