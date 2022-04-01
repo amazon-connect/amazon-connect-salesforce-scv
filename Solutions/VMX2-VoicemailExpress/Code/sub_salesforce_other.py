@@ -1,4 +1,4 @@
-# Version: 2022.03.07
+# Version: 2022.03.23
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -33,6 +33,9 @@ def vm_to_sfother(writer_payload):
     logger.info('Beginning Voicemail to Salesforce Custom Object')
     logger.debug(writer_payload)
 
+    # Format the URL to make it a user friendly link
+    sf_formatted_url = '<a href="{0}" rel="noopener noreferrer" target="_blank">Play Voicemail</a>'.format(writer_payload['json_attributes']['presigned_url'])
+
     try:
         sf = Salesforce()
 
@@ -64,7 +67,7 @@ def vm_to_sfother(writer_payload):
                 'OwnerId': sf_agent_id,
                 os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
                 os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_field']: sf_formatted_url
             }
 
         else:
@@ -73,7 +76,7 @@ def vm_to_sfother(writer_payload):
                 os.environ['sf_vm_transcript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
                 os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
                 os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_field']: sf_formatted_url
             }
         logger.debug(data)
 

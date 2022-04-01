@@ -38,6 +38,8 @@ Metadata:
           default: "3a. Voicemail Express Salesforce-specific Settings"
         Parameters:
           - SalesforceConfigSSMARN
+          - NodeLayerARN
+          - PythonLayerARN
           - SalesforceCustomObject
           - SalesforceContactAttributesField
           - SalesforceVoicemailLinkField
@@ -74,6 +76,10 @@ Metadata:
         default: "(TEST USE ONLY) What is version you wish to deploy?"
       LambdaLoggingLevel:
         default: "For the included AWS Lambda functions, what should the default logging level be set to?"
+      NodeLayerARN:
+        default: "What is the ARN of the common_node_layer deployed by the Salesforce Config setup?"
+      PythonLayerARN:
+        default: "What is the ARN of the common_python_layer deployed by the Salesforce Config setup?"
       RecordingsExpireInXDays:
         default: "How long should the voicemail audio be available via URL? Maximum is 7 days."
       SalesforceCustomObject:
@@ -169,7 +175,7 @@ Parameters:
     Description: When recordings expire, do you want to delete the recording, keep it, or move it to Glacier?
   EXPTemplateVersion:
     Type: String
-    Default: 2022.03.07
+    Default: 2022.03.23
     Description: Template version. DO NOT CHANGE.
   LambdaLoggingLevel:
     Type: String
@@ -181,6 +187,14 @@ Parameters:
       - INFO
       - DEBUG
     Description: Default is Error. This can be changed later. Details on logging levels can be found at https://docs.python.org/3/howto/logging.html
+  NodeLayerARN:
+    Type: String
+    Default: Looks like - arn:aws:lambda:REGION:ACCOUNT:layer:common_node_layer_INSTANCE:VERSION
+    Description: The Salesforce config AWS Secrets Manager entry was created whren you deployed the Salesforce Config template.
+  PythonLayerARN:
+    Type: String
+    Default: Looks like - arn:aws:lambda:REGION:ACCOUNT:layer:common_python_layer_INSTANCE:VERSION
+    Description: The Salesforce config AWS Secrets Manager entry was created whren you deployed the Salesforce Config template.
   RecordingsExpireInXDays:
     Type: String
     Default: 7
@@ -365,6 +379,8 @@ Resources:
         EnableVMToSalesforceCustomObject: !Ref EnableVMToSalesforceCustomObject
         EXPDevBucketPrefix: !Ref EXPDevBucketPrefix
         LambdaLoggingLevel: !Ref LambdaLoggingLevel
+        NodeLayerARN: !Ref NodeLayerARN
+        PythonLayerARN: !Ref PythonLayerARN
         RecordingsExpireInXDays: !Ref RecordingsExpireInXDays
         SalesforceConfigSSMARN: !Ref SalesforceConfigSSMARN
         SalesforceCustomObject: !Ref SalesforceCustomObject

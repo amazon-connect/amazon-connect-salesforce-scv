@@ -21,7 +21,6 @@ from pip._internal import main
 main(['install', 'requests', '--target', '/tmp/'])
 sys.path.insert(0,'/tmp/')
 
-
 import json
 import boto3
 import os
@@ -38,38 +37,42 @@ SUCCESS = "SUCCESS"
 FAILED = "FAILED"
 
 print('Loading function')
-s3_client = boto3.resource('s3')
+connect_client = boto3.client('connect')
 
 def lambda_handler(event, context):
 
+    print(event)
     logger.debug(event)
 
     # Create response container
     response = {'result':'success'}
 
-    # Create the notification data container
-    notification = {}
+    # Create the association data container
+    association = {}
 
     # Deal with deletes
     if event['RequestType'] == 'Delete':
         try:
-            bucket_name = event['ResourceProperties']['bucket_name']
-            delete_notification(bucket_name)
+            lambda_function = event['ResourceProperties']['lambda_arn']
+            instance_id = event['ResourceProperties']['instance_id']
+            disassociate_function(lambda_function, instance_id)
             cf_send(event, context, 'SUCCESS', {})
             response.update({'event':'CF Delete'})
             return response
 
-
-        except:
-            raise Exception
+        except Exception as e:
+            logger.error(e)
             cf_send(event, context, 'FAILED', {})
+            response.update({'template_setup':'failed'})
+            response.update({'result':'fail'})
+            return response
 
-    # Setup the notification data
+    # Setup the association data
     try:
-        # Grab ARNs from CF Template
-        notification.update({'bucket_name':event['ResourceProperties']['bucket_name']})
-        notification.update({'lambda_arn':event['ResourceProperties']['lambda_arn']})
-        notification.update({'object_suffix':event['ResourceProperties']['object_suffix']})
+        # Grab data from CF Template
+        association.update({'lambda_arn':event['ResourceProperties']['lambda_arn']})
+        association.update({'instance_id':event['ResourceProperties']['instance_id']})
+
 
     except Exception as e:
         logger.error(e)
@@ -81,49 +84,30 @@ def lambda_handler(event, context):
 
     # Process the CloudFormation Request
     try:
-        add_notification(notification)
+        add_association(association)
         cf_send(event, context, 'SUCCESS', {})
-        response.update({'notification_build':'complete'})
+        response.update({'lambda_association':'complete'})
 
     except Exception as e:
         logger.error(e)
-        logger.debug('failed to create contact flow')
+        logger.debug('failed to associate function')
         cf_send(event, context, 'FAILED', {})
-        response.update({'flow_build':'failed'})
+        response.update({'lambda_association':'failed'})
         response.update({'result':'fail'})
         return response
 
     return response
 
-def add_notification(notification):
-    bucket_notification = s3_client.BucketNotification(notification['bucket_name'])
-    response = bucket_notification.put(
-        NotificationConfiguration={
-            'LambdaFunctionConfigurations': [
-                {
-                    'LambdaFunctionArn': notification['lambda_arn'],
-                    'Events': [
-                        's3:ObjectCreated:*'
-                    ],
-                    'Filter': {
-                        'Key': {
-                            'FilterRules': [
-                                {
-                                    'Name': 'suffix',
-                                    'Value': notification['object_suffix']
-                                },
-                            ]
-                        }
-                    }
-                }
-            ]
-        }
+def add_association(association):
+    response = connect_client.associate_lambda_function(
+        InstanceId= association['instance_id'],
+        FunctionArn = association['lambda_arn']
     )
 
-def delete_notification(bucket_name):
-    bucket_notification = s3_client.BucketNotification(bucket_name)
-    response = bucket_notification.put(
-        NotificationConfiguration={}
+def disassociate_function(lambda_function,instance_id):
+    response = connect_client.disassociate_lambda_function(
+        InstanceId= instance_id,
+        FunctionArn = lambda_function
     )
     print("Delete request completed....")
 

@@ -1,4 +1,4 @@
-# Version: 2022.03.07
+# Version: 2022.03.23
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -41,6 +41,9 @@ def vm_to_sfcase(writer_payload):
         logger.error('Record {0} Result: Failed to authenticate with Salesforce'.format(writer_payload['loop_counter']))
         return 'fail'
 
+    # Format the URL to make it a user friendly link
+    sf_formatted_url = '<a href="{0}" rel="noopener noreferrer" target="_blank">Play Voicemail</a>'.format(writer_payload['json_attributes']['presigned_url'])
+
     # Create a case in Salesforce
     try:
         if writer_payload['entity_type'] == 'agent':
@@ -67,7 +70,7 @@ def vm_to_sfcase(writer_payload):
                 'OwnerId': sf_agent_id,
                 os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
                 os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_field']: sf_formatted_url
             }
 
         else:
@@ -79,7 +82,7 @@ def vm_to_sfcase(writer_payload):
                 'Priority': writer_payload['json_attributes']['vm_priority'],
                 os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
                 os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: writer_payload['json_attributes']['presigned_url']
+                os.environ['sf_vm_field']: sf_formatted_url
             }
         logger.debug(data)
 

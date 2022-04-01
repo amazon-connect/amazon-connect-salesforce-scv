@@ -50,6 +50,10 @@ Resources:
             - ''
             - - 'vmxrecordings-'
               - !Ref ConnectInstanceAlias
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
       LifecycleConfiguration:
         !If
           - AudioLifecycle
@@ -73,6 +77,10 @@ Resources:
             - ''
             - - 'vmxtranscripts-'
               - !Ref ConnectInstanceAlias
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
 
   VMXAddOnPolicy:
     Type: AWS::IAM::ManagedPolicy
