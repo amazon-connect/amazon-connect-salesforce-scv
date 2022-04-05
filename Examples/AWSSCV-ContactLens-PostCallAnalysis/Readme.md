@@ -1,4 +1,4 @@
-Call Categorisation (using Contact Lens Post Call Analysis)
+**Call Categorisation (using Contact Lens Post Call Analysis)**
 
 Call Categorisation example uses Amazon Connect Contact Lens to identify call categories based on the conversation between agent and the customer. This capability is for a use case where customer wants to automatically categorise calls based on the business rules. Also, customer wants to know overall sentiment of the call from the caller and the agent perspective.
 
