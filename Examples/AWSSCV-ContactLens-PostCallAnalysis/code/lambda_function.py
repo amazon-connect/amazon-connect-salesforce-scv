@@ -5,6 +5,7 @@
 
 import json
 import boto3
+import random
 import os
 import logging
 
