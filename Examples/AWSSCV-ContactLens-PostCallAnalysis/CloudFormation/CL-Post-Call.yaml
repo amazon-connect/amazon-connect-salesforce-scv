@@ -44,7 +44,7 @@ Resources:
         S3Bucket:
           !Join
           - ''
-          - - 'scv-contact-lens-post-call-'
+          - - 'cg-scv-contact-lens-post-call-'
             - !Ref AWSRegion
         S3Key: Post_Call_Categorization_CL.zip
       Description: Lambda function to extract Contact Lens information and insert into Salesforce Voice Call Object
