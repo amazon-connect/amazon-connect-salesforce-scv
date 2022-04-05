@@ -13,7 +13,8 @@ Call Categorisation example uses Amazon Connect Contact Lens to identify call ca
 ## High Level Architecture
 
 Following high level architecture diagram shows the all the components involved as well as the flow.
-! [This architecture diagram](/ArchitectureDiagram.png)
+
+![CL Post Call Architecture](Docs/Architecture.png)
 
 
 1. Caller places a call on Amazon Connect phone number
