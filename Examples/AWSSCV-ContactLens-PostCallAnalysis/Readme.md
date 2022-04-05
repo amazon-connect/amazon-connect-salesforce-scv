@@ -67,7 +67,7 @@ In order to deploy this capability, following configurations need to be done in 
 13. _AWSRegion_: Select the region where Amazon Connect is deployed
 14. _ConnectInstanceName_:Provide the instance name for Amazon Connect
 15. _ContactLensS3Bucket_: Provide S3 bucket configured for storing call recording (same bucket used for storing Contact Lens post call analysis) from Amazon Connect instance configurations, refer: https://docs.aws.amazon.com/connect/latest/adminguide/update-instance-settings.html
-16. _TelephonyIntegrationLambda_: ARN of out-of-the-box lambda function called InvokeTelephonyIntegrationApiFunction Lambda function
+16. _TelephonyIntegrationLambda_: ARN of out-of-the-box SCV lambda function called InvokeTelephonyIntegrationApiFunction which you can find from AWS Lambda Console
 17. _LambdaLoggingLevel_: Logging level of the new Lambda function which this CloudFormation template is going to create, default is INFO
 18. Select Next
 19. In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
