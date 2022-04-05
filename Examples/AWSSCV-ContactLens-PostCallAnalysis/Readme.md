@@ -1,8 +1,8 @@
-#Call Categorisation (using Contact Lens Post Call Analysis)
+# Call Categorisation (using Contact Lens Post Call Analysis)
 
 Call Categorisation example uses Amazon Connect Contact Lens to identify call categories based on the conversation between agent and the customer. This capability is for a use case where customer wants to automatically categorise calls based on the business rules. Also, customer wants to know overall sentiment of the call from the caller and the agent perspective.
 
-High level call flow:
+## High level call flow
 
 1. User sets up business rules for call categorisation using Amazon Connect console
 2. User enables Contact Lens Post Call analysis\* within Contact Flow
@@ -10,9 +10,11 @@ High level call flow:
 4. Once the call is over, based on call recording Contact Lens generates post call analysis which includes call categories (based on Rules) and overall sentiment, along with other information
 5. The lambda function provided inserts the call categories and overall sentiment to corresponding Voice Call Object in Salesforce
 
-High Level Architecture
+## High Level Architecture
 
 Following high level architecture diagram shows the all the components involved as well as the flow.
+! [This architecture diagram](/ArchitectureDiagram.png)
+
 
 1. Caller places a call on Amazon Connect phone number
 2. Once the call lands on Amazon Connect, associated contact flow is triggered which has Contact Lens post call analysis enabled
@@ -22,11 +24,11 @@ Following high level architecture diagram shows the all the components involved 
 6. Once the analysis is in the S3 bucket, the Lambda function is triggered
 7. The Lambda function extracts the information from the Contact Lens analysis and inserts into pre-defined fields of Salesforce Voice call object (using out-of-the-box Telephony Integration API)
 
-Deployment
+## Deployment
 
 In order to deploy this capability, following configurations need to be done in Salesforce and AWS.
 
-_Salesforce - adding required fields in Voice Call Object_
+### _Salesforce - adding required fields in Voice Call Object_
 
 1. Log in into your Salesforce org and go to Setup
 2. In the Quick Find field type Object Manager
@@ -42,12 +44,12 @@ _Salesforce - adding required fields in Voice Call Object_
 12. When the page reloads, scroll to the new field you created and notice that it ends in \_\_c
 13. Repeat steps 5 to 12 to add Overall Customer Sentiment and Overall Agent Sentiment fields with the exception of step 7 - please choose Number instead of Long Text Area
 
-_Amazon Connect Console - configurations to enable Contact Lens post call analysis_
+### _Amazon Connect Console - configurations to enable Contact Lens post call analysis_
 
 1. To add Rules for Contact Lens, please refer - https://docs.aws.amazon.com/connect/latest/adminguide/build-rules-for-contact-lens.html
 2. To enable Contact Lens post call analysis within your Contact Flow, please refer - https://docs.aws.amazon.com/connect/latest/adminguide/enable-analytics.html
 
-_AWS CloudFormation - created required AWS resources to enable this capability_
+### _AWS CloudFormation - created required AWS resources to enable this capability_
 
 1. Right-click/control-click to download the AWSSCV Call Categorisation
 2. In a new browser tab, login to the AWS Console (https://console.aws.amazon.com/console/home)
@@ -71,16 +73,16 @@ _AWS CloudFormation - created required AWS resources to enable this capability_
 20. Scroll to the bottom and select Create Stack
 21. After a minute or two, the stack should complete
 
-Testing
+## Testing
 
-Contact Lens configurations
+### Contact Lens configurations
 
 1. From Amazon Connect configure Contact Lens post call analysis rule
 2. In the rule, add keywords or phrases such as “change to next version”, “need latest model”, “upgrade”
 3. In action section, configure assign contact category and name category as “upgrade”
 4. Save the rule
 
-Enable Contact Lens
+### Enable Contact Lens
 
 1. Create new Contact Flow called “Test Contact Lens Post Call Analysis”
 2. Enable post call analysis using Contact Lens in that contact flow, ref: https://docs.aws.amazon.com/connect/latest/adminguide/enable-analytics.html
@@ -89,7 +91,7 @@ Enable Contact Lens
 5. Converser with the agent and use keywords / phrases configured in the Contact Lens rule - “upgrade”, “need latest model” or “change to next version”
 6. Once the call is completed, check the Details section Salesforce Voice Call object created for the call, you will find populated fields Call Categories, Overall Customer Sentiment and Overall Agent Sentiment
 
-Conclusion
+## Conclusion
 
 This document shows how Contact Lens post call analysis can be leveraged to categorise a call based on business rules as well as gauge the overall sentiment of the call. This capability can be easily extended to add more fields from Contact Lens post call analysis to Salesforce Voice call object. For more information on Contact Lens post call analysis output ref: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-example-output-files.html
 
