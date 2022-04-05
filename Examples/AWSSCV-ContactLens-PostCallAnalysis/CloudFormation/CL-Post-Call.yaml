@@ -25,7 +25,7 @@ Parameters:
   ContactLensS3Bucket:
     Type: String
     Default: REPLACEME
-    Description: ARN of the S3 bucket where Contact Lens post call analysis is stored (same as Call Recording bucket)
+    Description: name of S3 bucket where Contact Lens post call analysis is stored (same as Call Recording bucket). Please ensure you add only S3 bucket name without path prefix (part before the '/')
 
   TelephonyIntegrationLambda:
     Type: String
