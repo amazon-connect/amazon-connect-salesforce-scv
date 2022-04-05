@@ -97,4 +97,4 @@ In order to deploy this capability, following configurations need to be done in 
 
 This document shows how Contact Lens post call analysis can be leveraged to categorise a call based on business rules as well as gauge the overall sentiment of the call. This capability can be easily extended to add more fields from Contact Lens post call analysis to Salesforce Voice call object. For more information on Contact Lens post call analysis output ref: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-example-output-files.html
 
-\*_Note -_ as of today, for additional fees Salesforce provides only post call analysis capability of Contact Lens (not real time), please talk to Salesforce team before implementing this capability.
+\*_Note -_ For SCV Bundle customers, please talk to Salesforce team before implementing this capability to ensure that your Salesforce SCV license includes Contact Lens capability
