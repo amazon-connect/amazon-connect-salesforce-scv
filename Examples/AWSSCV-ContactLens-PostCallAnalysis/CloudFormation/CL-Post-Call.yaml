@@ -20,7 +20,7 @@ Parameters:
   ConnectInstanceName:
         Type: String
         Default: REPLACEME
-        Description: Provide the instance name for Amazon Connect.
+        Description: Provide the instance name for Amazon Connect
   
   ContactLensS3Bucket:
     Type: String
