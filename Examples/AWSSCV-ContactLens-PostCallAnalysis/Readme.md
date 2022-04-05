@@ -5,7 +5,7 @@ Call Categorisation example uses Amazon Connect Contact Lens to identify call ca
 High level call flow:
 
 1. User sets up business rules for call categorisation using Amazon Connect console
-2. User enables Contact Lens Post Call analysis\*\*\* within Contact Flow
+2. User enables Contact Lens Post Call analysis\* within Contact Flow
 3. Customer calls and converser with the agent
 4. Once the call is over, based on call recording Contact Lens generates post call analysis which includes call categories (based on Rules) and overall sentiment, along with other information
 5. The lambda function provided inserts the call categories and overall sentiment to corresponding Voice Call Object in Salesforce
@@ -61,14 +61,15 @@ _AWS CloudFormation - created required AWS resources to enable this capability_
 10. In the Stack Name field, enter AWSSCV-Call-Categorisation
 11. Enter the parameters as follows (most from your notepad):
 12. _AWSRegion_: Select the region where Amazon Connect is deployed
-13. _ContactLensS3Bucket_: Provide S3 bucket configured for storing call recording (same bucket used for storing Contact Lens post call analysis) from Amazon Connect instance configurations, refer: https://docs.aws.amazon.com/connect/latest/adminguide/update-instance-settings.html
-14. _TelephonyIntegrationLambda_: ARN of out-of-the-box lambda function called InvokeTelephonyIntegrationApiFunction Lambda function
-15. _LambdaLoggingLevel_: Logging level of the new Lambda function which this CloudFormation template is going to create, default is INFO
-16. Select Next
-17. In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
-18. Scroll to the bottom and select Next
-19. Scroll to the bottom and select Create Stack
-20. After a minute or two, the stack should complete
+13. _ConnectInstanceName_:Provide the instance name for Amazon Connect
+14. _ContactLensS3Bucket_: Provide S3 bucket configured for storing call recording (same bucket used for storing Contact Lens post call analysis) from Amazon Connect instance configurations, refer: https://docs.aws.amazon.com/connect/latest/adminguide/update-instance-settings.html
+15. _TelephonyIntegrationLambda_: ARN of out-of-the-box lambda function called InvokeTelephonyIntegrationApiFunction Lambda function
+16. _LambdaLoggingLevel_: Logging level of the new Lambda function which this CloudFormation template is going to create, default is INFO
+17. Select Next
+18. In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
+19. Scroll to the bottom and select Next
+20. Scroll to the bottom and select Create Stack
+21. After a minute or two, the stack should complete
 
 Testing
 
