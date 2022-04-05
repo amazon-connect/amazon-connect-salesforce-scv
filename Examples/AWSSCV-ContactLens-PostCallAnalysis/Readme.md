@@ -52,27 +52,28 @@ In order to deploy this capability, following configurations need to be done in 
 
 ### _AWS CloudFormation - created required AWS resources to enable this capability_
 
-1. Right-click/control-click to download the AWSSCV Call Categorisation
-2. In a new browser tab, login to the AWS Console (https://console.aws.amazon.com/console/home)
-3. Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
-4. Navigate to the CloudFormation console
-5. Select Create Stack, and choose With new resources (standard)
-6. In the Specify Template section, choose Upload a template file
-7. Select Choose file
-8. Navigate to the folder where you saved awsscv_call_categorisation.yaml
-9. Select Next
-10. In the Stack Name field, enter AWSSCV-Call-Categorisation
-11. Enter the parameters as follows (most from your notepad):
-12. _AWSRegion_: Select the region where Amazon Connect is deployed
-13. _ConnectInstanceName_:Provide the instance name for Amazon Connect
-14. _ContactLensS3Bucket_: Provide S3 bucket configured for storing call recording (same bucket used for storing Contact Lens post call analysis) from Amazon Connect instance configurations, refer: https://docs.aws.amazon.com/connect/latest/adminguide/update-instance-settings.html
-15. _TelephonyIntegrationLambda_: ARN of out-of-the-box lambda function called InvokeTelephonyIntegrationApiFunction Lambda function
-16. _LambdaLoggingLevel_: Logging level of the new Lambda function which this CloudFormation template is going to create, default is INFO
-17. Select Next
-18. In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
-19. Scroll to the bottom and select Next
-20. Scroll to the bottom and select Create Stack
-21. After a minute or two, the stack should complete
+1. Go to CloudFormation folder
+2. Right-click/control-click to download the awsscv_call_categorisation.yaml
+3. In a new browser tab, login to the AWS Console (https://console.aws.amazon.com/console/home)
+4. Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
+5. Navigate to the CloudFormation console
+6. Select Create Stack, and choose With new resources (standard)
+7. In the Specify Template section, choose Upload a template file
+8. Select Choose file
+9. Navigate to the folder where you saved awsscv_call_categorisation.yaml
+10. Select Next
+11. In the Stack Name field, enter AWSSCV-Call-Categorisation
+12. Enter the parameters as follows (most from your notepad):
+13. _AWSRegion_: Select the region where Amazon Connect is deployed
+14. _ConnectInstanceName_:Provide the instance name for Amazon Connect
+15. _ContactLensS3Bucket_: Provide S3 bucket configured for storing call recording (same bucket used for storing Contact Lens post call analysis) from Amazon Connect instance configurations, refer: https://docs.aws.amazon.com/connect/latest/adminguide/update-instance-settings.html
+16. _TelephonyIntegrationLambda_: ARN of out-of-the-box lambda function called InvokeTelephonyIntegrationApiFunction Lambda function
+17. _LambdaLoggingLevel_: Logging level of the new Lambda function which this CloudFormation template is going to create, default is INFO
+18. Select Next
+19. In Service Cloud Voice deployments, it is normal to see a warning on the next page, Configure stack options
+20. Scroll to the bottom and select Next
+21. Scroll to the bottom and select Create Stack
+22. After a minute or two, the stack should complete
 
 ## Testing
 
