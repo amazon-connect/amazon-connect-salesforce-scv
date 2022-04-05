@@ -16,7 +16,12 @@ Parameters:
       - eu-central-1
       - eu-west-2
     Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
-
+  
+  ConnectInstanceName:
+        Type: String
+        Default: REPLACEME
+        Description: Provide the instance name for Amazon Connect.
+  
   ContactLensS3Bucket:
     Type: String
     Default: REPLACEME
@@ -58,7 +63,7 @@ Resources:
         !Join
         - ''
         - - !Ref AWS::StackName
-          - !Ref ContactLensS3Bucket
+          - !Ref ConnectInstanceName
       Handler: lambda_function.lambda_handler
       Role: !GetAtt awsscvclpostcallrole.Arn
       Runtime: python3.9
