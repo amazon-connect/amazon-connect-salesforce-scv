@@ -28,7 +28,7 @@ connect_client = boto3.client('connect')
 ses_client = boto3.client('sesv2')
 
 def vm_to_ses_email(writer_payload):
-
+    
     logger.info('Beginning Voicemail to email')
     logger.debug(writer_payload)
 
