@@ -94,7 +94,12 @@ Resources:
           - - !Ref EXPDevBucketPrefix
             - 'cg-scv-contact-lens-post-call-'
             - !Ref AWSRegion
-        S3Key: Post_Call_Categorization_CL.zip
+        S3Key: 
+          !Join
+          - ''
+          - - 'clpostcall/'
+            - !Ref EXPTemplateVersion
+            - /zip/Post_Call_Categorization_CL.zip
       Description: Lambda function to extract Contact Lens information and insert into Salesforce Voice Call Object
       Environment:
         Variables:
@@ -217,7 +222,12 @@ Resources:
           - - !Ref EXPDevBucketPrefix
             - 'cg-scv-contact-lens-post-call-'
             - !Ref AWSRegion
-        S3Key: Add_S3_Notification_CL.zip
+        S3Key:
+          !Join
+           - ''
+           - - 'clpostcall/'
+             - !Ref EXPTemplateVersion
+             - /zip/Add_S3_Notification_CL.zip
       Description: Lambda function to add event notification to invoke lambda function on Put event in S3 folder /Analysis/Voice/*
       FunctionName:
         !Join
