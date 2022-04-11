@@ -92,7 +92,7 @@ Resources:
           !Join
           - ''
           - - !Ref EXPDevBucketPrefix
-            - 'cg-scv-contact-lens-post-call-'
+            - 'connectbd-sc-'
             - !Ref AWSRegion
         S3Key: 
           !Join
@@ -220,7 +220,7 @@ Resources:
           !Join
           - ''
           - - !Ref EXPDevBucketPrefix
-            - 'cg-scv-contact-lens-post-call-'
+            - 'connectbd-sc-'
             - !Ref AWSRegion
         S3Key:
           !Join
