@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: "2010-09-14"
 Transform: AWS::Serverless-2016-10-31
 Description: Deploys the AWS Lambda functions required to insert Contact Lens post call analysis into Salesforce Voice Call Object
 
@@ -78,7 +78,7 @@ Parameters:
 
   EXPTemplateVersion:
     Type: String
-    Default: 2022.04.09
+    Default: 2022.04.14
     Description: Template version. DO NOT CHANGE.
 
 Resources:
