@@ -6,7 +6,7 @@ There is a of this process available for reference.
 [![Demo Video](sf_config.png)](https://connectbd-global-video.s3.amazonaws.com/sf_config.mp4)
 
 ## Deploy the Template
-1.	Right-click/control-click and open the [CloudFormation template](CloudFormation/awsscv_sc.yaml) in a new window/tab.
+1.	Right-click/control-click and open the [CloudFormation template](../CloudFormation/awsscv_sc.yaml) in a new window/tab.
 2.  Right-click/control-click the **Raw** button and save the link as awsscv_cs.yaml.
 3.  In a new browser tab, login to the [AWS Console](https://console.aws.amazon.com/console/home)
 4.	Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region selector in the upper right and choosing the region
