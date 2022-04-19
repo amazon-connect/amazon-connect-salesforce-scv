@@ -91,7 +91,7 @@ In order to deploy this capability, following configurations need to be done in 
 3. Associate phone number with the contact flow, ref: https://docs.aws.amazon.com/connect/latest/adminguide/associate-phone-number.html
 4. Place a call and get the call transfer to an agent
 5. Converser with the agent and use keywords / phrases configured in the Contact Lens rule - “upgrade”, “need latest model” or “change to next version”
-6. Once the call is completed, check the Details section Salesforce Voice Call object created for the call, you will find populated fields Call Categories, Overall Customer Sentiment and Overall Agent Sentiment
+6. Once the call is completed, check the Details section Salesforce Voice Call object created for the call, you will find populated fields Call Categories, Overall Customer Sentiment and Overall Agent Sentiment (it might take few minutes for these fields to be populated)
 
 ## Conclusion
 
