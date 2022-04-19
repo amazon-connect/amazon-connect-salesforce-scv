@@ -78,7 +78,7 @@ Parameters:
 
   EXPTemplateVersion:
     Type: String
-    Default: 2022.04.14
+    Default: 2022.04.19
     Description: Template version. DO NOT CHANGE.
 
 Resources:
