@@ -1,6 +1,7 @@
 # Amazon Connect Campground for Service Cloud Voice
 
-This repository contains resources, examples, and projects to help Service Cloud Voice customers address some common requirements as they deploy Service Cloud Voice. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments.
+This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements and deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments.
+
 The repository is divided into five sections:
 
 - Common Resources: Provide underlying resources required for some of the solutions to work. Examples include a common authentication setup for these solutions, AWS Lambda depenedency layers, etc
@@ -11,19 +12,18 @@ The repository is divided into five sections:
 
 ## Common Resources
 
-| Name                                                      | Description                                                                                                                                                                        |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [AWSSCV-CommonLayers](Common/AWSSCV-CommonLayers)         | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce                   |
-| [AWSSCV-SalesforceConfig](Common/AWSSCV-SalesforceConfig) | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This will be used my multiple solutions in this repository. |
+| Name | Description |
+| ---- | ----------- |
+| [AWSSCV-SalesforceConfig](Common/AWSSCV-SalesforceConfig) | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository.
 
 ## Solutions
 
-| Name                                                          | Description                                                                                                                                                                 |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [AWSSCV-Voicemail Express](Solutions/AWSSCV-VoicemailExpress) | Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
-| [AWSSCV-CTRLogger](Solutions/AWSSCV-CTRLogger)                | Configures a Lambda function to log Amazon Connect contact trace records to CloudWatch, S3, or both                                                                         |
-| [AWSSCV-AgentEventLogger](Solutions/AWSSCV-AgentEventLogger)  | Configures a Lambda function to log agent event records to CloudWatch                                                                                                       |
-| [AWSSCV-DashboardAlarms](Solutions/AWSSCV-DashboardAlarms)    | Configures a dashboard and set of Cloudwatch alarms allowing administrators to receive notifications for various Amazon Connect metrics.                                    |
+| Name | Description |
+| ---- | ----------- |
+| [VMX2 - Voicemail Express](Solutions/VMX2-VoicemailExpress) | Provides a basic voicemail capability to Amazon Connect with multiple delivery models. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
+| [AWSSCV-CTRLogger](Solutions/AWSSCV-CTRLogger) | Configures a Lambda function to log Amazon Connect contact trace records to CloudWatch, S3, or both |
+| [AWSSCV-AgentEventLogger](Solutions/AWSSCV-AgentEventLogger) | Configures a Lambda function to log agent event records to CloudWatch |
+| [AWSSCV-DashboardAlarms](Solutions/AWSSCV-DashboardAlarms) | Configures a dashboard and set of Cloudwatch alarms allowing administrators to receive notifications for various Amazon Connect metrics. |
 
 ## Use Case Examples
 
@@ -42,10 +42,15 @@ The repository is divided into five sections:
 | [Starter Kit](Stacks/AWSSCV-LaunchPack) | A single CloudFormation stack, including nested stacks, providing a combination of solutions and examples including: Voicemail Express, CTR Logger, Dashboard Alarms, and Sample Contact Flows. |
 
 ## AWS Best Practices for Service Cloud Voice
+| Name | Description |
+| ---- | ----------- |
+| [Overflow Routing](BestPractices/OverflowRouting.md) |Describes best practices for dealing with spikes in call volumes. Specifically describes overflow routing scenarios to keep data clean and reduce administrative overhead.|
 
-| Name                                                 | Description                                                                                                                                                                |
-| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Overflow Routing](BestPractices/OverflowRouting.md) | Describes best practices for dealing with spikes in call volumes. Specifically describes overflow routing scenarios to keep data clean and reduce administrative overhead. |
+## Archive - Deprecated Solutions
+| Name | Description |
+| ---- | ----------- |
+| [AWSSCV-Voicemail Express](Archive/AWSSCV-VoicemailExpress) | **DEPRECATED - Use VMX2** Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
+| [AWSSCV-CommonLayers](Archive/AWSSCV-CommonLayers) | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce |
 
 ## Contributions
 

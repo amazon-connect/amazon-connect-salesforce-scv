@@ -1,0 +1,501 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Deploys the Voicemail Express solution for Amazon Connect.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "1. Base Configuration"
+        Parameters:
+          - AWSRegion
+          - ConnectInstanceAlias
+          - ConnectInstanceARN
+          - ConnectCTRStreamARN
+          - LambdaLoggingLevel
+          - RecordingsExpireInXDays
+          - ExpiredLinkBehavior
+          - VMDefaultMode
+          - VMTestAgentId
+          - VMTestQueueARN
+      -
+        Label:
+          default: "2. Voicemail Express AWS Delivery Modes"
+        Parameters:
+          - EnableVMToConnectTask
+          - EnableVMToEmail
+          - VMToEmailDefaultFrom
+          - VMToEmailDefaultTo
+      -
+        Label:
+          default: "3. Voicemail Express Salesforce Delivery Modes"
+        Parameters:
+          - EnableVMToSalesforceCase
+          - EnableVMToSalesforceCustomObject
+      -
+        Label:
+          default: "3a. Voicemail Express Salesforce-specific Settings"
+        Parameters:
+          - SalesforceConfigSSMARN
+          - NodeLayerARN
+          - PythonLayerARN
+          - SalesforceCustomObject
+          - SalesforceContactAttributesField
+          - SalesforceVoicemailLinkField
+          - SalesforceCallbackPhoneField
+          - SalesforceTranscriptsField
+      -
+        Label:
+          default: "4. Advanced Settings (Experimental)"
+        Parameters:
+          - EXPDevBucketPrefix
+          - EXPTemplateVersion
+    ParameterLabels:
+      AWSRegion:
+        default: "Which AWS region is your Amazon Connect Instance deployed to?"
+      ConnectCTRStreamARN:
+        default: "Provide the ARN for the Amazon Kinesis Data stream configured for Contact Trace Record(CTR) streaming."
+      ConnectInstanceAlias:
+        default: "What is your Amazon Connect instance alias?"
+      ConnectInstanceARN:
+        default: "What is your Amazon Connect instance ARN (Amazon Resource Name)?"
+      EnableVMToConnectTask:
+        default: "Enable Voicemail to Amazon Connect Tasks?"
+      EnableVMToEmail:
+        default: "Enable Voicemail to email via Amazon Simple Email Service?"
+      EnableVMToSalesforceCase:
+        default: "Enable Voicemail to Salesforce as new Cases?"
+      EnableVMToSalesforceCustomObject:
+        default: "Enable Voicemail to Salesforce as a custom object?"
+      EXPDevBucketPrefix:
+        default: "(TEST USE ONLY) What is the name of the bucket that holds your custom code?"
+      ExpiredLinkBehavior:
+        default: "When the recording link expires, do what do you want do with the recording?"
+      EXPTemplateVersion:
+        default: "(TEST USE ONLY) What is version you wish to deploy?"
+      LambdaLoggingLevel:
+        default: "For the included AWS Lambda functions, what should the default logging level be set to?"
+      NodeLayerARN:
+        default: "What is the ARN of the common_node_layer deployed by the Salesforce Config setup?"
+      PythonLayerARN:
+        default: "What is the ARN of the common_python_layer deployed by the Salesforce Config setup?"
+      RecordingsExpireInXDays:
+        default: "How long should the voicemail audio be available via URL? Maximum is 7 days."
+      SalesforceCustomObject:
+        default: "(SALESFORCE CUSTOM OBJECT MODE ONLY) What is the API name of the Salesforce custom object you want to use."
+      SalesforceCallbackPhoneField:
+        default: "Callback number custom field"
+      SalesforceConfigSSMARN:
+        default: "What is the ARN for your Salesforce config in Secrets Manager?"
+      SalesforceContactAttributesField:
+        default: "Contact attributes custom field"
+      SalesforceTranscriptsField:
+        default: "Custom transcript field"
+      SalesforceVoicemailLinkField:
+        default: "Presigned URL custom field"
+      VMDefaultMode:
+        default: "What is your default delivery mode?"
+      VMToEmailDefaultTo:
+        default: "(EMAIL MODE ONLY) Fallback TO email for voicemails if no address is provided?"
+      VMToEmailDefaultFrom:
+        default: "(EMAIL MODE ONLY) Fallback FROM email for voicemails if no address is provided?"
+      VMTestAgentId:
+        default: "Which agent ID should we use for testing?"
+      VMTestQueueARN:
+        default: "Which queue should we use for testing? We need the ARN for this configuration."
+
+Parameters:
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - af-south-1
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - ap-northeast-2
+      - ca-central-1
+      - eu-central-1
+      - eu-west-2
+    Description: All resources for this template must reside in the same region. Validate which region your Amazon Connect instance is deployed in and select the corresponding region from the drop-down list. You should run this template from this region as well.
+  ConnectCTRStreamARN:
+    Type: String
+    Default: Looks like - arn:aws:kinesis:REGION:ACCOUNT:stream/REPLACEME
+    Description: Provide the ARN for the Kinesis Data Stream that receives your contact trace records.
+  ConnectInstanceAlias:
+    Type: String
+    Default: REPLACEME
+    Description: Provide the instance alias for your Amazon Connect instance. Please use lowercase letters ONLY.
+  ConnectInstanceARN:
+    Type: String
+    Default: Looks like - arn:aws:connect:REGION:ACCOUNT:instance/REPLACEME
+    Description: Provide the instance ARN for your Amazon Connect istance.
+  EnableVMToConnectTask:
+    Type: String
+    Default: yes
+    AllowedValues:
+      - yes
+      - no
+    Description: Allow voicemails to be delivered to agents as Amazon Connect Tasks.
+  EnableVMToEmail:
+    Type: String
+    Default: no
+    AllowedValues:
+      - yes
+      - no
+    Description: Allow voicemails to be delivered to agents as external Emails.
+  EnableVMToSalesforceCase:
+    Type: String
+    Default: no
+    AllowedValues:
+      - yes
+      - no
+    Description: Allow voicemails to be delivered to agents as Salesforce cases.
+  EnableVMToSalesforceCustomObject:
+    Type: String
+    Default: no
+    AllowedValues:
+      - yes
+      - no
+    Description: Allow voicemails to be delivered to Salesforce using a custom object.
+  EXPDevBucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+  ExpiredLinkBehavior:
+    Type: String
+    Default: delete
+    AllowedValues:
+      - delete
+      - keep
+      - glacier
+    Description: When recordings expire, do you want to delete the recording, keep it, or move it to Glacier?
+  EXPTemplateVersion:
+    Type: String
+    Default: 2022.03.23
+    Description: Template version. DO NOT CHANGE.
+  LambdaLoggingLevel:
+    Type: String
+    Default: ERROR
+    AllowedValues:
+      - CRITICAL
+      - ERROR
+      - WARNING
+      - INFO
+      - DEBUG
+    Description: Default is Error. This can be changed later. Details on logging levels can be found at https://docs.python.org/3/howto/logging.html
+  NodeLayerARN:
+    Type: String
+    Default: Looks like - arn:aws:lambda:REGION:ACCOUNT:layer:common_node_layer_INSTANCE:VERSION
+    Description: The Salesforce config AWS Secrets Manager entry was created whren you deployed the Salesforce Config template.
+  PythonLayerARN:
+    Type: String
+    Default: Looks like - arn:aws:lambda:REGION:ACCOUNT:layer:common_python_layer_INSTANCE:VERSION
+    Description: The Salesforce config AWS Secrets Manager entry was created whren you deployed the Salesforce Config template.
+  RecordingsExpireInXDays:
+    Type: String
+    Default: 7
+    AllowedValues:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+    Description: Number of days recordings are accessible via link.
+  SalesforceCallbackPhoneField:
+    Type: String
+    Default: REPLACEME
+    Description: In your Salesfore object, what is the api name of the custom field that you created for the callback number?
+  SalesforceConfigSSMARN:
+    Type: String
+    Default: Looks like - arn:aws:secretsmanager:REGION:ACCOUNT:secret:REPLACEME
+    Description: The Salesforce config AWS Secrets Manager entry was created whren you deployed the Salesforce Config template.
+  SalesforceCustomObject:
+    Type: String
+    Default: REPLACEME
+    Description: api name of the custom object that you created to use for voicemail
+  SalesforceTranscriptsField:
+    Type: String
+    Default: REPLACEME
+    Description: api name of the custom field that you created to store transcripts in custom objects.
+  SalesforceContactAttributesField:
+    Type: String
+    Default: REPLACEME
+    Description: In your Salesfore object, what is the api name of the custom field that you created to hold the contact attributes for the voicemail?
+  SalesforceVoicemailLinkField:
+    Type: String
+    Default: REPLACEME
+    Description: In your Salesfore object, what is the api name of the custom field that you created for the presigned URL?
+  VMDefaultMode:
+    Type: String
+    Default: AmazonConnectTask
+    AllowedValues:
+      - AmazonConnectTask
+      - AmazonSimpleEmailService
+      - SalesforceCase
+      - SalesforceCustom
+      - Other
+    Description: If no other voicemail delivery model can be identified, what model should be used?
+  VMToEmailDefaultFrom:
+    Type: String
+    Default: voicemail_from@test.com
+    Description: Email address to use when sending voicemails when another FROM address could not be identified.
+  VMToEmailDefaultTo:
+    Type: String
+    Default: voicemail_to@test.com
+    Description: Email address to catch voicemails where another TO address could not be identified.
+  VMTestAgentId:
+    Type: String
+    Default: Looks like - jdoe or jdoe@test.com
+    Description: Agent ID to use for the voicemail test function.
+  VMTestQueueARN:
+    Type: String
+    Default: Looks like - arn:aws:connect:REGION:ACCOUNT:instance/INSTANCEID/queue/QUEUEID
+    Description: Queue ARN to use for the voicemail test function
+
+Conditions:
+  SalesforceEnabled: !Or [!Equals [!Ref EnableVMToSalesforceCase, yes], !Equals [!Ref EnableVMToSalesforceCustomObject, yes] ]
+  AWSEnabled: !Or [!Equals [!Ref EnableVMToConnectTask, yes], !Equals [!Ref EnableVMToEmail, yes] ]
+  ConnectTasksEnabled: !Equals [!Ref EnableVMToConnectTask, yes]
+  AWSEmailEnabled: !Equals [!Ref EnableVMToEmail, yes]
+
+Mappings:
+  VMModes:
+    AmazonConnectTask:
+      mode: task
+    AmazonSimpleEmailService:
+      mode: email
+    SalesforceCase:
+      mode: sfcase
+    SalesforceOther:
+      mode: sfother
+    Other:
+      mode: other
+
+Resources:
+
+  VMXCoreStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        ConnectInstanceAlias: !Ref ConnectInstanceAlias
+        ExpiredLinkBehavior: !Ref ExpiredLinkBehavior
+        EXPTemplateVersion: !Ref EXPTemplateVersion
+        RecordingsExpireInXDays: !Ref RecordingsExpireInXDays
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref EXPDevBucketPrefix
+          - 'connectbd-sc-'
+          - !Ref AWSRegion
+          - '.s3.'
+          - !Ref AWSRegion
+          - '.amazonaws.com/vmx/'
+          - !Ref EXPTemplateVersion
+          - '/cloudformation/vmx-core.yaml'
+      TimeoutInMinutes: 5
+
+  VMXContactFlowStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        ConnectInstanceAlias: !Ref ConnectInstanceAlias
+        ConnectInstanceARN: !Ref ConnectInstanceARN
+        EnableVMToConnectTask: !Ref EnableVMToConnectTask
+        EnableVMToEmail: !Ref EnableVMToEmail
+        EnableVMToSalesforceCase: !Ref EnableVMToSalesforceCase
+        EnableVMToSalesforceCustomObject: !Ref EnableVMToSalesforceCustomObject
+        EXPTemplateVersion: !Ref EXPTemplateVersion
+        SalesforceCallbackPhoneField: !Ref SalesforceCallbackPhoneField
+        SalesforceContactAttributesField: !Ref SalesforceContactAttributesField
+        SalesforceVoicemailLinkField: !Ref SalesforceVoicemailLinkField
+        VMTestAgentId: !Ref VMTestAgentId
+        VMTestQueueARN: !Ref VMTestQueueARN
+        VMToEmailDefaultFrom: !Ref VMToEmailDefaultFrom
+        VMToEmailDefaultTo: !Ref VMToEmailDefaultFrom
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref EXPDevBucketPrefix
+          - 'connectbd-sc-'
+          - !Ref AWSRegion
+          - '.s3.'
+          - !Ref AWSRegion
+          - '.amazonaws.com/vmx/'
+          - !Ref EXPTemplateVersion
+          - '/cloudformation/vmx-contactflows.yaml'
+      TimeoutInMinutes: 5
+
+  VMXSESSetupStack:
+    Type: AWS::CloudFormation::Stack
+    Condition: AWSEmailEnabled
+    DependsOn:
+      - VMXCoreStack
+    Properties:
+      Parameters:
+        AWSRegion: !Ref AWSRegion
+        ConnectInstanceAlias: !Ref ConnectInstanceAlias
+        EXPTemplateVersion: !Ref EXPTemplateVersion
+        EXPDevBucketPrefix: !Ref EXPDevBucketPrefix
+        LambdaLoggingLevel: !Ref LambdaLoggingLevel
+        VMXCoreRoleArn:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXCoreRoleArn
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref EXPDevBucketPrefix
+          - 'connectbd-sc-'
+          - !Ref AWSRegion
+          - '.s3.'
+          - !Ref AWSRegion
+          - '.amazonaws.com/vmx/'
+          - !Ref EXPTemplateVersion
+          - '/cloudformation/vmx-ses-setup.yaml'
+      TimeoutInMinutes: 5
+
+  VMXLambdaStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - VMXCoreStack
+      - VMXContactFlowStack
+    Properties:
+      Parameters:
+        EXPTemplateVersion: !Ref EXPTemplateVersion
+        AWSRegion: !Ref AWSRegion
+        ConnectInstanceAlias: !Ref ConnectInstanceAlias
+        EnableVMToConnectTask: !Ref EnableVMToConnectTask
+        EnableVMToEmail: !Ref EnableVMToEmail
+        EnableVMToSalesforceCase: !Ref EnableVMToSalesforceCase
+        EnableVMToSalesforceCustomObject: !Ref EnableVMToSalesforceCustomObject
+        EXPDevBucketPrefix: !Ref EXPDevBucketPrefix
+        LambdaLoggingLevel: !Ref LambdaLoggingLevel
+        NodeLayerARN: !Ref NodeLayerARN
+        PythonLayerARN: !Ref PythonLayerARN
+        RecordingsExpireInXDays: !Ref RecordingsExpireInXDays
+        SalesforceConfigSSMARN: !Ref SalesforceConfigSSMARN
+        SalesforceCustomObject: !Ref SalesforceCustomObject
+        SalesforceVoicemailLinkField: !Ref SalesforceVoicemailLinkField
+        SalesforceCallbackPhoneField: !Ref SalesforceCallbackPhoneField
+        SalesforceContactAttributesField: !Ref SalesforceContactAttributesField
+        SalesforceTranscriptsField: !Ref SalesforceTranscriptsField
+        VMDefaultMode: !Ref VMDefaultMode
+        VMToEmailDefaultFrom: !Ref VMToEmailDefaultFrom
+        VMToEmailDefaultTo: !Ref VMToEmailDefaultTo
+        VMEmailDefaultAgentTemplate:
+          !If
+            - AWSEmailEnabled
+            - Fn::GetAtt:
+              - VMXSESSetupStack
+              - Outputs.VMEmailDefaultAgentTemplate
+            - 'AWS::NoValue'
+        VMEmailDefaultQueueTemplate:
+          !If
+            - AWSEmailEnabled
+            - Fn::GetAtt:
+              - VMXSESSetupStack
+              - Outputs.VMEmailDefaultQueueTemplate
+            - 'AWS::NoValue'
+        VMXDefaultTaskFlow:
+          !If
+            - ConnectTasksEnabled
+            - Fn::GetAtt:
+              - VMXContactFlowStack
+              - Outputs.VMXExampleTaskFlowID
+            - 'AWS::NoValue'
+        VMXSecrets:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXSecrets
+        VMXS3RecordingsBucket:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXRecordingsBucket
+        VMXS3TranscriptsBucket:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXTranscriptsBucket
+        VMXCoreRole:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXCoreRole
+        VMXCoreRoleArn:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXCoreRoleArn
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref EXPDevBucketPrefix
+          - 'connectbd-sc-'
+          - !Ref AWSRegion
+          - '.s3.'
+          - !Ref AWSRegion
+          - '.amazonaws.com/vmx/'
+          - !Ref EXPTemplateVersion
+          - '/cloudformation/vmx-lambda-functions.yaml'
+      TimeoutInMinutes: 10
+
+  VMXTriggersStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - VMXLambdaStack
+    Properties:
+      Parameters:
+        EXPTemplateVersion: !Ref EXPTemplateVersion
+        ConnectCTRStreamARN: !Ref ConnectCTRStreamARN
+        VMXNotificationBuilderArn:
+          Fn::GetAtt:
+            - VMXLambdaStack
+            - Outputs.VMXNotificationBuilderArn
+        VMXS3RecordingsBucket:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXRecordingsBucket
+        VMXS3TranscriptsBucket:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXTranscriptsBucket
+        VMXS3RecordingsBucketArn:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXRecordingsBucketArn
+        VMXPackagerArn:
+          Fn::GetAtt:
+            - VMXLambdaStack
+            - Outputs.VMXPackagerArn
+        VMXS3TranscriptsBucketArn:
+          Fn::GetAtt:
+            - VMXCoreStack
+            - Outputs.VMXTranscriptsBucketArn
+        VMXTranscriberArn:
+          Fn::GetAtt:
+            - VMXLambdaStack
+            - Outputs.VMXTranscriberArn
+        VMXKVStoS3:
+          Fn::GetAtt:
+            - VMXLambdaStack
+            - Outputs.VMXKVStoS3
+      TemplateURL:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref EXPDevBucketPrefix
+          - 'connectbd-sc-'
+          - !Ref AWSRegion
+          - '.s3.'
+          - !Ref AWSRegion
+          - '.amazonaws.com/vmx/'
+          - !Ref EXPTemplateVersion
+          - '/cloudformation/vmx-triggers.yaml'
+      TimeoutInMinutes: 10

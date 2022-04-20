@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Establishes supporting layers for Service Cloud Voice tools, examples, and add-ons from AWS.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "1. Base Config"
+        Parameters:
+          - AWSRegion
+      -
+        Label:
+          default: "2. Advanced Settings (Experimental)"
+        Parameters:
+          - EXPDevBucketPrefix
+          - EXPTemplateVersion
+    ParameterLabels:
+      AWSRegion:
+        default: "Which AWS region is your Amazon Connect Instance deployed to?"
+      EXPDevBucketPrefix:
+        default: "(TEST USE ONLY) What is the name of the bucket that holds your custom code?"
+      EXPTemplateVersion:
+        default: "(TEST USE ONLY) What is version you wish to deploy?"
+
+Parameters:
+  EXPDevBucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+  EXPTemplateVersion:
+    Type: String
+    Default: 2022.03.23
+    Description: Template version. DO NOT CHANGE.
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - af-south-1
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - ap-northeast-2
+      - ca-central-1
+      - eu-central-1
+      - eu-west-2
+    Description: The region code that you are deploying to. MAKE SURE that you have your console currently set to this region. Must be a region that supports Service Cloud Voice.
+
+Resources:
+    SCVCommonPythonLayer:
+        Type: AWS::Lambda::LayerVersion
+        Properties:
+          CompatibleRuntimes:
+            - python3.8
+            - python3.9
+          Content:
+            S3Bucket:
+              !Join
+                - ''
+                - - !Ref EXPDevBucketPrefix
+                  - 'connectbd-sc-'
+                  - !Ref AWSRegion
+            S3Key:
+              !Join
+              - ''
+              - - 'common_layers/'
+                - !Ref EXPTemplateVersion
+                - /zip/awsscv_common_python.zip
+          Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
+          LayerName: awsscv_common_python
+          LicenseInfo: https://aws.amazon.com/apache-2-0
+    SCVCommonNodeLayer:
+        Type: AWS::Lambda::LayerVersion
+        Properties:
+          CompatibleRuntimes:
+            - nodejs12.x
+            - nodejs14.x
+          Content:
+            S3Bucket:
+              !Join
+                - ''
+                - - !Ref EXPDevBucketPrefix
+                  - 'connectbd-sc-'
+                  - !Ref AWSRegion
+            S3Key:
+              !Join
+              - ''
+              - - 'common_layers/'
+                - !Ref EXPTemplateVersion
+                - /zip/awsscv_common_node.zip
+          Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
+          LayerName: awsscv_common_node
+          LicenseInfo: https://aws.amazon.com/apache-2-0
+Outputs:
+  SCVCommonPythonLayerARN:
+    Description: ARN for the Python common layer
+    Value: !Ref SCVCommonPythonLayer
+  SCVCommonNodeLayerARN:
+    Description: ARN for the node.js common layer
+    Value: !Ref SCVCommonNodeLayer
