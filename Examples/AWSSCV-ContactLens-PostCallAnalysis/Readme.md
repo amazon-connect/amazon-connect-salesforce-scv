@@ -29,9 +29,9 @@ Following high level architecture diagram shows the all the components involved 
 
 In order to deploy this capability, following configurations need to be done in Salesforce and AWS.
 
-\_Notes -*_ For SCV Bundle customers, please talk to Salesforce team before implementing this capability to ensure that your Salesforce SCV license includes Contact Lens capability
+Notes: *_ For SCV Bundle customers, please talk to Salesforce team before implementing this capability to ensure that your Salesforce SCV license includes Contact Lens capability
 
-\  -**_  The features and capabilities of this solution/example may be incorporated or replicated in future releases of Service Cloud Voice. 
+      **_  The features and capabilities of this solution/example may be incorporated or replicated in future releases of Service Cloud Voice. 
 
 ### _Salesforce - adding required fields in Voice Call Object_
 
