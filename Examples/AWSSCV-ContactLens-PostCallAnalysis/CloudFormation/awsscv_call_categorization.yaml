@@ -1,0 +1,246 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Deploys the AWS Lambda functions required to insert Contact Lens post call analysis into Salesforce Voice Call Object
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "1. Amazon Connect"
+        Parameters:
+          - AWSRegion
+          - ContactLensS3Bucket
+          
+      -
+        Label:
+          default: "2. Service Cloud Voice Integration"
+        Parameters:
+          - TelephonyIntegrationLambda
+          - LambdaLoggingLevel
+      -
+              Label:
+                default: "3. Advanced Settings (for Development only)"
+              Parameters:
+                - EXPDevBucketPrefix
+                - EXPTemplateVersion
+    ParameterLabels:
+      AWSRegion:
+        default: "Which AWS region is your Amazon Connect Instance deployed to?"
+      ContactLensS3Bucket:
+        default: "Provide Name of the S3 Bucket wheere call recordings (as well as Contact Lens analysis) are stored"
+      TelephonyIntegrationLambda:
+        default: "Provide ARN of the out-of-the-box Service Cloud Voice Telephony Integration Lambda"
+      LambdaLoggingLevel:
+        default: "For the included AWS Lambda functions, what should the default logging level be set to?"
+
+Parameters:
+
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - eu-central-1
+      - eu-west-2
+      - ca-central-1
+      - af-south-1 
+    Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+
+  ContactLensS3Bucket:
+    Type: String
+    Default: REPLACEME - Looks like test-connnect-1234abcd
+    Description: name of S3 bucket where Contact Lens post call analysis is stored (same as Call Recording bucket). Please ensure you add only S3 bucket name without path prefix (part before the '/')
+
+  TelephonyIntegrationLambda:
+    Type: String
+    Default: REPLACEME - Looks like arn:aws:lambda:us-west-2:12345678:function:abcdefg-InvokeTelephonyIntegrationApiFunction
+    Description: ARN of the out-of-the-box Telephony Integration Lambda
+
+  LambdaLoggingLevel:
+    Type: String
+    Default: INFO
+    AllowedValues:
+     - CRITICAL
+     - ERROR 
+     - WARNING 
+     - INFO 
+     - DEBUG
+
+  EXPDevBucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+
+  EXPTemplateVersion:
+    Type: String
+    Default: 2022.04.19
+    Description: Template version. DO NOT CHANGE.
+
+Resources:
+
+  awsscvclpostcalllambda:
+    Type: AWS::Lambda::Function
+    DependsOn: awsscvclpostcallrole
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - !Ref EXPDevBucketPrefix
+            - 'connectbd-sc-'
+            - !Ref AWSRegion
+        S3Key: 
+          !Join
+          - ''
+          - - 'clpostcall/'
+            - !Ref EXPTemplateVersion
+            - /zip/Post_Call_Categorization_CL.zip
+      Description: Lambda function to extract Contact Lens information and insert into Salesforce Voice Call Object
+      Environment:
+        Variables:
+          ARN_InvokeTelephonyIntegrationApiFunction:
+            Ref: TelephonyIntegrationLambda
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+      FunctionName:
+        !Join
+        - ''
+        - - 'scv_cl_post_call_'
+          - !Ref AWS::StackName
+      Handler: post_call_categorization_cl.lambda_handler
+      Role: !GetAtt awsscvclpostcallrole.Arn
+      Runtime: python3.9
+      Timeout: 8
+
+
+  awsscvclpostcalls3policy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Provides read access to Contact Lens S3 bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:GetBucketNotification'
+            Resource: !Sub 'arn:aws:s3:::${ContactLensS3Bucket}/Analysis/Voice/*'
+
+
+  awsscvclpostcalllambdainvokepolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Provides read access to Contact Lens invoke Telephony Intergation Lambda function
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'lambda:InvokeFunction'
+            Resource:
+              - !Ref TelephonyIntegrationLambda
+
+  awsscvclpostcallrole:
+      Type: AWS::IAM::Role
+      DependsOn:
+        - awsscvclpostcalllambdainvokepolicy
+        - awsscvclpostcalls3policy
+      Properties:
+        RoleName: !Join ["-", ["awsscv_cl_post_call_role", !Ref AWS::StackName]]
+        Description: Provides access to Contact Lens S3 and Telephony Invoke Lambda
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - !Ref awsscvclpostcalls3policy
+          - !Ref awsscvclpostcalllambdainvokepolicy
+
+  LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt awsscvclpostcalllambda.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Sub 'arn:aws:s3:::${ContactLensS3Bucket}'
+        
+  awsscvs3notficationpolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Provides access to add S3 notification 
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetBucketNotification'
+              - 's3:PutBucketNotification'
+            Resource: !Sub 'arn:aws:s3:::${ContactLensS3Bucket}'
+        
+  
+  awssscvs3notication:
+      Type: AWS::IAM::Role
+      DependsOn:
+        - awsscvs3notficationpolicy
+      Properties:
+        RoleName: !Join ["-", ["awsscv_s3_notification_role", !Ref AWS::StackName]]
+        Description: Provides access to S3 to add notification
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - !Ref awsscvs3notficationpolicy
+  
+  CustomResourceLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Handler: add_s3_notification_cl.lambda_handler
+      Role: !GetAtt awssscvs3notication.Arn
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - !Ref EXPDevBucketPrefix
+            - 'connectbd-sc-'
+            - !Ref AWSRegion
+        S3Key:
+          !Join
+           - ''
+           - - 'clpostcall/'
+             - !Ref EXPTemplateVersion
+             - /zip/Add_S3_Notification_CL.zip
+      Description: Lambda function to add event notification to invoke lambda function on Put event in S3 folder /Analysis/Voice/*
+      FunctionName:
+        !Join
+        - ''
+        - - 'scv_cl_s3_notification_'
+          - !Ref AWS::StackName
+      Runtime: python3.9
+      Timeout: 8
+
+  LambdaTrigger:
+      Type: 'Custom::LambdaTrigger'
+      DependsOn: LambdaInvokePermission
+      Properties:
+        ServiceToken: !GetAtt CustomResourceLambdaFunction.Arn
+        LambdaArn: !GetAtt awsscvclpostcalllambda.Arn
+        Bucket: !Ref ContactLensS3Bucket

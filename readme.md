@@ -3,6 +3,7 @@
 This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements and deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments.
 
 The repository is divided into five sections:
+
 - Common Resources: Provide underlying resources required for some of the solutions to work. Examples include a common authentication setup for these solutions, AWS Lambda depenedency layers, etc
 - Solutions: larger solutions designed to address specific requirements that customers may have. These solutions are designed for operational use. Examples include Cross-Account SMS or Voicemail Express.
 - Use Case Examples: small, simple examples to address basic configuration questions. These demonstrate an approach to solving a problem but have not necessarily been dessigned for operational use. Examples inclde dial-by-extension configurations and follow-me routing.
@@ -26,17 +27,18 @@ The repository is divided into five sections:
 
 ## Use Case Examples
 
-| Name | Description |
-| ---- | ----------- |
-| [AWSSCV-CrossAccountSMS](Examples/AWSSCV-CrossAccountSMS) | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. |
-| [AWSSCV-ExtensionRouter](Examples/AWSSCV-ExtensionRouting)  | Configures a Dial-by-extension option for Amazon Connect. |
-| [AWSSCV-FollowMeRouting](Examples/AWSSCV-FollowMeRouting) | Configures an option to route calls to an agent's mobile when they are not logged in, if configured. |
-| [AWSSCV-DDR-Flow](Examples/AWSSCV-DataDirectedRouting-FlowRouting) | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations ||
-| [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions) |  Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm. |
+| Name                                                               | Description                                                                                                                                                 |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| [AWSSCV-CrossAccountSMS](Examples/AWSSCV-CrossAccountSMS)          | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. |
+| [AWSSCV-ExtensionRouter](Examples/AWSSCV-ExtensionRouting)         | Configures a Dial-by-extension option for Amazon Connect.                                                                                                   |
+| [AWSSCV-FollowMeRouting](Examples/AWSSCV-FollowMeRouting)          | Configures an option to route calls to an agent's mobile when they are not logged in, if configured.                                                        |
+| [AWSSCV-DDR-Flow](Examples/AWSSCV-DataDirectedRouting-FlowRouting) | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations          |     |
+| [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions)        | Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm.                                                                               |
 
 ## Launch Packs
-| Name | Description |
-| ---- | ----------- |
+
+| Name                                    | Description                                                                                                                                                                                     |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Starter Kit](Stacks/AWSSCV-LaunchPack) | A single CloudFormation stack, including nested stacks, providing a combination of solutions and examples including: Voicemail Express, CTR Logger, Dashboard Alarms, and Sample Contact Flows. |
 
 ## AWS Best Practices for Service Cloud Voice
@@ -55,4 +57,5 @@ The repository is divided into five sections:
 Make sure the `.gitignore` per language is applied.
 
 ## Status
+
 ![Status](https://codebuild.us-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiVlBLcm9mQlRQV01ZbDRES1FwM3JRNVlJYzB0MlNYYzN1V25weU9CSUN1ckxHQWFTbitsRFo2RHUzR3FDblJjZjR5ZnJhY2F6VHBYSEtVaXcwcVNKVXM0PSIsIml2UGFyYW1ldGVyU3BlYyI6IklPR2ExNWp1MnN6T1pYZ3MiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
