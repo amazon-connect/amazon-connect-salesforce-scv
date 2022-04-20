@@ -29,6 +29,10 @@ Following high level architecture diagram shows the all the components involved 
 
 In order to deploy this capability, following configurations need to be done in Salesforce and AWS.
 
+\_Notes -*_ For SCV Bundle customers, please talk to Salesforce team before implementing this capability to ensure that your Salesforce SCV license includes Contact Lens capability
+
+\  -**_  The features and capabilities of this solution/example may be incorporated or replicated in future releases of Service Cloud Voice. 
+
 ### _Salesforce - adding required fields in Voice Call Object_
 
 1. Log in into your Salesforce org and go to Setup
@@ -96,7 +100,3 @@ In order to deploy this capability, following configurations need to be done in 
 ## Conclusion
 
 This document shows how Contact Lens post call analysis can be leveraged to categorise a call based on business rules as well as gauge the overall sentiment of the call. This capability can be easily extended to add more fields from Contact Lens post call analysis to Salesforce Voice call object. For more information on Contact Lens post call analysis output ref: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-example-output-files.html
-
-\*_Note -_ For SCV Bundle customers, please talk to Salesforce team before implementing this capability to ensure that your Salesforce SCV license includes Contact Lens capability
-
-\**_Note -_  The features and capabilities of this solution/example may be incorporated or replicated in future releases of Service Cloud Voice. 
