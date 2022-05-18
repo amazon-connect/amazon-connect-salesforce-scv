@@ -53,7 +53,7 @@ Resources:
       StartingPosition: LATEST
 
   CreateTranscriptTrigger:
-    Type: 'Custom::TranscriptTrigger'
+    Type: Custom::TranscriptTrigger
     DependsOn:
       - RecordingsBucketPermission
     Properties:
@@ -63,7 +63,7 @@ Resources:
       object_suffix: .wav
 
   CreatePackagerTrigger:
-    Type: 'Custom::PackagerTrigger'
+    Type: Custom::PackagerTrigger
     DependsOn:
       - TranscriptsBucketPermission
     Properties:
