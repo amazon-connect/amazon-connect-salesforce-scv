@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
-Description: Deploys and configures the triggers for the Vociemail Express solution.
+Description: Deploys the Voicemail Express content triggers.
 
 Parameters:
   EXPTemplateVersion:
