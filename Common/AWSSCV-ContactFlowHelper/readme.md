@@ -1,5 +1,5 @@
 # Contact Flow Helper
-A single AWS Lambda function which provides a set of basic math and text tools to help manipulate data in contact flows. This is a direct port of the same funciton in the [Amazon Connect Snippets repo](https://github.com/amazon-connect/amazon-connect-snippets/tree/master/python/contactflowhelper). Included operations are:
+A single AWS Lambda function which provides a set of basic math and text tools to help manipulate data in contact flows. This is a direct port of the same function in the [Amazon Connect Snippets repo](https://github.com/amazon-connect/amazon-connect-snippets/tree/master/python/contactflowhelper). Included operations are:
 * freeform_math = performs basic evaluation of a mathematical expression. For example: 2+2
 * random_number + returns a random number between a provided upper and lower limit
 * increment_1 = increments a provided number by 1
@@ -63,7 +63,7 @@ Which will result in from Lambda similar to:
 ````
 
 ### increment_1
-The increment_1 operation simply increments a provided number by 1 and returns the resulting string. For example, providing 24 will return a response of "25". This can be used to provide a loop counter that can be relayed to a customer or used to evaluate conditions based on current loop iteration. 
+The increment_1 operation simply increments a provided number by 1 and returns the resulting string. For example, providing 24 will return a response of "25". This can be used to provide a loop counter that can be relayed to a customer or used to evaluate conditions based on current loop iteration.
 #### Required Parameters
 The increment_1 operation requires the following parameters:
 1. function = the operation to exectute, which should be set to `increment_1`
@@ -157,14 +157,14 @@ Which will result in the following response from Lambda:
 ````
 
 ### split_text
-The split_text splits a provided string based on a provided split point. Also returns the number of segments identified. This can be used to isolate parts of text retrieved from a query. One example would be in cases where a query returns a customer name as "Doe, John". You could then split and use the result to address the customer by first name only. 
+The split_text splits a provided string based on a provided split point. Also returns the number of segments identified. This can be used to isolate parts of text retrieved from a query. One example would be in cases where a query returns a customer name as "Doe, John". You could then split and use the result to address the customer by first name only.
 #### Required Parameters
 The split_text operation requires the following parameters:
 1. function = the operation to exectute, which should be set to `split_text`
 2. text_string = the text you are working with
 3. split_at = the string of text that you want to use as your split point
 #### Optional Parameter
-Optionally, you may also specify a maximum split value. The default behavior is to provide all splits in the string, however you can specify the maximum numbwer of splits. Please remember that this is python, so when setting the split_max value, the numbering begins at 0. With this in mind, you would define only one split by setting the split_max value to 0. 
+Optionally, you may also specify a maximum split value. The default behavior is to provide all splits in the string, however you can specify the maximum numbwer of splits. Please remember that this is python, so when setting the split_max value, the numbering begins at 0. With this in mind, you would define only one split by setting the split_max value to 0.
 1. split_max = maximum number of splits. Unless otherwise specified, the operation defaults split_max to -1, which is to return all splits possible.
 
 ## Example

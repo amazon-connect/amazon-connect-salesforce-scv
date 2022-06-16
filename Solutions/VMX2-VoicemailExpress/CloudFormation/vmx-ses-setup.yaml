@@ -59,7 +59,7 @@ Resources:
           - - 'vmx/'
             - !Ref EXPTemplateVersion
             - /zip/vmx_ses_template_tool.py.zip
-      Description: Provides prebuilt funciton to manage email templates
+      Description: Provides prebuilt function to manage email templates
       Environment:
         Variables:
           lambda_logging_level:
