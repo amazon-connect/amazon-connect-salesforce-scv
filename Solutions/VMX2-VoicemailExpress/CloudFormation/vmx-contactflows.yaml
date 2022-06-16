@@ -25,7 +25,6 @@ Conditions:
   SalesforceEnabled: !Or [!Equals [!Ref EnableVMToSalesforceCase, yes], !Equals [!Ref EnableVMToSalesforceCustomObject, yes] ]
   AWSEnabled: !Or [!Equals [!Ref EnableVMToConnectTask, yes], !Equals [!Ref EnableVMToEmail, yes] ]
   ConnectTasksEnabled: !Equals [!Ref EnableVMToConnectTask, yes]
-  AWSEmailEnabled: !Equals [!Ref EnableVMToEmail, yes]
 
 Resources:
   VMXCoreFlow:
