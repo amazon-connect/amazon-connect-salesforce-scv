@@ -19,9 +19,9 @@ For these deployments, the following AWS Lambda functions are provided:
 
 ### Contact Flow Examples
 Example contact flows have been provided to show you how to use the Extension Routing feature.
-- AWSSCV-ExtensionRouter-SCV: **(SCV ONLY)** Standard contact flow that uses the default Service Cloud Voice invoke REST Api Lambda funciton to query for the user by extension, then uses the awsscv_extension_routing_processor_%InstanceName% Lambda function to format the retrieved user ID to match the Amazon Connect user ID.
+- AWSSCV-ExtensionRouter-SCV: **(SCV ONLY)** Standard contact flow that uses the default Service Cloud Voice invoke REST Api Lambda function to query for the user by extension, then uses the awsscv_extension_routing_processor_%InstanceName% Lambda function to format the retrieved user ID to match the Amazon Connect user ID.
 - AWSSCV-AgentWithStreaming: **(SCV ONLY)** Agent whisper flow for Service Cloud Voice deployments that iniates realtime transcription (OPTIONAL)
-- AWSSCV-ExtensionRouter-CTI: **(CTI ONLY)** Standard contact flow that uses the default Service Cloud Voice invoke REST Api Lambda funciton to query for the user by extension, then uses the awsscv_extension_routing_query_%InstanceName% Lambda function to find the agent ID based on extension lookup. The Invoke API block must be modified to use the Salesforce field ID that stores the agent username.
+- AWSSCV-ExtensionRouter-CTI: **(CTI ONLY)** Standard contact flow that uses the default Service Cloud Voice invoke REST Api Lambda function to query for the user by extension, then uses the awsscv_extension_routing_query_%InstanceName% Lambda function to find the agent ID based on extension lookup. The Invoke API block must be modified to use the Salesforce field ID that stores the agent username.
 
 ## Prerequisites for Service Cloud Voice deployments
 1. Service Cloud Voice enabled
@@ -130,7 +130,7 @@ Example contact flows have been provided to show you how to use the Extension Ro
 12. Select **Create contact flow**
 13. In the upper-right, select the down arrow and choose **Import flow(beta)**
 14. Choose **Select** and navigate to the AWSSCV-ExtensionRouter-CTI flow you dowloaded, then select **Import**
-15. In the imported flow, find the Invoke AWS Lambda function block 
+15. In the imported flow, find the Invoke AWS Lambda function block
 16. Change that block to use the **awsscv_extension_routing_query_cti** function configured for your instance.
 17. In the same block, modify the sf_sso_object parameter value to match the Salesforce field that contains your Amazon Connect user name. The mos common configurations are:
   - Username
