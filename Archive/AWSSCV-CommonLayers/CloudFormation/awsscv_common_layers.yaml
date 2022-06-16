@@ -91,7 +91,7 @@ Resources:
               - - 'common_layers/'
                 - !Ref EXPTemplateVersion
                 - /zip/awsscv_common_node.zip
-          Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
+          Description: Provides dependencies code and functions for Node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
           LayerName: awsscv_common_node
           LicenseInfo: https://aws.amazon.com/apache-2-0
 Outputs:
@@ -99,5 +99,5 @@ Outputs:
     Description: ARN for the Python common layer
     Value: !Ref SCVCommonPythonLayer
   SCVCommonNodeLayerARN:
-    Description: ARN for the node.js common layer
+    Description: ARN for the Node.js common layer
     Value: !Ref SCVCommonNodeLayer
