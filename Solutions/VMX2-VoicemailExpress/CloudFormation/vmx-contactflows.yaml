@@ -16,16 +16,6 @@ Parameters:
     Type: String
   EnableVMToSalesforceCustomObject:
     Type: String
-  SalesforceCallbackPhoneField:
-    Type: String
-  SalesforceContactAttributesField:
-    Type: String
-  SalesforceVoicemailLinkField:
-    Type: String
-  VMToEmailDefaultFrom:
-    Type: String
-  VMToEmailDefaultTo:
-    Type: String
   VMTestAgentId:
     Type: String
   VMTestQueueARN:
