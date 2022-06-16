@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
-Description: Deploys and configures the triggers for the Vociemail Express solution.
+Description: Deploys the Voicemail Express Lambda functions.
 
 Parameters:
   EXPTemplateVersion:
@@ -131,7 +131,7 @@ Resources:
           - - 'sf_layers/'
             - !Ref EXPTemplateVersion
             - /zip/awsscv_common_node.zip
-      Description: Provides dependencies code and functions for node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
+      Description: Provides dependencies code and functions for Node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
       LayerName: !Join
         - ''
         - - 'common_node_layer_'
