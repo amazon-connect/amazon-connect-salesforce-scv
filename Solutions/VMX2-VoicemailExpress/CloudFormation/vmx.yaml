@@ -312,13 +312,8 @@ Resources:
         EnableVMToSalesforceCase: !Ref EnableVMToSalesforceCase
         EnableVMToSalesforceCustomObject: !Ref EnableVMToSalesforceCustomObject
         EXPTemplateVersion: !Ref EXPTemplateVersion
-        SalesforceCallbackPhoneField: !Ref SalesforceCallbackPhoneField
-        SalesforceContactAttributesField: !Ref SalesforceContactAttributesField
-        SalesforceVoicemailLinkField: !Ref SalesforceVoicemailLinkField
         VMTestAgentId: !Ref VMTestAgentId
         VMTestQueueARN: !Ref VMTestQueueARN
-        VMToEmailDefaultFrom: !Ref VMToEmailDefaultFrom
-        VMToEmailDefaultTo: !Ref VMToEmailDefaultFrom
       TemplateURL:
         !Join
         - ''
