@@ -318,7 +318,7 @@ Resources:
         VMTestAgentId: !Ref VMTestAgentId
         VMTestQueueARN: !Ref VMTestQueueARN
         VMToEmailDefaultFrom: !Ref VMToEmailDefaultFrom
-        VMToEmailDefaultTo: !Ref VMToEmailDefaultFrom
+        VMToEmailDefaultTo: !Ref VMToEmailDefaultTo
       TemplateURL:
         !Join
         - ''
