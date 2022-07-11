@@ -65,9 +65,9 @@ You can create Screen Flows based on your requirements, following is just an exa
 - Description: SCV Bootcamp - _name of the Recommendation_
 - Acceptance Label: Accept
 - Rejection Label: Reject
-- Action: SCV Bootcamp Create Case
-  ![Create Recommendation](/static/11/create_cl_nba_recommendation.png)
+- Action: test nba screen flow
+  [Create Recommendation](/Examples/AWSSCV-ContactLens-RealTime-NextBestAction/Docs/create_cl_nba_recommendation.png)
 
 4. Repeat step 3 to create recommendation, to be named sales, retain
 
-Next - [Test use case](./deployment_test.md)
+**Next** - [Test use case](./deployment_test.md)

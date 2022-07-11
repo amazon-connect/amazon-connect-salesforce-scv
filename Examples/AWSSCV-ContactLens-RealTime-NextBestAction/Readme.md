@@ -39,7 +39,7 @@ Following high level architecture diagram shows the all the components involved 
 
 In this example, we will demonstrate following Agent Assist capability for following business outcomes:
 
-- Sells: When customer mentions to know about new product or asks for an upgrade, Recommendation for sales will be surfaces on agent screen
+- Sales: When customer mentions to know about new product or asks for an upgrade, Recommendation for sales will be surfaces on agent screen
 - Retention: When customer express displeasure with the quality of service or complains, Recommendation for retention will be surfaced on agent screen
 
 To deploy this example please [click here](Docs/deployment_aws.md)
