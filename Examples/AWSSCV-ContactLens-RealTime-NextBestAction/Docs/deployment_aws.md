@@ -20,7 +20,7 @@ This CloudFormation template will create:
 
 **Steps**
 
-1. Click on this link - Download the :button[CloudFormation Template]{href="/CloudFormation/awsscv_real_time_cl_nba.yaml" action=download} and save file named awsscv_real_time_nba.yaml
+1. Click on [CL NBA CloudFormation](/Examples/AWSSCV-ContactLens-RealTime-NextBestAction/CloudFormation/awsscv_real_time_cl_nba.yaml) and save file named awsscv_real_time_nba.yaml
 2. In a new browser tab, login to the AWS Console (https://console.aws.amazon.com/console/home)
 3. Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region
    selector in the upper right and choosing the region
@@ -106,4 +106,4 @@ Salesforce provides set of example Contact Flows with Service Cloud Voice setup.
 4. Add appropriate description such as Contact Flow to test Contact Lens
 5. From Contact flow / IVR dropdown, select Contact Flow - **Sample SCV Inbound Flow with Transcription using Contact Lens**
 
-Next - ![Salesforce Configurations](deployment_salesforce.md)
+Next - [Salesforce Configurations](deployment_salesforce.md)

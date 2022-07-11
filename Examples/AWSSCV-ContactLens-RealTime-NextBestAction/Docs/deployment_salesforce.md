@@ -70,4 +70,4 @@ You can create Screen Flows based on your requirements, following is just an exa
 
 4. Repeat step 3 to create recommendation, to be named sales, retain
 
-Next - ![Test use case](./deployment_test.md)
+Next - [Test use case](./deployment_test.md)
