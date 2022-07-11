@@ -43,6 +43,8 @@ As we discussed, in the Agent Experience section, Voice Call Record page works a
 6. Save your work, then click **Activation**
 7. Review the app default assignments, and then save your work. The record page is now available in the Lightning Service Console.
 
+![Voice Call Record Page](./cl_rt_nba_vc_page.png)
+
 ### Salesforce Recommendations
 
 **Enable Screen Flow**
@@ -66,7 +68,7 @@ You can create Screen Flows based on your requirements, following is just an exa
 - Acceptance Label: Accept
 - Rejection Label: Reject
 - Action: test nba screen flow
-  [Create Recommendation](/Examples/AWSSCV-ContactLens-RealTime-NextBestAction/Docs/create_cl_nba_recommendation.png)
+  ![Create Recommendation](/Examples/AWSSCV-ContactLens-RealTime-NextBestAction/Docs/create_cl_nba_recommendation.png)
 
 4. Repeat step 3 to create recommendation, to be named sales, retain
 
