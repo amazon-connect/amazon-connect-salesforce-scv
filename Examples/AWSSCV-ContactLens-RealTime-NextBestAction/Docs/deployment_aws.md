@@ -101,5 +101,6 @@ Salesforce provides set of example Contact Flows with Service Cloud Voice setup.
 3. Click on a phone number you have claimed
 4. Add appropriate description such as Contact Flow to test Contact Lens
 5. From Contact flow / IVR dropdown, select Contact Flow - **Sample SCV Inbound Flow with Transcription using Contact Lens**
+6. Click Save
 
 **Next** - [Salesforce Configurations](deployment_salesforce.md)
