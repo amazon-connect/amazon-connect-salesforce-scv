@@ -1,15 +1,11 @@
-## Deployment
+### AWS and Amazon Connect Configuration
 
-In order to deploy this capability, following configurations need to be done in Salesforce and AWS.
+These AWS and Amazon Connect configurations will enable triggering out-of-the-box InvokeSalesforceRestApiFunction Lambda function to update custom field in Salesforce Voice Call Object whenever Contact Lens real-time rule is matched.
 
 **Important Notes**:
 
 1. The features and capabilities of this solution/example may be incorporated or replicated in future releases of Service Cloud Voice
 2. The code for this example is for non-production use only
-
-### AWS and Amazon Connect Configuration
-
-These AWS and Amazon Connect configurations will enable triggering out-of-the-box InvokeSalesforceRestApiFunction Lambda function to update custom field in Salesforce Voice Call Object whenever Contact Lens real-time rule is matched.
 
 ### CloudFormation Template
 
