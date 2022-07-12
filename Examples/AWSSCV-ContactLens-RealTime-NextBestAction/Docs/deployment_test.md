@@ -1,4 +1,4 @@
-## Use Case - Contact Lens driven Next Best Action
+## Test Use Case - Contact Lens driven Next Best Action
 
 1. Ensure that you have logged on to Salesforce Omni-Channel as agent
 2. Place a call on the phone number associated with **Sample SCV Inbound Flow with Transcription using**
