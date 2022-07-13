@@ -28,7 +28,7 @@ The repository is divided into five sections:
 ## Use Case Examples
 
 | Name                                                                                   | Description                                                                                                                                                 |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [AWSSCV-CrossAccountSMS](Examples/AWSSCV-CrossAccountSMS)                              | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. |
 | [AWSSCV-ExtensionRouter](Examples/AWSSCV-ExtensionRouting)                             | Configures a Dial-by-extension option for Amazon Connect.                                                                                                   |
 | [AWSSCV-FollowMeRouting](Examples/AWSSCV-FollowMeRouting)                              | Configures an option to route calls to an agent's mobile when they are not logged in, if configured.                                                        |
