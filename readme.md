@@ -12,28 +12,30 @@ The repository is divided into five sections:
 
 ## Common Resources
 
-| Name | Description |
-| ---- | ----------- |
-| [AWSSCV-SalesforceConfig](Common/AWSSCV-SalesforceConfig) | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This  will be used my multiple solutions in this repository.
+| Name                                                      | Description                                                                                                                                                                        |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [AWSSCV-SalesforceConfig](Common/AWSSCV-SalesforceConfig) | Directions and utilities to help create certificates, a connected app, login credentials, and gathers org information. This will be used my multiple solutions in this repository. |
 
 ## Solutions
 
-| Name | Description |
-| ---- | ----------- |
-| [VMX2 - Voicemail Express](Solutions/VMX2-VoicemailExpress) | Provides a basic voicemail capability to Amazon Connect with multiple delivery models. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
-| [AWSSCV-CTRLogger](Solutions/AWSSCV-CTRLogger) | Configures a Lambda function to log Amazon Connect contact trace records to CloudWatch, S3, or both |
-| [AWSSCV-AgentEventLogger](Solutions/AWSSCV-AgentEventLogger) | Configures a Lambda function to log agent event records to CloudWatch |
-| [AWSSCV-DashboardAlarms](Solutions/AWSSCV-DashboardAlarms) | Configures a dashboard and set of Cloudwatch alarms allowing administrators to receive notifications for various Amazon Connect metrics. |
+| Name                                                         | Description                                                                                                                                                                  |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [VMX2 - Voicemail Express](Solutions/VMX2-VoicemailExpress)  | Provides a basic voicemail capability to Amazon Connect with multiple delivery models. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
+| [AWSSCV-CTRLogger](Solutions/AWSSCV-CTRLogger)               | Configures a Lambda function to log Amazon Connect contact trace records to CloudWatch, S3, or both                                                                          |
+| [AWSSCV-AgentEventLogger](Solutions/AWSSCV-AgentEventLogger) | Configures a Lambda function to log agent event records to CloudWatch                                                                                                        |
+| [AWSSCV-DashboardAlarms](Solutions/AWSSCV-DashboardAlarms)   | Configures a dashboard and set of Cloudwatch alarms allowing administrators to receive notifications for various Amazon Connect metrics.                                     |
 
 ## Use Case Examples
 
-| Name                                                               | Description |
-| ------------------------------------------------------------------ | ----------- |
-| [AWSSCV-CrossAccountSMS](Examples/AWSSCV-CrossAccountSMS)          | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. |
-| [AWSSCV-ExtensionRouter](Examples/AWSSCV-ExtensionRouting)         | Configures a Dial-by-extension option for Amazon Connect.                                                                                                   |
-| [AWSSCV-FollowMeRouting](Examples/AWSSCV-FollowMeRouting)          | Configures an option to route calls to an agent's mobile when they are not logged in, if configured.                                                        |
-| [AWSSCV-DDR-Flow](Examples/AWSSCV-DataDirectedRouting-FlowRouting) | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations          |     |
-| [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions)        | Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm.                                                                               |
+| Name                                                                                   | Description                                                                                                                                                 |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| [AWSSCV-CrossAccountSMS](Examples/AWSSCV-CrossAccountSMS)                              | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. |
+| [AWSSCV-ExtensionRouter](Examples/AWSSCV-ExtensionRouting)                             | Configures a Dial-by-extension option for Amazon Connect.                                                                                                   |
+| [AWSSCV-FollowMeRouting](Examples/AWSSCV-FollowMeRouting)                              | Configures an option to route calls to an agent's mobile when they are not logged in, if configured.                                                        |
+| [AWSSCV-DDR-Flow](Examples/AWSSCV-DataDirectedRouting-FlowRouting)                     | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations          |     |
+| [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions)                            | Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm.                                                                               |
+| [AWSSCV-ContactLens-PostCallAnalysis](Examples/AWSSCV-ContactLens-PostCallAnalysis)    | Demonstrates how to integrate Contact Lens post call analysis with Service Cloud Voice.                                                                     |
+| [AWSSCV-ContactLens-RealTime-NBA](Examples/AWSSCV-ContactLens-RealTime-NextBestAction) | Demonstrates how to driven Next Best Action in Salesforce based on Amazon Connect Contact Lens.                                                             |
 
 ## Launch Packs
 
@@ -42,15 +44,17 @@ The repository is divided into five sections:
 | [Starter Kit](Stacks/AWSSCV-LaunchPack) | A single CloudFormation stack, including nested stacks, providing a combination of solutions and examples including: Voicemail Express, CTR Logger, Dashboard Alarms, and Sample Contact Flows. |
 
 ## AWS Best Practices for Service Cloud Voice
-| Name | Description |
-| ---- | ----------- |
-| [Overflow Routing](BestPractices/OverflowRouting.md) |Describes best practices for dealing with spikes in call volumes. Specifically describes overflow routing scenarios to keep data clean and reduce administrative overhead.|
+
+| Name                                                 | Description                                                                                                                                                                |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Overflow Routing](BestPractices/OverflowRouting.md) | Describes best practices for dealing with spikes in call volumes. Specifically describes overflow routing scenarios to keep data clean and reduce administrative overhead. |
 
 ## Archive - Deprecated Solutions
-| Name | Description |
-| ---- | ----------- |
+
+| Name                                                        | Description                                                                                                                                                                                           |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [AWSSCV-Voicemail Express](Archive/AWSSCV-VoicemailExpress) | **DEPRECATED - Use VMX2** Provides a basic voicemail capability to Amazon Connect in Salesforce configurations. Designed specifically to function in the AWS Accounts created for Service Cloud Voice |
-| [AWSSCV-CommonLayers](Archive/AWSSCV-CommonLayers) | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce |
+| [AWSSCV-CommonLayers](Archive/AWSSCV-CommonLayers)          | Lambda layers to provides dependencies, code, and functions for nodejs and python Lambda functions that augment the Service Cloud Voice offering from Salesforce                                      |
 
 ## Contributions
 

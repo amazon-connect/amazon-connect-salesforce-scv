@@ -41,6 +41,8 @@ This CloudFormation template will create:
 14. Scroll to the bottom and select Create Stack
 15. After a minute or two, the stack should complete
 
+_Note - please ensure that InvokeSalesforceRestApiFunction lambda function is setup properly and working, more information on setup - https://developer.salesforce.com/docs/atlas.en-us.voice_developer_guide.meta/voice_developer_guide/voice_lambda_invokesalesforcerestapi.htm_
+
 ### Setup Contact Lens real-time rules
 
 Contact Lens real-time rules can be matched based on one or more conversation characteristics such as specific spoken phrases, sentiment, contact attributes etc.
