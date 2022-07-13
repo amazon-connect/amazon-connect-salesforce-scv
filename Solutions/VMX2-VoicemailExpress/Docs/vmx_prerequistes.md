@@ -39,7 +39,7 @@ There are two primary Salesforce delivery modes: Case and Custom. For cases, we 
 1.	Log in into your Salesforce org and go to Setup
 2.	In the Quick Find field type `Object`
 3.	Select Object Manager from the results
-4.	Find and select Case
+4.	Find and select either Case or whichever custom object you are using for voicemail delivery.
 5.	Choose Fields & Relationships
 6.	Select New
 7.	Choose Phone, and select Next
@@ -53,7 +53,7 @@ There are two primary Salesforce delivery modes: Case and Custom. For cases, we 
 1.	Log in into your Salesforce org and go to Setup
 2.	In the Quick Find field type `Object`
 3.	Select Object Manager from the results
-4.	Find and select Case
+4.	Find and select either Case or whichever custom object you are using for voicemail delivery.
 5.	Choose Fields & Relationships
 6.	Select New
 7.	Choose Text Area (Rich), then select Next
@@ -68,7 +68,7 @@ There are two primary Salesforce delivery modes: Case and Custom. For cases, we 
 1.	Log in into your Salesforce org and go to Setup
 2.	In the Quick Find field type `Object`
 3.	Select Object Manager from the results
-4.	Find and select your custom object
+4.	Find and select either Case or whichever custom object you are using for voicemail delivery.
 5.	Choose Fields & Relationships
 6.	Select New
 7.	Choose Text Area (Rich), then select Next
