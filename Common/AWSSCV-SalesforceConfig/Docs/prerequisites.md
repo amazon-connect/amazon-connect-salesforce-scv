@@ -43,17 +43,19 @@ Follow the following steps to prepare your Salesforce Org before running the Clo
 7.  Select **Use digital signatures**
 8.  Select Choose File, and upload the server.crt file you created earlier
 9.	In the Selected OAuth Scopes section, select the following and add them to the Selected OAuth Scopes:
-    * Access and manage your data (api)
-    * Perform requests on your behalf at any time (refresh_token, offline_access)
-    * Provide access to your data via the Web (web)
+    * Manage user data via APIs (api)
+    * Perform requests at any time (refresh_token, offline_access)
+    * Manage user data via Web browsers (web)
 10.	Select Save at the bottom of the screen.
 11.	Select Continue on the New Connected App page
 12.	You should now be at the new app’s page
-13.	**Copy the value for Consumer Key to your notepad**
-14.	At the top of the detail page, select Manage
-15.	On the Connected App Detail page, select the Edit Policies button
-16.	Set Permitted Users to Admin approved users are pre-authorized and choose OK on the pop-up dialog
-17.	Select Save
+13. Select Manage Consumer Details, this will open a new tab/window and require you to revalidate your login.
+14. Once you verify your identity, you will be at the details page.
+15.	**Copy the value for Consumer Key to your notepad**
+16.	At the top of the detail page, select Manage
+17.	On the Connected App Detail page, select the Edit Policies button
+18.	Set Permitted Users to Admin approved users are pre-authorized and choose OK on the pop-up dialog
+19.	Select Save
 
 ## Create a new user
 1.  In the Quick Find field, type `users` then select Users from the results

@@ -1,4 +1,4 @@
-# Version: 2022.03.23
+# Version: 2022.04.15
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -47,10 +47,16 @@ def vm_to_sfcase(writer_payload):
     # Create a case in Salesforce
     try:
         if writer_payload['entity_type'] == 'agent':
+
             # Validate the agent's Salesforce ID, and correct, if necesary
             sf_agent_id = writer_payload['json_attributes']['entity_id']
+            scv_agent_id_format = sf_agent_id.count('@')
 
-            if not sf_agent_id.startswith('005'):
+            if scv_agent_id_format == 1:
+                sf_agent_id = sf_agent_id.split('@')[0]
+            if scv_agent_id_format == 2:
+                sf_agent_id = sf_agent_id.split('@')[1]
+            else:
                 try:
                     get_agent_id = sf.query("SELECT Id FROM User WHERE Alias = '" + sf_agent_id + "' LIMIT 1")
                     sf_agent_id = get_agent_id[0]['Id']
@@ -58,8 +64,6 @@ def vm_to_sfcase(writer_payload):
                     logger.error(e)
                     logger.error('Record {0} Result: Failed to validate Salesforce User ID'.format(writer_payload['loop_counter']))
                     return 'fail'
-            if '@' in sf_agent_id:
-                sf_agent_id = sf_agent_id.split('@')[0]
 
             data = {
                 'Subject': 'Direct voicemail for: ' + writer_payload['json_attributes']['entity_name'] + ' from : ' + writer_payload['json_attributes']['vm_from'],

@@ -45,7 +45,7 @@ Metadata:
       sfOrgId:
         default: "What is your Salesforce Orgainization ID?"
       sfMode:
-        default: "Which type of Salesforce org is this? Dev, Prod, or Sandbox?"
+        default: "Which type of Salesforce org is this? Developer(DEV), Government Cloud(GOV), Government Cloud Sandbox (GOVBOX), Standard Production(PROD), or Standard Sandbox(SANDBOX)?"
       sfVersion:
         default: "What is the Salesforce.com API version that your org is currently on?"
       sfUsername:
@@ -104,7 +104,7 @@ Parameters:
     Description: This can be found in Salesforce Setup > My Domain > My Domain Details.
   sfVersion:
     Type: String
-    Default: v53.0
+    Default: v55.0
     Description: The current API version number, formatted as follows - v53.0. This can be found in Salesforce Setup > Apex Classes > New > Version Settings > Version
   sfPrivateKey:
     Type: String
@@ -115,8 +115,10 @@ Parameters:
     Type: String
     Default: PROD
     AllowedValues:
-      - PROD
       - DEV
+      - GOV
+      - GOVBOX
+      - PROD
       - SANDBOX
     Description: Select the appropriate org type.
   EXPDevBucketPrefix:
@@ -125,7 +127,7 @@ Parameters:
     Description: Not required and only used for development purposes.
   EXPTemplateVersion:
     Type: String
-    Default: 2022.03.23
+    Default: 2022.08.01
     Description: Template version. DO NOT CHANGE.
 
 Resources:
@@ -213,7 +215,7 @@ Resources:
             S3Key:
               !Join
               - ''
-              - - 'sf_layers/'
+              - - 'sf_config/'
                 - !Ref EXPTemplateVersion
                 - /zip/awsscv_common_python.zip
           Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
@@ -239,7 +241,7 @@ Resources:
             S3Key:
               !Join
               - ''
-              - - 'sf_layers/'
+              - - 'sf_config/'
                 - !Ref EXPTemplateVersion
                 - /zip/awsscv_common_node.zip
           Description: Provides dependencies code and functions for Node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce

@@ -101,7 +101,7 @@ Resources:
         S3Key:
           !Join
           - ''
-          - - 'sf_layers/'
+          - - 'sf_config/'
             - !Ref EXPTemplateVersion
             - /zip/awsscv_common_python.zip
       Description: Provides dependencies code and functions for Python Lambda functions that augment the Service Cloud Voice offering from Salesforce
@@ -128,7 +128,7 @@ Resources:
         S3Key:
           !Join
           - ''
-          - - 'sf_layers/'
+          - - 'sf_config/'
             - !Ref EXPTemplateVersion
             - /zip/awsscv_common_node.zip
       Description: Provides dependencies code and functions for Node.js Lambda functions that augment the Service Cloud Voice offering from Salesforce
