@@ -8,3 +8,6 @@ It is a two step process to deploy Salesforce Config. Please perform the followi
 
 1.  [Perform the prerequisite configuration](Docs/prerequisites.md)
 2.  [Deploy the template and validate](Docs/installation.md)
+
+**Current Published Version:** 2022.08.01
+Current published version is the version of the code and templates that has been deployed to our S3 buckets 

@@ -34,5 +34,5 @@ Once Voicemail Express has been deployed, you can learn more about the different
 
 Finally, some basic troubleshooting steps can be found on the [Troubleshooting Common Voicemail Issues](Docs/vmx_troubleshooting.md) page.
 
-**CURRENT RELEASED VERSION:** 2022.03.07
-Current released version is the version of the code and templates that has been deployed to our S3 buckets 
+**Current Published Version:** 2022.08.01
+Current published version is the version of the code and templates that has been deployed to our S3 buckets

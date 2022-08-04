@@ -1,4 +1,4 @@
-# Version: 2022.03.23
+# Version: 2022.04.15
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -28,7 +28,7 @@ connect_client = boto3.client('connect')
 ses_client = boto3.client('sesv2')
 
 def vm_to_ses_email(writer_payload):
-    
+
     logger.info('Beginning Voicemail to email')
     logger.debug(writer_payload)
 
