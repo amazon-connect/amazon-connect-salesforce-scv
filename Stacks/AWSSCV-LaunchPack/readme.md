@@ -5,9 +5,8 @@ Deployment of the Starter Kit handles all of the required dependencies and the o
 
 Included in the Starter Kit launch pack are:
 
-* [AWSSCV-CommonLayers](../../Common/AWSSCV-CommonLayers/readme.md)
+
 * [AWSSCV-SalesforceConfig](../../Common/AWSSCV-SalesforceConfig/readme.md)
-* [AWSSCV-VoicemailExpress](../../Solutions/AWSSCV-VoicemailExpress/readme.md)
 * [AWSSCV-SampleContactFlows](../../Examples/AWSSCV-SampleContactFlows/readme.md)
 * [AWSSCV-CTRLogger](../../Solutions/AWSSCV-CTRLogger/readme.md)
 * [AWSSCV-DashboardAlarms](../../Solutions/AWSSCV-DashboardAlarms/readme.md)
