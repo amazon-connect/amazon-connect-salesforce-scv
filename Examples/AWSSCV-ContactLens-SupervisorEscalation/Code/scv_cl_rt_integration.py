@@ -41,7 +41,7 @@ def lambda_handler(event, context):
     # Setting up data to insert Contact Lens category into corresponding field, Current_Call_Category (__c will be automatically added by Salesforce)in Salesforce Voice Call Object.
 
     try:
-        Current_Call_Category__c = event['detail']['actionName']
+        CL_Call_Category = event['detail']['actionName']
         contactARN = event['detail']['contactArn']
         instanceARN = event['detail']['instanceArn']
         contactId = contactARN.partition('/contact/')[2]
@@ -49,7 +49,7 @@ def lambda_handler(event, context):
         logger.debug(contactARN)
         logger.debug(contactId)
         logger.debug(instanceId)
-        logger.debug(Current_Call_Category__c)
+        logger.debug(CL_Call_Category)
         logger.info("call category extracted from Contact Lens payload")
 
     except Exception as e:
@@ -79,7 +79,7 @@ def lambda_handler(event, context):
                     "methodName": "updateRecord",
                     "objectApiName": "VoiceCall",
                     "recordId": voiceCallId,
-                    "Current_Call_Category__c": Current_Call_Category__c
+                    "Auto_Supervisor_Escalation__c": 'True'
                 }
             }
         }

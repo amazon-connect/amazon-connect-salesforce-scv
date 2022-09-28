@@ -9,8 +9,6 @@ These AWS and Amazon Connect configurations will enable triggering out-of-the-bo
 
 ### CloudFormation Template
 
-_Note_ if you have installed asset **AWSSCV-ContactLens-RealTime-NextBestAction** from this GitHub Repository then you can skip steps from this section
-
 This CloudFormation template will create:
 
 1. EventBridge Rule: This rule is triggered by Amazon Connect when Contact Lens real-time rule matches
