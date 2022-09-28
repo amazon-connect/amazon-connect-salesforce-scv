@@ -21,9 +21,9 @@ To install above Salesforce components, you need to install Salesforce Package c
 
 **Steps**
 
-1. Click on this link - https://login.salesforce.com/packaging/installPackage.apexp?p0=04t8d000000DtH8&isdtp=p1
+1. Click on this link - https://login.salesforce.com/packaging/installPackage.apexp?p0=04t8d000000E5mW
 2. Enter your Salesforce credentials
-3. For Package Password : SCVBootCamp123
+3. For Package Password : SCVAsset123
 4. Leave everything else as is and click on Install
 5. Ensure that you will get success message in few minutes
 

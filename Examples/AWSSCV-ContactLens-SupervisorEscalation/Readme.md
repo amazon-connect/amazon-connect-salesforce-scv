@@ -4,7 +4,7 @@
 
 More information - https://help.salesforce.com/s/articleView?id=release-notes.rn_voice_agent_flag.htm&type=5&release=238
 
-**Supervisor Escalation using Amazon Connect Contact Lens** Contact Lens for Amazon Connect, a feature of Amazon Connect, helps you recognise the sentiment and categoise customer conversations in real time to understand the voice of the customer. In this example, first we are using Contact Lens rule to determine a scenario where agent needs assistance based on the ongoing conversation between agent and the caller, for example - if customer sentiment is negative for 60 seconds then automatically escalate supervisor by rasing a flag provided in Salesforce SCV.
+**Supervisor Escalation using Amazon Connect Contact Lens** Contact Lens for Amazon Connect, a feature of Amazon Connect, helps you recognize the sentiment and categorize customer conversations in real time to understand the voice of the customer. In this example, first we are using Contact Lens rule to determine a scenario where agent needs assistance based on the ongoing conversation between agent and the caller, for example - if customer sentiment is negative for 60 seconds then automatically escalate supervisor by rasing a flag provided in Salesforce SCV.
 
 ## High level call flow
 

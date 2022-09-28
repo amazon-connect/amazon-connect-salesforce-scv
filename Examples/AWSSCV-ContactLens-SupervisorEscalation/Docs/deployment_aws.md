@@ -9,6 +9,8 @@ These AWS and Amazon Connect configurations will enable triggering out-of-the-bo
 
 ### CloudFormation Template
 
+_Note_ if you have installed asset **AWSSCV-ContactLens-RealTime-NextBestAction** from this GitHub Repository then you can skip steps from this section
+
 This CloudFormation template will create:
 
 1. EventBridge Rule: This rule is triggered by Amazon Connect when Contact Lens real-time rule matches
@@ -16,7 +18,7 @@ This CloudFormation template will create:
 
 **Steps**
 
-1. Click on [CL NBA CloudFormation](/Examples/AWSSCV-ContactLens-SupervisorEscalation/CloudFormation/awsscv_real_time_cl_integration.yaml) and save file named awsscv_real_time_cl_integration.yaml
+1. Click on [CL Supervisor Escalation CloudFormation](/Examples/AWSSCV-ContactLens-SupervisorEscalation/CloudFormation/awsscv_real_time_cl_integration.yaml) and save file named awsscv_real_time_cl_integration.yaml
 2. In a new browser tab, login to the AWS Console (https://console.aws.amazon.com/console/home)
 3. Make sure you are in the same region as your Amazon Connect instance. You can set the region by expanding the region
    selector in the upper right and choosing the region

@@ -36,21 +36,21 @@ logger.setLevel(logging.getLevelName(
 def lambda_handler(event, context):
 
     logger.debug(event)
-    logger.info("nba lambda invoked")
+    logger.info("SCV CL integration lambda invoked")
 
     # Setting up data to insert Contact Lens category into corresponding field, Current_Call_Category (__c will be automatically added by Salesforce)in Salesforce Voice Call Object.
 
     try:
         Current_Call_Category__c = event['detail']['actionName']
         contactARN = event['detail']['contactArn']
-        instaceARN = event['detail']['instanceArn']
+        instanceARN = event['detail']['instanceArn']
         contactId = contactARN.partition('/contact/')[2]
-        instanceId = instaceARN.partition('/')[2]
+        instanceId = instanceARN.partition('/')[2]
         logger.debug(contactARN)
         logger.debug(contactId)
         logger.debug(instanceId)
         logger.debug(Current_Call_Category__c)
-        logger.info("call category extracted from Contact Lens paylaod")
+        logger.info("call category extracted from Contact Lens payload")
 
     except Exception as e:
         logger.debug("Failed to extract information from Contact Lens payload")
@@ -63,7 +63,7 @@ def lambda_handler(event, context):
             InitialContactId=contactId
         )
         logger.debug(response)
-        logger.info("Contact attributes recevied")
+        logger.info("Contact attributes received")
 
     except Exception as e:
         logger.debug("Failed to get contact attributes from Connect Contact")
