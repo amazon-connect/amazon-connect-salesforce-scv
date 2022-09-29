@@ -40,7 +40,7 @@ def lambda_handler(event, context):
     try:
         sf_sso_object = event['Details']['Parameters']['sf_sso_object']
         sf_extension = event['Details']['Parameters']['sf_extension']
-        sf_query = "SELECT Id, " + sf_sso_object + " FROM User WHERE Extension ='" + sf_extension + "'"
+        sf_query = "SELECT Id, " + sf_sso_object + " FROM User WHERE IsActive = TRUE AND Extension ='" + sf_extension + "'"
 
         # Login to Salesforce
         try:
