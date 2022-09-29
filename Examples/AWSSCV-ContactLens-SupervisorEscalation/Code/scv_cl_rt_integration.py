@@ -1,7 +1,7 @@
-# Version: 2022.06.06
+# Version: 2022.09.27
 """
 **********************************************************************************************************************
- *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
+ *  Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
  *                                                                                                                    *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated      *
  *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation   *
@@ -16,7 +16,7 @@
  **********************************************************************************************************************
 """
 # This lambda function is invoked when Contact Lens real-time rule triggers mapped EventBridge event.
-# It inserts Contact Lens matched category in corresponding field, Current_Call_Category in Voice Call Object of Salesforce.
+# It checks whether Contact Lens matched category is for supervisor escalation and if so then updates field in the Voice Call object
 
 
 import json
@@ -37,20 +37,26 @@ def lambda_handler(event, context):
 
     logger.debug(event)
     logger.info("SCV CL integration lambda invoked")
+    CL_SuperVisor_Escalation_Category_Pattern = 'supesc'
 
-    # Setting up data to insert Contact Lens category into corresponding field, Current_Call_Category (__c will be automatically added by Salesforce)in Salesforce Voice Call Object.
+    # Check whether Contact Lens current category is for supervisor escalation, if it is then Auto_Supervisor_Escalation__c in the Voice Call object is updated with the Contact Lens Category name
 
     try:
         CL_Call_Category = event['detail']['actionName']
-        contactARN = event['detail']['contactArn']
-        instanceARN = event['detail']['instanceArn']
-        contactId = contactARN.partition('/contact/')[2]
-        instanceId = instanceARN.partition('/')[2]
-        logger.debug(contactARN)
-        logger.debug(contactId)
-        logger.debug(instanceId)
-        logger.debug(CL_Call_Category)
-        logger.info("call category extracted from Contact Lens payload")
+        logger.info('Call Category: ' + CL_Call_Category)
+        if CL_SuperVisor_Escalation_Category_Pattern in CL_Call_Category:
+            contactARN = event['detail']['contactArn']
+            instanceARN = event['detail']['instanceArn']
+            contactId = contactARN.partition('/contact/')[2]
+            instanceId = instanceARN.partition('/')[2]
+            logger.debug(contactARN)
+            logger.debug(contactId)
+            logger.debug(instanceId)
+            logger.debug(CL_Call_Category)
+            logger.info("call category extracted from Contact Lens payload")
+        else:
+            logger.info('Not supervisor escalation category')
+            return 'success'
 
     except Exception as e:
         logger.debug("Failed to extract information from Contact Lens payload")
@@ -72,14 +78,14 @@ def lambda_handler(event, context):
 
     try:
         voiceCallId = response['Attributes']['voiceCallId']
-        logger.debug(voiceCallId)
+        logger.debug('Vocie CallID: ' + voiceCallId)
         payload = {
             "Details": {
                 "Parameters": {
                     "methodName": "updateRecord",
                     "objectApiName": "VoiceCall",
                     "recordId": voiceCallId,
-                    "Auto_Supervisor_Escalation__c": 'True'
+                    "Auto_Supervisor_Escalation__c": CL_Call_Category
                 }
             }
         }

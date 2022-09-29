@@ -12,7 +12,7 @@ These AWS and Amazon Connect configurations will enable triggering out-of-the-bo
 This CloudFormation template will create:
 
 1. EventBridge Rule: This rule is triggered by Amazon Connect when Contact Lens real-time rule matches
-2. scv_cl_rt_nba lambda function: This lambda function is triggered by EventBridge rule set for Contact Lens real-time. This function updates custom field called "Current_Call_Category\_\_c" in Salesforce Voice Call Object, using InvokeSalesforceRestApiFunction lambda function
+2. scv_cl_rt_nba lambda function: This lambda function is triggered by EventBridge rule set for Contact Lens real-time. This function updates custom field called "Auto_Supervisor_Escalation\_\_c" in Salesforce Voice Call Object, using InvokeSalesforceRestApiFunction lambda function
 
 **Steps**
 
