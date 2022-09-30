@@ -27,16 +27,15 @@ The repository is divided into five sections:
 
 ## Use Case Examples
 
-| Name                                                                                                  | Description                                                                                                                                                 |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
-| [AWSSCV-CrossAccountSMS](Examples/AWSSCV-CrossAccountSMS)                                             | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. |
-| [AWSSCV-ExtensionRouter](Examples/AWSSCV-ExtensionRouting)                                            | Configures a Dial-by-extension option for Amazon Connect.                                                                                                   |
-| [AWSSCV-FollowMeRouting](Examples/AWSSCV-FollowMeRouting)                                             | Configures an option to route calls to an agent's mobile when they are not logged in, if configured.                                                        |
-| [AWSSCV-DDR-Flow](Examples/AWSSCV-DataDirectedRouting-FlowRouting)                                    | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations          |     |
-| [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions)                                           | Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm.                                                                               |
-| [AWSSCV-ContactLens-PostCallAnalysis](Examples/AWSSCV-ContactLens-PostCallAnalysis)                   | Demonstrates how to integrate Contact Lens post call analysis with Service Cloud Voice.                                                                     |
-| [AWSSCV-ContactLens-RealTime-NBA](Examples/AWSSCV-ContactLens-RealTime-NextBestAction)                | Demonstrates how to driven Next Best Action in Salesforce based on Amazon Connect Contact Lens.                                                             |
-| [AWSSCV-ContactLens-RealTime-Supervisor-Escalation](Examples/AWSSCV-ContactLens-SupervisorEscalation) | Demonstrates how to driven Next Best Action in Salesforce based on Amazon Connect Contact Lens.                                                             |
+| Name                                                                                   | Description                                                                                                                                                 |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| [AWSSCV-CrossAccountSMS](Examples/AWSSCV-CrossAccountSMS)                              | Uses Lambda and cross account permissions to allow Salesforce Service Cloud Voice provisioned Amazon Connect instances to utilize SNS to send SMS messages. |
+| [AWSSCV-ExtensionRouter](Examples/AWSSCV-ExtensionRouting)                             | Configures a Dial-by-extension option for Amazon Connect.                                                                                                   |
+| [AWSSCV-FollowMeRouting](Examples/AWSSCV-FollowMeRouting)                              | Configures an option to route calls to an agent's mobile when they are not logged in, if configured.                                                        |
+| [AWSSCV-DDR-Flow](Examples/AWSSCV-DataDirectedRouting-FlowRouting)                     | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations          |     |
+| [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions)                            | Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm.                                                                               |
+| [AWSSCV-ContactLens-PostCallAnalysis](Examples/AWSSCV-ContactLens-PostCallAnalysis)    | Demonstrates how to integrate Contact Lens post call analysis with Service Cloud Voice.                                                                     |
+| [AWSSCV-ContactLens-RealTime-NBA](Examples/AWSSCV-ContactLens-RealTime-NextBestAction) | Demonstrates how to driven Next Best Action in Salesforce based on Amazon Connect Contact Lens.                                                             |
 
 ## Launch Packs
 
