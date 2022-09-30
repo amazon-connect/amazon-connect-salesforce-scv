@@ -26,6 +26,7 @@ The repository is divided into five sections:
 | [AWSSCV-DashboardAlarms](Solutions/AWSSCV-DashboardAlarms)   | Configures a dashboard and set of Cloudwatch alarms allowing administrators to receive notifications for various Amazon Connect metrics.                                     |
 
 ## Use Case Examples
+## Use Case Examples
 
 | Name                                                                                   | Description                                                                                                                                                 |
 | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -36,7 +37,7 @@ The repository is divided into five sections:
 | [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions)                            | Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm.                                                                               |
 | [AWSSCV-ContactLens-PostCallAnalysis](Examples/AWSSCV-ContactLens-PostCallAnalysis)    | Demonstrates how to integrate Contact Lens post call analysis with Service Cloud Voice.                                                                     |
 | [AWSSCV-ContactLens-RealTime-NBA](Examples/AWSSCV-ContactLens-RealTime-NextBestAction) | Demonstrates how to drive Next Best Action in Salesforce based on Amazon Connect Contact Lens.                                                             |
- [AWSSCV-ContactLens-RealTime-Supervisor-Escalation](Examples/AWSSCV-ContactLens-SupervisorEscalation) | Demonstrates how to automatically escalate to supervisor in Salesforce based on Amazon Connect Contact Lens.                                                             |
+ [AWSSCV-ContactLens-RealTime-Supervisor-Escalation](Examples/AWSSCV-ContactLens-SupervisorEscalation) | Demonstrates how to automatically escalate to supervisor in Salesforce based on Amazon Connect Contact Lens.                                             |
 
 ## Launch Packs
 
