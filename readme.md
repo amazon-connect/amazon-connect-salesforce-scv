@@ -35,7 +35,8 @@ The repository is divided into five sections:
 | [AWSSCV-DDR-Flow](Examples/AWSSCV-DataDirectedRouting-FlowRouting)                     | Demonstrates how data from Salesforce can be used to influence routing in Amazon Connect. Uses a flow in Salesforce to return routing destinations          |     |
 | [AWSSCV-WarmingFunctions](Examples/AWSSCV-WarmingFunctions)                            | Demonstrates how to use Amazon EventBridge to keep AWS Lambda functions warm.                                                                               |
 | [AWSSCV-ContactLens-PostCallAnalysis](Examples/AWSSCV-ContactLens-PostCallAnalysis)    | Demonstrates how to integrate Contact Lens post call analysis with Service Cloud Voice.                                                                     |
-| [AWSSCV-ContactLens-RealTime-NBA](Examples/AWSSCV-ContactLens-RealTime-NextBestAction) | Demonstrates how to driven Next Best Action in Salesforce based on Amazon Connect Contact Lens.                                                             |
+| [AWSSCV-ContactLens-RealTime-NBA](Examples/AWSSCV-ContactLens-RealTime-NextBestAction) | Demonstrates how to drive Next Best Action in Salesforce based on Amazon Connect Contact Lens.                                                             |
+ [AWSSCV-ContactLens-RealTime-Supervisor-Escalation](Examples/AWSSCV-ContactLens-SupervisorEscalation) | Demonstrates how to automatically escalate to supervisor in Salesforce based on Amazon Connect Contact Lens.                                                             |
 
 ## Launch Packs
 

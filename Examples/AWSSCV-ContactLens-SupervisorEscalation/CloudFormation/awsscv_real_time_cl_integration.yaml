@@ -1,0 +1,191 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Deploys the AWS Lambda functions required to insert Contact Lens real-time analysis into Salesforce Voice Call Object
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "1. Amazon Connect"
+        Parameters:
+          - AWSRegion
+          - AmazonConnectInstanceARN
+          
+      -
+        Label:
+          default: "2. Service Cloud Voice Integration"
+        Parameters:
+          - InvokeSalesforceRestApiFunction
+          - LambdaLoggingLevel
+      -
+              Label:
+                default: "3. Advanced Settings (for Development only)"
+              Parameters:
+                - EXPDevBucketPrefix
+                - EXPTemplateVersion
+    ParameterLabels:
+      AWSRegion:
+        default: "Which AWS region is your Amazon Connect Instance deployed to?"
+      AmazonConnectInstanceARN:
+        default: "What is Amazon Connect Instance ARN?"
+      InvokeSalesforceRestApiFunction:
+        default: "Provide ARN of the out-of-the-box Service Cloud Voice REST API Lambda"
+      LambdaLoggingLevel:
+        default: "For the included AWS Lambda functions, what should the default logging level be set to?"
+
+Parameters:
+
+  AWSRegion:
+    Type: String
+    Default: us-east-1
+    AllowedValues:
+      - us-east-1
+      - us-west-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - eu-central-1
+      - eu-west-2
+      - ca-central-1
+      - af-south-1 
+    Description: The region code that you are deploying to. This should be the same region that your Amazon Connect instance is deployed to. MAKE SURE that you have your console currently set to this region.
+
+  AmazonConnectInstanceARN:
+    Type: String
+    Default: REPLACEME - Looks like arn:aws:connect:us-west-2:12345678:instance/abcd123-1234-12334-1a1b-abc123
+    Description: Amazon Connect Instance ARN
+
+  InvokeSalesforceRestApiFunction:
+    Type: String
+    Default: REPLACEME - Looks like arn:aws:lambda:us-west-2:12345678:function:abcdefg-InvokeSalesforceRestApiFunction
+    Description: ARN of the out-of-the-box Invoke Salesforce Rest Api Lambda
+
+  LambdaLoggingLevel:
+    Type: String
+    Default: INFO
+    AllowedValues:
+     - CRITICAL
+     - ERROR 
+     - WARNING 
+     - INFO 
+     - DEBUG
+
+  EXPDevBucketPrefix:
+    Type: String
+    Default: ''
+    Description: Not required and only used for development purposes.
+
+  EXPTemplateVersion:
+    Type: String
+    Default: 2022-09-27
+    Description: Template version. DO NOT CHANGE.
+
+Resources:
+
+  awsscvclrtlambda:
+    Type: AWS::Lambda::Function
+    DependsOn: awsscvclrtrole
+    Properties:
+      Code:
+        S3Bucket:
+          !Join
+          - ''
+          - - !Ref EXPDevBucketPrefix
+            - 'connectbd-sc-'
+            - !Ref AWSRegion
+        S3Key: 
+          !Join
+          - ''
+          - - 'clrtintegration/'
+            - !Ref EXPTemplateVersion
+            - '/zip/scv-cl-real-time-integration.zip'
+      Description: Lambda function to extract Contact Lens information and insert into Salesforce Voice Call Object
+      Environment:
+        Variables:
+          InvokeSalesforceRestApiFunctionARN:
+            Ref: InvokeSalesforceRestApiFunction
+          lambda_logging_level:
+            Ref: LambdaLoggingLevel
+      FunctionName:
+        !Join
+        - ''
+        - - 'scv_cl_rt_'
+          - !Ref AWS::StackName
+      Handler: scv_cl_rt_integration.lambda_handler
+      Role: !GetAtt awsscvclrtrole.Arn
+      Runtime: python3.9
+      Timeout: 8
+
+  awsscvclrtlambdainvokepolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Provides read access to Contact Lens invoke Rest API Lambda function
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'lambda:InvokeFunction'
+            Resource:
+              - !Ref InvokeSalesforceRestApiFunction
+
+  awsscvreadcontactpolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - "connect:GetContactAttributes"
+            Resource: !Join
+              - ""
+              - - !Ref AmazonConnectInstanceARN
+                - "/contact/*"
+  
+  awsscvclrtrole:
+      Type: AWS::IAM::Role
+      DependsOn:
+        - awsscvclrtlambdainvokepolicy
+        - awsscvreadcontactpolicy
+      Properties:
+        RoleName: !Join ["-", ["awsscv_cl_rt_role", !Ref AWS::StackName]]
+        Description: Provides access to Rest API Lambda function
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - !Ref awsscvclrtlambdainvokepolicy
+          - !Ref awsscvreadcontactpolicy
+  
+  awsscvclrule:
+        Type: "AWS::Events::Rule"
+        DependsOn: 
+          - awsscvclrtlambda
+        Properties:
+          Description: "Rule to trigger lambda when Contact Lens rule matches"
+          Name: !Join ["-", ["awsscv_cl_rt_rule", !Ref AWS::StackName]]
+          EventPattern: {"source": ["aws.connect"],"detail-type": ["Contact Lens Realtime Rules Matched"]}
+          State: "ENABLED"
+          Targets:
+            - Arn: !GetAtt awsscvclrtlambda.Arn
+              Id: cl-rule-match
+
+  awsscvcleventstounvokelambda: 
+        Type: AWS::Lambda::Permission
+        DependsOn: 
+                - awsscvclrule
+        Properties: 
+          FunctionName: !GetAtt awsscvclrtlambda.Arn
+          Action: "lambda:InvokeFunction"
+          Principal: "events.amazonaws.com"
+          SourceArn: !GetAtt awsscvclrule.Arn
+                
