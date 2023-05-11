@@ -57,6 +57,9 @@ Resources:
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerPreferred
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
       LifecycleConfiguration:
         !If
           - AudioLifecycle
@@ -87,6 +90,9 @@ Resources:
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerPreferred
+      NotificationConfiguration:
+        EventBridgeConfiguration:
+          EventBridgeEnabled: true
 
   VMXAddOnPolicy:
     Type: AWS::IAM::ManagedPolicy

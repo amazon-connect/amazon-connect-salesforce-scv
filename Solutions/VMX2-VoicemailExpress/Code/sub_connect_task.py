@@ -1,4 +1,4 @@
-# Version: 2022.04.15
+# Version: 2023.05.11
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -62,6 +62,6 @@ def vm_to_connect_task(writer_payload):
 
     except Exception as e:
         logger.error(e)
-        logger.error('Record {0} Failed to create task.'.format(writer_payload['loop_counter']))
+        logger.error('Failed to create task.'))
 
         return 'fail'

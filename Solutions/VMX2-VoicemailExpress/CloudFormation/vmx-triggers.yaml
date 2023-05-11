@@ -7,8 +7,6 @@ Parameters:
     Type: String
   ConnectCTRStreamARN:
     Type: String
-  VMXNotificationBuilderArn:
-    Type: String
   VMXS3RecordingsBucket:
     Type: String
   VMXS3TranscriptsBucket:
@@ -22,6 +20,8 @@ Parameters:
   VMXTranscriberArn:
     Type: String
   VMXKVStoS3:
+    Type: String
+  ConnectInstanceAlias:
     Type: String
 
 Resources:
@@ -52,22 +52,58 @@ Resources:
       FunctionName: !Ref VMXKVStoS3
       StartingPosition: LATEST
 
-  CreateTranscriptTrigger:
-    Type: Custom::TranscriptTrigger
-    DependsOn:
-      - RecordingsBucketPermission
+  TranscriberRule:
+    Type: AWS::Events::Rule
     Properties:
-      ServiceToken: !Ref VMXNotificationBuilderArn
-      lambda_arn: !Ref VMXTranscriberArn
-      bucket_name: !Ref VMXS3RecordingsBucket
-      object_suffix: .wav
+      EventBusName: default
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - Object Created
+        detail:
+          bucket:
+            name:
+              - !Ref VMXS3RecordingsBucket
+      Name: !Join [ "-", [ !Ref ConnectInstanceAlias,TranscriberRule ] ]
+      State: ENABLED
+      Targets:
+        - Id: !Join [ "-", [ !Ref ConnectInstanceAlias,TranscriberFunction ] ]
+          Arn: !Ref VMXTranscriberArn
 
-  CreatePackagerTrigger:
-    Type: Custom::PackagerTrigger
-    DependsOn:
-      - TranscriptsBucketPermission
+  TrasncriberLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties: 
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref VMXTranscriberArn
+      Principal: events.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !GetAtt TranscriberRule.Arn
+
+  PackagerRule:
+    Type: AWS::Events::Rule
     Properties:
-      ServiceToken: !Ref VMXNotificationBuilderArn
-      lambda_arn: !Ref VMXPackagerArn
-      bucket_name: !Ref VMXS3TranscriptsBucket
-      object_suffix: .json
+      EventBusName: default
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - Object Created
+        detail:
+          bucket:
+            name:
+              - !Ref VMXS3TranscriptsBucket
+      Name: !Join [ "-", [ !Ref ConnectInstanceAlias,PackagerRule ] ]
+      State: ENABLED
+      Targets: 
+        - Id: !Join [ "-", [ !Ref ConnectInstanceAlias,PackagerFunction ] ]
+          Arn: !Ref VMXPackagerArn
+          
+  PackagerLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties: 
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref VMXPackagerArn
+      Principal: events.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !GetAtt PackagerRule.Arn

@@ -1,4 +1,4 @@
-# Version: 2022.04.15
+# Version: 2023.05.11
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -38,7 +38,7 @@ def vm_to_sfcase(writer_payload):
 
     except Exception as e:
         logger.error(e)
-        logger.error('Record {0} Result: Failed to authenticate with Salesforce'.format(writer_payload['loop_counter']))
+        logger.error('Failed to authenticate with Salesforce')
         return 'fail'
 
     # Format the URL to make it a user friendly link
@@ -62,7 +62,7 @@ def vm_to_sfcase(writer_payload):
                     sf_agent_id = get_agent_id[0]['Id']
                 except Exception as e:
                     logger.error(e)
-                    logger.error('Record {0} Result: Failed to validate Salesforce User ID'.format(writer_payload['loop_counter']))
+                    logger.error('Failed to validate Salesforce User ID')
                     return 'fail'
 
             data = {
@@ -92,10 +92,10 @@ def vm_to_sfcase(writer_payload):
 
         do_create = sf.create(sobject='Case', data=data)
 
-        logger.info('Record {0} Result: Salesforce Case created [{1}]'.format(writer_payload['loop_counter'], do_create))
+        logger.info('Salesforce Case created [{0}]'.format(do_create))
         return 'success'
 
     except Exception as e:
         logger.error(e)
-        logger.error('Record {0} Result: Failed to create Salesforce Case'.format(writer_payload['loop_counter']))
+        logger.error('Failed to create Salesforce Case')
         return 'fail'
