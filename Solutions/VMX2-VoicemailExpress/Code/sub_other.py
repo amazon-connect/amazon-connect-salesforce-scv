@@ -32,7 +32,7 @@ def vm_to_other(writer_payload):
 
     try:
         # TODO Implement
-        logger.error('Successfully executed.'))
+        logger.error('Successfully executed.')
         return 'success'
 
     except Exception as e:

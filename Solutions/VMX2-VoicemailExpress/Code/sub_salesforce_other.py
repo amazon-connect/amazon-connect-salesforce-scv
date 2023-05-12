@@ -62,7 +62,7 @@ def vm_to_sfother(writer_payload):
                     sf_agent_id = get_agent_id[0]['Id']
                 except Exception as e:
                     logger.error(e)
-                    logger.error('Failed to validate Salesforce User ID'.)
+                    logger.error('Failed to validate Salesforce User ID')
                     return 'fail'
 
             data = {

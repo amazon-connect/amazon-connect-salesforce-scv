@@ -62,6 +62,6 @@ def vm_to_connect_task(writer_payload):
 
     except Exception as e:
         logger.error(e)
-        logger.error('Failed to create task.'))
+        logger.error('Failed to create task.')
 
         return 'fail'
