@@ -14,6 +14,7 @@ Voicemail Express is designed to provide basic voicemail functionality to Amazon
 -  Once prerequisites have been completed, the solution installs completely and is immediately useable without extensive configuration. From template launch to Voicemail delivery via Amazon Connect Task can be completed in less than 10 minutes.
 -  Improved documentation
 -  Improved deployment experience
+-  Moved from S3 Bucket triggers to Amazon EventBridge events
 
 With Voicemail Express, customers can have the option to leave a voicemail for an agent or queue. Once the voicemail is recorded, a series of processes take place that ultimately result in:
 1. Voicemail stored in S3 as a .wav file

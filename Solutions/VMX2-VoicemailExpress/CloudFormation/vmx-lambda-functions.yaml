@@ -319,39 +319,6 @@ Resources:
       Runtime: nodejs14.x
       Timeout: 900
 
-  VMXNotificationBuilder:
-    Type: AWS::Lambda::Function
-    Properties:
-      Code:
-        S3Bucket:
-          !Join
-            - ''
-            - - !Ref EXPDevBucketPrefix
-              - 'connectbd-sc-'
-              - !Ref AWSRegion
-        S3Key:
-          !Join
-          - ''
-          - - 'vmx/'
-            - !Ref EXPTemplateVersion
-            - /zip/vmx_notification_builder.py.zip
-      Description: Configures the bucket notifications for the VM solution
-      Environment:
-        Variables:
-          lambda_logging_level:
-            Ref: LambdaLoggingLevel
-          package_version:
-            Ref: EXPTemplateVersion
-      FunctionName:
-        !Join
-            - ''
-            - - 'VMXNotificationBuilder-'
-              - !Ref ConnectInstanceAlias
-      Handler: vmx_notification_builder.lambda_handler
-      Role: !Ref VMXCoreRoleArn
-      Runtime: python3.9
-      Timeout: 30
-
   VMXAddOnPolicy:
     Type: AWS::IAM::ManagedPolicy
     DependsOn:
@@ -416,9 +383,6 @@ Resources:
         - !Ref VMXCoreRole
 
 Outputs:
-  VMXNotificationBuilderArn:
-    Description: ARN of the Notification Builder function
-    Value: !GetAtt VMXNotificationBuilder.Arn
   VMXPackagerArn:
     Description: ARN of the Packager function
     Value: !GetAtt VMXPackager.Arn

@@ -175,7 +175,7 @@ Parameters:
     Description: When recordings expire, do you want to delete the recording, keep it, or move it to Glacier?
   EXPTemplateVersion:
     Type: String
-    Default: 2022.08.01
+    Default: 2023.05.11
     Description: Template version. DO NOT CHANGE.
   LambdaLoggingLevel:
     Type: String
@@ -452,12 +452,9 @@ Resources:
       - VMXLambdaStack
     Properties:
       Parameters:
+        ConnectInstanceAlias: !Ref ConnectInstanceAlias
         EXPTemplateVersion: !Ref EXPTemplateVersion
         ConnectCTRStreamARN: !Ref ConnectCTRStreamARN
-        VMXNotificationBuilderArn:
-          Fn::GetAtt:
-            - VMXLambdaStack
-            - Outputs.VMXNotificationBuilderArn
         VMXS3RecordingsBucket:
           Fn::GetAtt:
             - VMXCoreStack

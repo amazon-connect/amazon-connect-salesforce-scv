@@ -1,4 +1,4 @@
-# Version: 2022.04.15
+# Version: 2023.05.11
 """
 **********************************************************************************************************************
  *  Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -26,79 +26,71 @@ logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'INFO')))
 def lambda_handler(event, context):
     logger.debug(event)
 
-    # Establish a loop counter
-    loop_counter = 0
+    # Grab incoming data elements from the S3 event
+    try:
+        recording_key = event['detail']['object']['key']
+        recording_name = recording_key.replace('voicemail_recordings/','')
+        contact_id = recording_name.replace('.wav','')
+        recording_bucket = event['detail']['bucket']['name']
+        recording_region = event['region']
 
-    # Process the incoming S3 event
-    for recording in event['Records']:
+    except Exception as e:
+        logger.error(e)
+        logger.debug('Record Result: Failed to extract data from event')
+        return {'result':'Failed to extract data from event'}
 
-        # Increment loop
-        loop_counter = loop_counter+1
+    # Establish the S3 client and get the object tags
+    try:
+        s3_client = boto3.client('s3')
+        object_data = s3_client.get_object_tagging(
+            Bucket=recording_bucket,
+            Key=recording_key
+        )
 
-        # Grab incoming data elements from the S3 event
-        try:
-            recording_key = recording['s3']['object']['key']
-            recording_name = recording_key.replace('voicemail_recordings/','')
-            contact_id = recording_name.replace('.wav','')
-            recording_bucket = recording['s3']['bucket']['name']
+        object_tags = object_data['TagSet']
+        loaded_tags = {}
 
-        except Exception as e:
-            logger.error(e)
-            logger.debug('Record {0} Result: Failed to extract data from event'.format(loop_counter))
-            continue
+        for i in object_tags:
+            loaded_tags.update({i['Key']:i['Value']})
 
-        # Establish the S3 client and get the object tags
-        try:
-            s3_client = boto3.client('s3')
-            object_data = s3_client.get_object_tagging(
-                Bucket=recording_bucket,
-                Key=recording_key
-            )
+    except Exception as e:
+        logger.error(e)
+        logger.debug('Record Result: Failed to extract tags from object')
+        return {'result':'Failed to extract tags from object'}
 
-            object_tags = object_data['TagSet']
-            loaded_tags = {}
+    # Build the Recording URL
+    try:
+        recording_url = 'https://{0}.s3-{1}.amazonaws.com/{2}'.format(recording_bucket, recording_region, recording_key)
 
-            for i in object_tags:
-                loaded_tags.update({i['Key']:i['Value']})
+    except Exception as e:
+        logger.error(e)
+        logger.debug('Record Result: Failed to generate recording URL')
+        return {'result':'Failed to generate recording URL'}
 
-        except Exception as e:
-            logger.error(e)
-            logger.debug('Record {0} Result: Failed to extract tags from object'.format(loop_counter))
-            continue
+    # Do the transcription
+    try:
+        # Esteablish the client
+        transcribe_client = boto3.client('transcribe')
 
-        # Build the Recording URL
-        try:
-            recording_url = 'https://{0}.s3-{1}.amazonaws.com/{2}'.format(recording_bucket, recording['awsRegion'], recording_key)
+        # Submit the transcription job
+        transcribe_response = transcribe_client.start_transcription_job(
+            TranscriptionJobName=contact_id,
+            LanguageCode=loaded_tags['vm_lang'],
+            MediaFormat='wav',
+            Media={
+                'MediaFileUri': recording_url
+            },
+            OutputBucketName=os.environ['s3_transcripts_bucket']
+        )
 
-        except Exception as e:
-            logger.error(e)
-            logger.debug('Record {0} Result: Failed to generate recording URL'.format(loop_counter))
-            continue
+    except Exception as e:
+        logger.error(e)
+        logger.debug('Record Result: Transcription job failed')
+        return {'result':'Transcription job failed'}
 
-        # Do the transcription
-        try:
-            # Esteablish the client
-            transcribe_client = boto3.client('transcribe')
-
-            # Submit the transcription job
-            transcribe_response = transcribe_client.start_transcription_job(
-                TranscriptionJobName=contact_id,
-                LanguageCode=loaded_tags['vm_lang'],
-                MediaFormat='wav',
-                Media={
-                    'MediaFileUri': recording_url
-                },
-                OutputBucketName=os.environ['s3_transcripts_bucket']
-            )
-
-        except Exception as e:
-            logger.error(e)
-            logger.debug('Record {0} Result: Transcription job failed'.format(loop_counter))
-            continue
-
-        logger.debug('Record {0} Result: Success!'.format(loop_counter))
+    logger.debug('Record Result: Success!')
 
     return {
         'status': 'complete',
-        'result': '{0} records processed'.format(loop_counter)
+        'result': 'record processed'
     }
