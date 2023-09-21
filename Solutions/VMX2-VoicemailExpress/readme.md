@@ -1,6 +1,6 @@
 | :warning: IMPORTANT          |
 |:---------------------------|
-| New Service Cloud Voice customers or customers that have yet to move into production **SHOULD NOT** deploy this solution. Voicemail Express is an AWS-developed solution that provided a voicemail option for Service Cloud Voice customers who needed voicemail. With the [Winter '23 release](https://help.salesforce.com/s/articleView?id=release-notes.rn_voice_route_play_back_voicemails.htm&type=5&release=240), Salesforce has implemented a variant of this solution natively. While this version still works, customers should use the [supported version from Salesforce](https://developer.salesforce.com/docs/atlas.en-us.voice_developer_guide.meta/voice_developer_guide/voice_example_voicemail.htm). This solution will be updated with a final release, then archived by end of the February 2023. Newer versions of this solution will not support Service Cloud Voice, and will focus on delivery of voicemails as Amazon Connect Tasks or as Emails.|
+| New Service Cloud Voice customers or customers that have yet to move into production **SHOULD NOT** deploy this solution. Voicemail Express is an AWS-developed solution that provided a voicemail option for Service Cloud Voice customers who needed voicemail. With the [Winter '23 release](https://help.salesforce.com/s/articleView?id=release-notes.rn_voice_route_play_back_voicemails.htm&type=5&release=240), Salesforce has implemented a variant of this solution natively. While this version still works, customers should use the [supported version from Salesforce](https://developer.salesforce.com/docs/atlas.en-us.voice_developer_guide.meta/voice_developer_guide/voice_example_voicemail.htm). |
 
 # Voicemail Express V2
 Voicemail Express is designed to provide basic voicemail functionality to Amazon Connect Customers. It has been designed to work in a variety of customer deployment models, including Service Cloud Voice. Voicemail express provides delivery of voicemail via a variety of mechanism and also offers customization patterns for other delivery models. This version natively supports voicemail delivery via Amazon Connect Task, e-mail delivery via Amazon Simple Email Service, Salesforce Case, Salesforce custom objects, or a custom delivery mode of your own design. It has also been redesigned to support different modes on a call-by-call basis.
@@ -36,6 +36,9 @@ Once Voicemail Express has been deployed, you can learn more about the different
 4. [Delivering Voicemails as Salesforce Cases](Docs/vmx_sfcase.md)
 5. [Delivering Voicemails as Salesforce Custom Objects](Docs/vmx_sfcustom.md)
 6. [Creating your own custom delivery mode for Voicemails](Docs/vmx_custom.md)
+
+To remove Voicemail Express, once deployed:
+1.  [Removing/Uninstalling Voicemail Express](Docs/vmx_uninstall.md)
 
 Finally, some basic troubleshooting steps can be found on the [Troubleshooting Common Voicemail Issues](Docs/vmx_troubleshooting.md) page.
 
