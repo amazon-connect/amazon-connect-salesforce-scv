@@ -208,23 +208,23 @@ Resources:
             Ref: LambdaLoggingLevel
           package_version:
             Ref: EXPTemplateVersion
-          sf_vm_custom_object:
+          sf_vmx_custom_object:
             !If [SalesforceOtherEnabled, !Ref SalesforceCustomObject, 'AWS::NoValue']
           sf_config_sm_arn:
             !If [SalesforceEnabled, !Ref SalesforceConfigSSMARN, 'AWS::NoValue']
-          sf_vm_field:
+          sf_vmx_field:
             !If [SalesforceEnabled, !Ref SalesforceVoicemailLinkField, 'AWS::NoValue']
-          sf_vm_phone_field:
+          sf_vmx_phone_field:
             !If [SalesforceEnabled, !Ref SalesforceCallbackPhoneField, 'AWS::NoValue']
-          sf_vm_attributes:
+          sf_vmx_attributes:
             !If [SalesforceEnabled, !Ref SalesforceContactAttributesField, 'AWS::NoValue']
-          sf_vm_transcript:
+          sf_vmx_transcript:
             !If [SalesforceOtherEnabled, !Ref SalesforceTranscriptsField, 'AWS::NoValue']
           default_email_from:
             !If [AWSEmailEnabled, !Ref VMToEmailDefaultFrom, 'AWS::NoValue']
           default_email_target:
             !If [AWSEmailEnabled, !Ref VMToEmailDefaultTo, 'AWS::NoValue']
-          default_vm_mode:
+          default_vmx_mode:
             !FindInMap [VMModes, !Ref "VMDefaultMode", mode]
           default_agent_email_template:
             !If [AWSEmailEnabled, !Ref VMEmailDefaultAgentTemplate, 'AWS::NoValue']

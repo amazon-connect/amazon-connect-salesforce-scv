@@ -3,8 +3,8 @@ This is the original delivery mode for Voicemail Express. Voicemails are created
 
 ## Additional Contact Attributes Specific to Salesforce Cases
 There is only one additional contact attribute required for routing voicemails as cases, and that is the case priority. It is defied as follows:
--  **vm_priority**: (String) set to the appropriate priority level as defined by your organization.
-Example: 'vm_priority':'low'
+-  **vmx_priority**: (String) set to the appropriate priority level as defined by your organization.
+Example: 'vmx_priority':'low'
 
 ## Accessing Contact Attributes
 All of the contact attributes for the call are stored as a string in the custom contact attributes field that was created as a part of the prerequisites for Salesforce. This can be modified, if desired, by editing the **sub_salesforce_case.py** file in the VMXPackager function, beginning at line 70 and again at line 82. Please note that there are two versions of the write in that file, one for agent voicemails and one for queue voicemails.

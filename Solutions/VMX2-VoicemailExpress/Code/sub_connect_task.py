@@ -27,15 +27,15 @@ logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'DEBUG'))
 
 connect_client = boto3.client('connect')
 
-def vm_to_connect_task(writer_payload):
+def vmx_to_connect_task(writer_payload):
 
     logger.info('Beginning Voicemail to Task')
     logger.debug(writer_payload)
 
     # Check for a task flow to use, if not, use default
-    if 'vm_task_flow' in writer_payload['json_attributes']:
-        if writer_payload['json_attributes']['vm_task_flow']:
-            contact_flow = writer_payload['json_attributes']['vm_task_flow']
+    if 'vmx_task_flow' in writer_payload['json_attributes']:
+        if writer_payload['json_attributes']['vmx_task_flow']:
+            contact_flow = writer_payload['json_attributes']['vmx_task_flow']
         else:
             writer_payload.update({'task_flow':os.environ['default_task_flow']})
 

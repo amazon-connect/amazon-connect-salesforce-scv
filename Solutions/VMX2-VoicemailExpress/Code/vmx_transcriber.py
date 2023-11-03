@@ -75,7 +75,7 @@ def lambda_handler(event, context):
         # Submit the transcription job
         transcribe_response = transcribe_client.start_transcription_job(
             TranscriptionJobName=contact_id,
-            LanguageCode=loaded_tags['vm_lang'],
+            LanguageCode=loaded_tags['vmx_lang'],
             MediaFormat='wav',
             Media={
                 'MediaFileUri': recording_url

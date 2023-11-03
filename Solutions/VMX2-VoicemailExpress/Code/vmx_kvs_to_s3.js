@@ -84,14 +84,14 @@ exports.handler = async (event) => {
             continue;
         };
 
-        // Check for the positive vm_flag attribute so we know that this is a vm to process
+        // Check for the positive vmx_flag attribute so we know that this is a vm to process
         try {
-            var vm_flag = vmrecord.Attributes.vm_flag || '99';
-            if (vm_flag == '0') {
+            var vmx_flag = vmrecord.Attributes.vmx_flag || '99';
+            if (vmx_flag == '0') {
                 responseContainer['record ' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' - IGNORE - voicemail already processed';
                 processedRecordCount = processedRecordCount + 1;
                 continue;
-            } else if (vm_flag == '1') {
+            } else if (vmx_flag == '1') {
                 console.log('Record #' + totalRecordCount  + ' ContactID: ' + currentContactID + ' -  is a voicemail - begin processing.')
             } else {
                 responseContainer['record' + totalRecordCount + 'result'] = ' ContactID: ' + currentContactID + ' - IGNORE - voicemail flag not valid';
@@ -121,7 +121,7 @@ exports.handler = async (event) => {
             var attr_data = vmrecord.Attributes;
             var attr_tag_container = '';
             Object.keys(attr_data).forEach(function (key) {
-                if (key.startsWith('vm_lang')||key.startsWith('vm_queue_arn')){
+                if (key.startsWith('vmx_lang')||key.startsWith('vmx_queue_arn')){
                     attr_tag_container = attr_tag_container + ('' + key + '=' + attr_data[key] + '&');
                 };
             });

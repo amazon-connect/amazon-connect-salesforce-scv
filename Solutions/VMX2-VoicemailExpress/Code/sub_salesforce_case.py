@@ -28,7 +28,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'DEBUG')))
 connect_client = boto3.client('connect')
 
-def vm_to_sfcase(writer_payload):
+def vmx_to_sfcase(writer_payload):
 
     logger.info('Beginning Voicemail to Salesforce Case')
     logger.debug(writer_payload)
@@ -66,27 +66,27 @@ def vm_to_sfcase(writer_payload):
                     return 'fail'
 
             data = {
-                'Subject': 'Direct voicemail for: ' + writer_payload['json_attributes']['entity_name'] + ' from : ' + writer_payload['json_attributes']['vm_from'],
+                'Subject': 'Direct voicemail for: ' + writer_payload['json_attributes']['entity_name'] + ' from : ' + writer_payload['json_attributes']['vmx_from'],
                 'Description': 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
                 'Status': 'New',
                 'Origin': 'Phone',
-                'Priority': writer_payload['json_attributes']['vm_priority'],
+                'Priority': writer_payload['json_attributes']['vmx_priority'],
                 'OwnerId': sf_agent_id,
-                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: sf_formatted_url
+                os.environ['sf_vmx_phone_field']: writer_payload['json_attributes']['vmx_from'],
+                os.environ['sf_vmx_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vmx_field']: sf_formatted_url
             }
 
         else:
             data = {
-                'Subject': 'Queue voicemail for: ' + writer_payload['json_attributes']['entity_name'] + ' from : ' + writer_payload['json_attributes']['vm_from'],
+                'Subject': 'Queue voicemail for: ' + writer_payload['json_attributes']['entity_name'] + ' from : ' + writer_payload['json_attributes']['vmx_from'],
                 'Description': 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
                 'Status': 'New',
                 'Origin': 'Phone',
-                'Priority': writer_payload['json_attributes']['vm_priority'],
-                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: sf_formatted_url
+                'Priority': writer_payload['json_attributes']['vmx_priority'],
+                os.environ['sf_vmx_phone_field']: writer_payload['json_attributes']['vmx_from'],
+                os.environ['sf_vmx_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vmx_field']: sf_formatted_url
             }
         logger.debug(data)
 

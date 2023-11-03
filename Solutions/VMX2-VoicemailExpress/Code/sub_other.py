@@ -25,7 +25,7 @@ import boto3
 logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'DEBUG')))
 
-def vm_to_other(writer_payload):
+def vmx_to_other(writer_payload):
 
     logger.info('Beginning Voicemail to other')
     logger.debug(writer_payload)
