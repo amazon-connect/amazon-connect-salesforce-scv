@@ -1,4 +1,4 @@
-# Version: 2023.05.11
+# Version: 2024.02.28
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -28,7 +28,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'DEBUG')))
 connect_client = boto3.client('connect')
 
-def vm_to_sfother(writer_payload):
+def vmx_to_sfother(writer_payload):
 
     logger.info('Beginning Voicemail to Salesforce Custom Object')
     logger.debug(writer_payload)
@@ -67,24 +67,24 @@ def vm_to_sfother(writer_payload):
 
             data = {
                 'Name': 'Direct voicemail for: ' + writer_payload['json_attributes']['entity_name'],
-                os.environ['sf_vm_transcript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
+                os.environ['sf_vmx_transcript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
                 'OwnerId': sf_agent_id,
-                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: sf_formatted_url
+                os.environ['sf_vmx_phone_field']: writer_payload['json_attributes']['vmx_from'],
+                os.environ['sf_vmx_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vmx_field']: sf_formatted_url
             }
 
         else:
             data = {
                 'Name': 'Queue voicemail for: ' + writer_payload['json_attributes']['entity_name'],
-                os.environ['sf_vm_transcript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
-                os.environ['sf_vm_phone_field']: writer_payload['json_attributes']['vm_from'],
-                os.environ['sf_vm_attributes']: json.dumps(writer_payload['json_attributes']),
-                os.environ['sf_vm_field']: sf_formatted_url
+                os.environ['sf_vmx_transcript']: 'Voicemail transcript: ' + writer_payload['json_attributes']['transcript_contents'],
+                os.environ['sf_vmx_phone_field']: writer_payload['json_attributes']['vmx_from'],
+                os.environ['sf_vmx_attributes']: json.dumps(writer_payload['json_attributes']),
+                os.environ['sf_vmx_field']: sf_formatted_url
             }
         logger.debug(data)
 
-        do_create = sf.create(sobject=os.environ['sf_vm_custom_object'], data=data)
+        do_create = sf.create(sobject=os.environ['sf_vmx_custom_object'], data=data)
 
         logger.info('Salesforce custom voicemail created [{0}]'.format(do_create))
         return 'success'

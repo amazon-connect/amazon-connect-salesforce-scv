@@ -1,4 +1,4 @@
-# Version: 2023.05.11
+# Version: 2024.02.28
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -111,7 +111,7 @@ def lambda_handler(event, context):
         return {'result':'Failed to retrieve transcript'}
 
     # Set some key vars
-    queue_arn = loaded_tags['vm_queue_arn']
+    queue_arn = loaded_tags['vmx_queue_arn']
     arn_substring = queue_arn.split('instance/')[1]
     instance_id = arn_substring.split('/queue')[0]
     queue_id = arn_substring.split('queue/')[1]
@@ -162,7 +162,7 @@ def lambda_handler(event, context):
             InitialContactId = contact_id
         )
         json_attributes = contact_attributes['Attributes']
-        json_attributes.update({'entity_name':entity_name,'entity_id':entity_id,'entity_description':entity_description,'transcript_contents':transcript_contents,'callback_number':json_attributes['vm_from'],'presigned_url':raw_url})
+        json_attributes.update({'entity_name':entity_name,'entity_id':entity_id,'entity_description':entity_description,'transcript_contents':transcript_contents,'callback_number':json_attributes['vmx_from'],'presigned_url':raw_url})
         writer_payload.update({'json_attributes':json_attributes})
         contact_attributes = json.dumps(contact_attributes['Attributes'])
 
@@ -174,59 +174,59 @@ def lambda_handler(event, context):
     logger.debug(writer_payload)
 
     # Determing VMX mode
-    if 'vm_mode' in writer_payload['json_attributes']:
-        if writer_payload['json_attributes']['vm_mode']:
-            vm_mode = writer_payload['json_attributes']['vm_mode']
+    if 'vmx_mode' in writer_payload['json_attributes']:
+        if writer_payload['json_attributes']['vmx_mode']:
+            vmx_mode = writer_payload['json_attributes']['vmx_mode']
     else:
-        vm_mode = os.environ['default_vm_mode']
+        vmx_mode = os.environ['default_vmx_mode']
 
-    logger.debug('VM Mode set to {0}.'.format(vm_mode))
+    logger.debug('VM Mode set to {0}.'.format(vmx_mode))
 
     # Execute the correct VMX mode
-    if vm_mode == 'task':
+    if vmx_mode == 'task':
 
         try:
-            write_vm = sub_connect_task.vm_to_connect_task(writer_payload)
+            write_vm = sub_connect_task.vmx_to_connect_task(writer_payload)
 
         except Exception as e:
             logger.error(e)
             logger.error('Failed to activate task function')
             return {'result':'Failed to activate task function'}
 
-    elif vm_mode == 'email':
+    elif vmx_mode == 'email':
 
         try:
-            write_vm = sub_ses_email.vm_to_ses_email(writer_payload)
+            write_vm = sub_ses_email.vmx_to_ses_email(writer_payload)
 
         except Exception as e:
             logger.error(e)
             logger.error('Failed to activate email function')
             return {'result':'Failed to activate email function'}
 
-    elif vm_mode == 'sfcase':
+    elif vmx_mode == 'sfcase':
         # Set case Here
         try:
-            write_vm = sub_salesforce_case.vm_to_sfcase(writer_payload)
+            write_vm = sub_salesforce_case.vmx_to_sfcase(writer_payload)
 
         except Exception as e:
             logger.error(e)
             logger.error('Failed to activate sfcase function')
             return {'result':'Failed to activate sfcase function'}
 
-    elif vm_mode == 'sfother':
+    elif vmx_mode == 'sfother':
         # Set Task Here
         try:
-            write_vm = sub_salesforce_other.vm_to_sfother(writer_payload)
+            write_vm = sub_salesforce_other.vmx_to_sfother(writer_payload)
 
         except Exception as e:
             logger.error(e)
             logger.error('Failed to activate sfother function')
             return {'result':'Failed to activate sfother function'}
 
-    elif vm_mode == 'other':
+    elif vmx_mode == 'other':
         # Set other Here
         try:
-            write_vm = sub_other.vm_to_other(writer_payload)
+            write_vm = sub_other.vmx_to_other(writer_payload)
 
         except Exception as e:
             logger.error(e)
@@ -258,20 +258,20 @@ def lambda_handler(event, context):
         logger.error(e)
         logger.error('Record Failed to delete transcription job')
 
-    # Clear the vm_flag for this contact
+    # Clear the vmx_flag for this contact
     try:
 
         update_flag = connect_client.update_contact_attributes(
             InitialContactId=contact_id,
             InstanceId=instance_id,
             Attributes={
-                'vm_flag': '0'
+                'vmx_flag': '0'
             }
         )
 
     except Exception as e:
         logger.error(e)
-        logger.error('Record Failed to change vm_flag')
+        logger.error('Record Failed to change vmx_flag')
 
     return {
         'status': 'complete',

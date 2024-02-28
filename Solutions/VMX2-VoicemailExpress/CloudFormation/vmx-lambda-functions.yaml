@@ -89,8 +89,7 @@ Resources:
     Condition: SalesforceNotEnabled
     Properties:
       CompatibleRuntimes:
-        - python3.8
-        - python3.9
+        - python3.11
       Content:
         S3Bucket:
           !Join
@@ -116,8 +115,7 @@ Resources:
     Condition: SalesforceNotEnabled
     Properties:
       CompatibleRuntimes:
-        - nodejs12.x
-        - nodejs14.x
+        - nodejs18.x
       Content:
         S3Bucket:
           !Join
@@ -174,7 +172,7 @@ Resources:
               - !Ref ConnectInstanceAlias
       Handler: vmx_presigner.lambda_handler
       Role: !Ref VMXCoreRoleArn
-      Runtime: python3.9
+      Runtime: python3.11
       Timeout: 30
 
   VMXPackager:
@@ -208,23 +206,23 @@ Resources:
             Ref: LambdaLoggingLevel
           package_version:
             Ref: EXPTemplateVersion
-          sf_vm_custom_object:
+          sf_vmx_custom_object:
             !If [SalesforceOtherEnabled, !Ref SalesforceCustomObject, 'AWS::NoValue']
           sf_config_sm_arn:
             !If [SalesforceEnabled, !Ref SalesforceConfigSSMARN, 'AWS::NoValue']
-          sf_vm_field:
+          sf_vmx_field:
             !If [SalesforceEnabled, !Ref SalesforceVoicemailLinkField, 'AWS::NoValue']
-          sf_vm_phone_field:
+          sf_vmx_phone_field:
             !If [SalesforceEnabled, !Ref SalesforceCallbackPhoneField, 'AWS::NoValue']
-          sf_vm_attributes:
+          sf_vmx_attributes:
             !If [SalesforceEnabled, !Ref SalesforceContactAttributesField, 'AWS::NoValue']
-          sf_vm_transcript:
+          sf_vmx_transcript:
             !If [SalesforceOtherEnabled, !Ref SalesforceTranscriptsField, 'AWS::NoValue']
           default_email_from:
             !If [AWSEmailEnabled, !Ref VMToEmailDefaultFrom, 'AWS::NoValue']
           default_email_target:
             !If [AWSEmailEnabled, !Ref VMToEmailDefaultTo, 'AWS::NoValue']
-          default_vm_mode:
+          default_vmx_mode:
             !FindInMap [VMModes, !Ref "VMDefaultMode", mode]
           default_agent_email_template:
             !If [AWSEmailEnabled, !Ref VMEmailDefaultAgentTemplate, 'AWS::NoValue']
@@ -238,7 +236,7 @@ Resources:
       Handler: vmx_packager.lambda_handler
       Role: !Ref VMXCoreRoleArn
       Layers: !If [SalesforceNotEnabled, [!Ref VMXPythonLayer], [!Ref PythonLayerARN]]
-      Runtime: python3.9
+      Runtime: python3.11
       Timeout: 900
 
   VMXTranscriber:
@@ -278,7 +276,7 @@ Resources:
               - !Ref ConnectInstanceAlias
       Handler: vmx_transcriber.lambda_handler
       Role: !Ref VMXCoreRoleArn
-      Runtime: python3.9
+      Runtime: python3.11
       Timeout: 900
 
   VMXKVStoS3:
@@ -316,7 +314,7 @@ Resources:
       Handler: vmx_kvs_to_s3.handler
       Role: !Ref VMXCoreRoleArn
       Layers: !If [SalesforceNotEnabled, [!Ref VMXNodeLayer], [!Ref NodeLayerARN]]
-      Runtime: nodejs14.x
+      Runtime: nodejs18.x
       Timeout: 900
 
   VMXAddOnPolicy:

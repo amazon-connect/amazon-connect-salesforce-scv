@@ -175,7 +175,7 @@ Parameters:
     Description: When recordings expire, do you want to delete the recording, keep it, or move it to Glacier?
   EXPTemplateVersion:
     Type: String
-    Default: 2023.05.11
+    Default: 2024.02.28
     Description: Template version. DO NOT CHANGE.
   LambdaLoggingLevel:
     Type: String
@@ -197,7 +197,7 @@ Parameters:
     Description: The Salesforce config AWS Secrets Manager entry was created whren you deployed the Salesforce Config template.
   RecordingsExpireInXDays:
     Type: String
-    Default: 7
+    Default: 1
     AllowedValues:
       - 1
       - 2
@@ -206,7 +206,7 @@ Parameters:
       - 5
       - 6
       - 7
-    Description: Number of days recordings are accessible via link.
+    Description: Number of days recordings are accessible via link. This is limited 
   SalesforceCallbackPhoneField:
     Type: String
     Default: REPLACEME

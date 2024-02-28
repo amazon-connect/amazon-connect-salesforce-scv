@@ -1,4 +1,4 @@
-# Version: 2023.05.11
+# Version: 2024.02.28
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -27,7 +27,7 @@ logger.setLevel(logging.getLevelName(os.getenv('lambda_logging_level', 'DEBUG'))
 connect_client = boto3.client('connect')
 ses_client = boto3.client('sesv2')
 
-def vm_to_ses_email(writer_payload):
+def vmx_to_ses_email(writer_payload):
 
     logger.info('Beginning Voicemail to email')
     logger.debug(writer_payload)
@@ -35,54 +35,54 @@ def vm_to_ses_email(writer_payload):
     # Identify the proper address to send the email FROM
     if 'email_from' in writer_payload['json_attributes']:
         if writer_payload['json_attributes']['email_from']:
-            vm_email_from_address = writer_payload['json_attributes']['email_from']
+            vmx_email_from_address = writer_payload['json_attributes']['email_from']
     else:
-        vm_email_from_address = os.environ['default_email_from']
+        vmx_email_from_address = os.environ['default_email_from']
 
     # Set destination address
     if writer_payload['entity_type'] == 'agent':
-        vm_email_target_address = writer_payload['json_attributes']['entity_id']
+        vmx_email_target_address = writer_payload['json_attributes']['entity_id']
 
     elif writer_payload['entity_type'] == 'queue':
-        vm_email_target_address = writer_payload['json_attributes']['entity_description'].split('QVMB::')[1]
+        vmx_email_target_address = writer_payload['json_attributes']['entity_description'].split('QVMB::')[1]
 
     else:
-        vm_email_target_address = os.environ['default_email_target']
+        vmx_email_target_address = os.environ['default_email_target']
 
-    if '@' in vm_email_target_address:
+    if '@' in vmx_email_target_address:
         logger.info('Valid email address format')
 
     else:
-        vm_email_target_address = os.environ['default_email_target']
+        vmx_email_target_address = os.environ['default_email_target']
 
 
     if 'email_template' in writer_payload['json_attributes']:
         if writer_payload['json_attributes']['email_template']:
-            vm_email_template = writer_payload['json_attributes']['email_template']
+            vmx_email_template = writer_payload['json_attributes']['email_template']
 
     else:
         if writer_payload['entity_type'] == 'agent':
-            vm_email_template = os.environ['default_agent_email_template']
+            vmx_email_template = os.environ['default_agent_email_template']
 
         else:
-            vm_email_template = os.environ['default_queue_email_template']
+            vmx_email_template = os.environ['default_queue_email_template']
 
-    vm_email_data = json.dumps(writer_payload['json_attributes'])
+    vmx_email_data = json.dumps(writer_payload['json_attributes'])
 
     # Send the email
     try:
 
         send_email = ses_client.send_email(
-            FromEmailAddress=vm_email_from_address,
+            FromEmailAddress=vmx_email_from_address,
             Destination={
                 'ToAddresses': [
-                    vm_email_target_address,
+                    vmx_email_target_address,
                 ],
             },
             Content={
                 'Template': {
-                    'TemplateName': vm_email_template,
-                    'TemplateData': vm_email_data
+                    'TemplateName': vmx_email_template,
+                    'TemplateData': vmx_email_data
                 }
             }
         )

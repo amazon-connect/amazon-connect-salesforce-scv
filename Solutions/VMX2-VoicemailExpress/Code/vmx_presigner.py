@@ -1,4 +1,4 @@
-# Version: 2023.05.11
+# Version: 2024.02.28
 """
 **********************************************************************************************************************
  *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved                                            *
@@ -118,18 +118,13 @@ def get_secret():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
+        secret = get_secret_value_response['SecretString']
 
     except Exception as e:
         logger.error(e)
         secret_response.update({'result':'fail'})
         secret_response.update({'detail':'failed to get secrets'})
         return secret_response
-
-    else:
-        if 'SecretString' in get_secret_value_response:
-            secret = get_secret_value_response['SecretString']
-        else:
-            decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
 
     secret_response.update(json.loads(secret))
 
