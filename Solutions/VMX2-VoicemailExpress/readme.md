@@ -7,14 +7,9 @@ Voicemail Express is designed to provide basic voicemail functionality to Amazon
 
 ![Voicemail Express Architecture](Docs/Img/vmx2.png)
 
-## What's new
--  Now supports multiple delivery models, including Amazon Connect Tasks, email delivery via Amazon Simple Email Service, Custom Salesforce Objects, as well as a plugin option for anything else you wish to use.
--  Supports multiple installations in one account for different Connect instances
--  Supports upgrades, rollbacks, and specific version installations
--  Once prerequisites have been completed, the solution installs completely and is immediately useable without extensive configuration. From template launch to Voicemail delivery via Amazon Connect Task can be completed in less than 10 minutes.
--  Improved documentation
--  Improved deployment experience
--  Moved from S3 Bucket triggers to Amazon EventBridge events
+## What's new (2024.02.28)
+-  Updated presigner for better reliability
+-  Updated node version to 18
 
 With Voicemail Express, customers can have the option to leave a voicemail for an agent or queue. Once the voicemail is recorded, a series of processes take place that ultimately result in:
 1. Voicemail stored in S3 as a .wav file
@@ -42,5 +37,5 @@ To remove Voicemail Express, once deployed:
 
 Finally, some basic troubleshooting steps can be found on the [Troubleshooting Common Voicemail Issues](Docs/vmx_troubleshooting.md) page.
 
-**Current Published Version:** 2023.11.02
+**Current Published Version:** 2024.02.28
 Current published version is the version of the code and templates that has been deployed to our S3 buckets
