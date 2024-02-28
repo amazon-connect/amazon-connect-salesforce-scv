@@ -42,5 +42,5 @@ To remove Voicemail Express, once deployed:
 
 Finally, some basic troubleshooting steps can be found on the [Troubleshooting Common Voicemail Issues](Docs/vmx_troubleshooting.md) page.
 
-**Current Published Version:** 2022.08.01
+**Current Published Version:** 2023.11.02
 Current published version is the version of the code and templates that has been deployed to our S3 buckets

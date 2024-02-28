@@ -89,8 +89,7 @@ Resources:
     Condition: SalesforceNotEnabled
     Properties:
       CompatibleRuntimes:
-        - python3.8
-        - python3.9
+        - python3.11
       Content:
         S3Bucket:
           !Join
@@ -116,8 +115,7 @@ Resources:
     Condition: SalesforceNotEnabled
     Properties:
       CompatibleRuntimes:
-        - nodejs12.x
-        - nodejs14.x
+        - nodejs18.x
       Content:
         S3Bucket:
           !Join
@@ -174,7 +172,7 @@ Resources:
               - !Ref ConnectInstanceAlias
       Handler: vmx_presigner.lambda_handler
       Role: !Ref VMXCoreRoleArn
-      Runtime: python3.9
+      Runtime: python3.11
       Timeout: 30
 
   VMXPackager:
@@ -238,7 +236,7 @@ Resources:
       Handler: vmx_packager.lambda_handler
       Role: !Ref VMXCoreRoleArn
       Layers: !If [SalesforceNotEnabled, [!Ref VMXPythonLayer], [!Ref PythonLayerARN]]
-      Runtime: python3.9
+      Runtime: python3.11
       Timeout: 900
 
   VMXTranscriber:
@@ -278,7 +276,7 @@ Resources:
               - !Ref ConnectInstanceAlias
       Handler: vmx_transcriber.lambda_handler
       Role: !Ref VMXCoreRoleArn
-      Runtime: python3.9
+      Runtime: python3.11
       Timeout: 900
 
   VMXKVStoS3:
@@ -316,7 +314,7 @@ Resources:
       Handler: vmx_kvs_to_s3.handler
       Role: !Ref VMXCoreRoleArn
       Layers: !If [SalesforceNotEnabled, [!Ref VMXNodeLayer], [!Ref NodeLayerARN]]
-      Runtime: nodejs14.x
+      Runtime: nodejs18.x
       Timeout: 900
 
   VMXAddOnPolicy:
