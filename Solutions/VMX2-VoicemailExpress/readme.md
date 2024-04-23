@@ -1,8 +1,8 @@
 | :warning: IMPORTANT          |
 |:---------------------------|
-| This solution will have limited updates for Salesforce environments, with only critical updates to runtime versions or to correct significant issues. Salesforce Service Cloud Voice customers are encouraged to utilize the [native voicemail offering](https://developer.salesforce.com/docs/atlas.en-us.voice_developer_guide.meta/voice_developer_guide/voice_example_voicemail.htm), which is based on this code but updated and developed by salesforce. 
-
-Amazon Connect customers that require a voicemail solution should use the [new version of this solution,](https://github.com/amazon-connect/voicemail-express-amazon-connect), which has been specificly refined for Amazon Connect customers who do not use Service Cloud Voice.|
+| This solution will have limited updates for Salesforce environments, with only critical updates to runtime versions or to correct significant issues. Salesforce Service Cloud Voice customers are encouraged to utilize the [native voicemail offering](https://developer.salesforce.com/docs/atlas.en-us.voice_developer_guide.meta/voice_developer_guide/voice_example_voicemail.htm), which is based on this code but updated and developed by salesforce. | 
+| |
+|Amazon Connect customers that require a voicemail solution should use the [new version of this solution,](https://github.com/amazon-connect/voicemail-express-amazon-connect), which has been specificly refined for Amazon Connect customers who do not use Service Cloud Voice.|
 
 
 # Voicemail Express V2
