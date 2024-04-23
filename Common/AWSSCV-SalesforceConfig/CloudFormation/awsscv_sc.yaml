@@ -104,7 +104,7 @@ Parameters:
     Description: This can be found in Salesforce Setup > My Domain > My Domain Details.
   sfVersion:
     Type: String
-    Default: v55.0
+    Default: v60.0
     Description: The current API version number, formatted as follows - v53.0. This can be found in Salesforce Setup > Apex Classes > New > Version Settings > Version
   sfPrivateKey:
     Type: String
@@ -127,7 +127,7 @@ Parameters:
     Description: Not required and only used for development purposes.
   EXPTemplateVersion:
     Type: String
-    Default: 2022.08.01
+    Default: 2024.02.28
     Description: Template version. DO NOT CHANGE.
 
 Resources:
@@ -205,6 +205,7 @@ Resources:
           CompatibleRuntimes:
             - python3.8
             - python3.9
+            - python3.11
           Content:
             S3Bucket:
               !Join
@@ -231,6 +232,7 @@ Resources:
           CompatibleRuntimes:
             - nodejs12.x
             - nodejs14.x
+            - nodejs18.x
           Content:
             S3Bucket:
               !Join
@@ -285,7 +287,7 @@ Resources:
         Handler: awsscv_salesforce_validator.lambda_handler
         Role: !GetAtt AWSSCVCommonRole.Arn
         Layers: [ !Ref SCVCommonPythonLayer ]
-        Runtime: python3.9
+        Runtime: python3.11
         Timeout: 900
 
 Outputs:
