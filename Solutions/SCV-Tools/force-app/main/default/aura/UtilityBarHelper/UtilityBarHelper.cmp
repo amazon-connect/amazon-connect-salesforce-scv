@@ -1,0 +1,25 @@
+<aura:component
+    access="global"
+    description="UtilityBarHelper"
+    implements="lightning:utilityItem"
+    controller="UtilityBarHelperController">
+
+    <lightning:omniToolkitAPI aura:id="omniToolkit" />
+    <lightning:utilityBarAPI aura:id="utilityBar"/>
+
+    <aura:handler event="lightning:omniChannelLoginSuccess" action="{! c.onAgentLogin }" />
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+
+    <aura:attribute name="baseUtilityLabel" type="String" />
+    <aura:attribute name="agentState" type="String" default="" />
+    <aura:attribute name="vfHost" type="String" />
+
+    <div class="slds-theme_default slds-show slds-color__background_gray-4" style="height: 100%; width:100%;">
+        <div class="slds-align_absolute-center">
+            <div class="slds-text-title_bold slds-m-around_medium">Agent State: {! v.agentState }<lightning:buttonIcon class="slds-m-left_small" iconName="utility:sort" variant="bare" size="large" alternativeText="Sync State" title="Sync State" onclick="{! c.toggleStatus }"/></div>
+        </div>
+        <iframe aura:id="utiltyBarHelperFrame" src="/apex/UtilityBarHelperPage" style="height: 0; width: 0; border: none;"></iframe>
+    </div>
+
+</aura:component>

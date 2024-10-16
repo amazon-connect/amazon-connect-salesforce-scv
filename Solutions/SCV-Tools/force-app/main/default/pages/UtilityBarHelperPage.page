@@ -1,0 +1,37 @@
+<apex:page
+        id="UtilityBarHelperPage"
+        controller="UtilityBarHelperController"
+        contentType="text/html">
+
+    <html>
+        <head>
+            <script type="text/javascript">
+                const lightningHostname = 'https://{!lightningHostname}';
+                function init() {
+                    Connector.init('https://{!lightningHostname}', 'https://{!amazonConnectInstanceName}.my.connect.aws/ccp-v2');
+                }
+            </script>
+            <apex:includeScript value="/soap/ajax/62.0/connection.js" />
+            <apex:includeScript value="/soap/ajax/62.0/apex.js" />
+            <apex:includeScript value="{! $Resource.streams }" />
+            <apex:includeScript value="{! $Resource.UtilityBarHelperScript }" />
+            <apex:includeLightning />
+
+            <style>
+                .ccpContainer {
+                    height: 0;
+                    width: 0;
+                }
+
+                .ccpContainer iframe{
+                    border: none;
+                    overflow: hidden;
+                    display: none;
+                }
+            </style>
+        </head>
+    <body onload="init()">
+    <div id="ccpContainer" class="ccpContainer"></div>
+    </body>
+    </html>
+</apex:page>
