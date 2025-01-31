@@ -1,3 +1,0 @@
-<design:component label="Amazon Connect Helper">
-    <design:attribute name="baseUtilityLabel" label="Base Utility Label" default="Amazon Connect Helper" description="The name to display in the utility bar for this component" required="true"></design:attribute>
-</design:component>
