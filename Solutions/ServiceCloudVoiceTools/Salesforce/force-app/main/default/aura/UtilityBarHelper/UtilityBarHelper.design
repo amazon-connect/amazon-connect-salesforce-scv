@@ -1,0 +1,5 @@
+<design:component label="Amazon Connect Helper">
+    <design:attribute name="amazonConnectInstanceName" label="Amazon Connect Instance Name" default="" description="The name of the Amazon Connect instance" />
+    <design:attribute name="baseUtilityLabel" label="Base Utility Label" default="Amazon Connect Helper" description="The name to display in the utility bar for this component" />
+    <design:attribute name="agentStateLabel" label="Agent State Label" default="Agent State" description="The label to display for the agent state value" />
+</design:component>
