@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> This repository is no longer in development and will be decomissioned by April 15, 2026. The majority of the solutions provided here have been incorporated into the standard SCV or SCC-AC stacks and are no longer necessary.
+
 # Amazon Connect Campground for Service Cloud Voice
 
 This repository contains examples, templates, packages, and documentation to help Service Cloud Voice customers address some common requirements and deploy more quickly. While the solutions here are designed specifically for Service Cloud Voice deployments they will all work for standard Amazon Connect + CTI examples as well and can also serve as a reference for non-Salesforce deployments.
